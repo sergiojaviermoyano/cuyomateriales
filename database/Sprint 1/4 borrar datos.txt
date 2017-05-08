@@ -1,0 +1,5 @@
+delete from stock;
+delete from receptionsdetail;
+delete from receptions;
+delete from ventasdetalle;
+delete from ventas;

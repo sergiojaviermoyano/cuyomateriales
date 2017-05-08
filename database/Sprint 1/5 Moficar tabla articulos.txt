@@ -1,0 +1,11 @@
+ALTER TABLE `articles`
+ADD COLUMN `artSeFracciona`  bit(1) NOT NULL DEFAULT 0 AFTER `artEstado`,
+ADD COLUMN `artMinimo`  int NULL DEFAULT 0 AFTER `artSeFracciona`,
+ADD COLUMN `artMedio`  int NULL DEFAULT 0 AFTER `artMinimo`,
+ADD COLUMN `artMaximo`  int NULL DEFAULT 0 AFTER `artMedio`,
+ADD COLUMN `ivaId`  int NOT NULL AFTER `artMaximo`,
+ADD COLUMN `subrId`  int NOT NULL AFTER `ivaId`;
+
+ALTER TABLE `articles` ADD FOREIGN KEY (`ivaId`) REFERENCES `ivaAliCuotas` (`ivaId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE `articles` ADD FOREIGN KEY (`subrId`) REFERENCES `subrubros` (`subrId`) ON DELETE RESTRICT ON UPDATE CASCADE;
