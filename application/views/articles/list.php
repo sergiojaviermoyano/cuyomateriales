@@ -179,12 +179,12 @@
 <!-- Modal -->
 <div class="modal fade" id="modalArticle" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
+    <div class="modal-content" >
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Artículo</h4> 
       </div>
-      <div class="modal-body" id="modalBodyArticle">
+      <div class="modal-body" id="modalBodyArticle" style="    min-height: 650px;">
         
       </div>
       <div class="modal-footer">

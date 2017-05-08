@@ -96,7 +96,67 @@
               ?>
             </select>
           </div>
-  
+      </div>
+
+
+      <div class="form-group">
+        <label class="col-sm-4"> Fraccionado </label>
+        <div class="col-sm-5">
+          <input type="checkbox" class="checkbox" value="1" name="artSeFracciona" id='artSeFracciona' <?php (isset($data['artSeFracciona']) &&  $data['artSeFracciona']==1) ?'checked':''?> >
+        </div>
+      </div>
+      <br>
+      <div class="form-group">
+         <label class="col-sm-4"> Sub-rubro </label>
+        <div class="col-sm-5">
+          <select class="form-control" name="subrId" id="subrId">  
+            <option>Seleccionar Rubro</option>
+            <?php foreach ($rubros as $key => $item):?>
+            <option value="<?php echo $item['rubId'];?>"><?php echo $item['rubDescripcion'];?></option>
+            <?php endforeach;?>
+            
+          </select>
+        </div>
+      </div>
+      
+      <br>
+      <div class="form-group">
+        <label class="col-sm-4"> Condición de IVA  </label>
+        <div class="col-sm-5">
+          <select class="form-control" name="ivaId" id="ivaId">  
+            <option>Seleccionar IVA</option>
+            <?php foreach ($ivaAliCuotas as $key => $item):?>
+            <option value="<?php echo $item['ivaId'];?>"><?php echo $item['ivaDescripcion'];?></option>
+            <?php endforeach;?>
+
+          </select>
+        </div>
+      </div>
+      <br>
+      <div class="form-group">
+        <label class="col-sm-4"> Mínimo</label>
+        <div class="col-sm-5">
+          <input type="" class="form-control" id="artMinimo" name="artMinimo" Min>
+        </div>
+      </div>
+
+      <br>
+      <div class="form-group">
+        <label class="col-sm-4"> Medio</label>        
+        <div class="col-sm-5">
+          <input type="" class="form-control" id="artMedio" name="artMedio">
+        </div>       
+      </div>
+
+      <br>
+      <div class="form-group">
+        <label class="col-sm-4"> Maximo</label>  
+        <div class="col-sm-5">
+          <input type="" class="form-control" id="artMaximo" name="artMaximo">
+        </div>
+      </div>
+
+
 
 
 <script>

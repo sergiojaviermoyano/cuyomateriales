@@ -7,6 +7,9 @@ class article extends CI_Controller {
         {
 		parent::__construct();
 		$this->load->model('Articles');
+		$this->load->model('Rubros');
+		$this->load->model('IvaAliCuotas');
+
 		$this->Users->updateSession(true);
 	}
 
@@ -18,6 +21,11 @@ class article extends CI_Controller {
 	}
 	
 	public function getArticle(){
+		
+		$rubros=$this->Rubros->Rubro_List();
+		$ivaAliCuotas=$this->IvaAliCuotas->Iva_List();
+		$data['rubros']=$rubros;
+		$data['ivaAliCuotas']=$ivaAliCuotas;
 		$data['data'] = $this->Articles->getArticle($this->input->post());
 		$response['html'] = $this->load->view('articles/view_', $data, true);
 
