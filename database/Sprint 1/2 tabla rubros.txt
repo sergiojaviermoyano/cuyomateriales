@@ -1,0 +1,8 @@
+CREATE TABLE `rubros` (
+`rubId`  int NOT NULL AUTO_INCREMENT ,
+`rubDescripcion`  varchar(30) NOT NULL ,
+`rubEstado`  varchar(2) NOT NULL DEFAULT 'AC' ,
+PRIMARY KEY (`rubId`),
+UNIQUE INDEX (`rubDescripcion`) USING BTREE 
+)
+;

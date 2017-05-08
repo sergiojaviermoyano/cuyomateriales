@@ -1,0 +1,11 @@
+CREATE TABLE `subrubros` (
+`subrId`  int NOT NULL AUTO_INCREMENT ,
+`subrDescripcion`  varchar(30) NOT NULL ,
+`rubId`  int NOT NULL ,
+`subrEstado`  varchar(2) NOT NULL DEFAULT 'AC' ,
+PRIMARY KEY (`subrId`),
+FOREIGN KEY (`rubId`) REFERENCES `rubros` (`rubId`) ON DELETE NO ACTION ON UPDATE CASCADE,
+UNIQUE INDEX (`subrDescripcion`) USING BTREE 
+)
+;
+
