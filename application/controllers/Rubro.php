@@ -17,16 +17,15 @@ class rubro extends CI_Controller {
 		echo json_encode($this->load->view('rubros/list', $data, true));
 	}
 
-	/*
-	public function getMenu(){
-		$data['data'] = $this->Groups->getMenu($this->input->post());
-		$response['html'] = $this->load->view('groups/permission', $data, true);
-
+	
+	public function getRubro(){
+		$data['data'] = $this->Rubros->getRubro($this->input->post());
+		$response['html'] = $this->load->view('rubros/view_', $data, true);
 		echo json_encode($response);
 	}
 
-	public function setMenu(){
-		$data = $this->Groups->setMenu($this->input->post());
+	public function setRubro(){
+		$data = $this->Rubros->setRubro($this->input->post());
 		if($data  == false)
 		{
 			echo json_encode(false);
@@ -36,6 +35,4 @@ class rubro extends CI_Controller {
 			echo json_encode(true);	
 		}
 	}
-	*/
-	
 }
