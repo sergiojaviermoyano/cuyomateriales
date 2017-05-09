@@ -33,6 +33,8 @@ class article extends CI_Controller {
 	}
 	
 	public function setArticle(){
+
+		
 		$data = $this->Articles->setArticle($this->input->post());
 		if($data  == false)
 		{

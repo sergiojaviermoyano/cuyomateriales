@@ -87,7 +87,12 @@ class Articles extends CI_Model
             $status = $data['status'];
             $box 	= $data['box'];
             $boxCant = $data['boxCant'];
-            $code 	=	$data['code'];
+            $code = $data['code'];
+            $subrId 	=	$data['subrId'];
+            $ivaId 	=	$data['ivaId'];
+            $artMinimo 	=	$data['artMinimo'];
+            $artMedio 	=	$data['artMedio'];
+            $artMaximo 	=	$data['artMaximo'];
             
 
 			$data = array(
@@ -98,7 +103,11 @@ class Articles extends CI_Model
 				   'artMarginIsPorcent' 			=> ($marginP === 'true'),
 				   'artEstado' 						=> $status,
 				   'artIsByBox'			 			=> ($box === 'true'),
-				   'artCantBox'						=> $boxCant
+				   'subrId'						=> $subrId,
+				   'ivaId'						=> $ivaId,
+				   'artMinimo'						=> $artMinimo,
+				   'artMedio'						=> $artMedio,
+				   'artMaximo'						=> $artMaximo
 				   
 				);
 

@@ -158,7 +158,12 @@
                     price:    $('#artCoste').val(),
                     status:   $('#artEstado').val(),
                     box:      $('#artIsByBox').prop('checked'),
-                    boxCant:  $('#artCantBox').val()
+                    boxCant:  $('#artCantBox').val(),
+                    subrId:   $("#subrId").val(),
+                    ivaId:    $("#ivaId").val(),
+                    artMinimo:   $("#artMinimo").val(),
+                    artMedio:   $("#artMedio").val(),
+                    artMaximo:   $("#artMaximo").val(),
                   },
     		url: 'index.php/article/setArticle', 
     		success: function(result){
