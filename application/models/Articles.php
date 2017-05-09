@@ -108,6 +108,7 @@ class Articles extends CI_Model
 				   'artMarginIsPorcent' 			=> ($marginP === 'true'),
 				   'artEstado' 						=> $status,
 				   'artIsByBox'			 			=> ($box === 'true'),
+				   'artCantBox'						=> $boxCant,
 				   'subrId'						=> $subrId,
 				   'ivaId'						=> $ivaId,
 				   'artMinimo'						=> $artMinimo,
