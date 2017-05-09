@@ -119,8 +119,16 @@ class Articles extends CI_Model
 			switch($act){
 				case 'Add':
 					//Agregar Artículo 
+					$this->db->where('artBarCode',$code);
+					$this->db->or_where('artDescription',$name);
+					$check_article=$this->db->get('articles');
+					
+					if($check_article->num_rows()>0){
+						return json_encode(array('result'=>'error','message'=>'El Código o la Descripcíon esta duplicado, ingrese otro valor'));
+					}
+					
 					if($this->db->insert('articles', $data) == false) {
-						return false;
+						return json_encode(array('result'=>'error','message'=>''));
 					} 
 					break;
 				
