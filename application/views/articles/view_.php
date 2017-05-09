@@ -7,7 +7,7 @@
       </div>
 	</div>
 </div>
-  
+    
       <!-- Código de Articulo -->
       <div class="row">
         <div class="col-xs-4">
@@ -111,8 +111,8 @@
         <div class="col-sm-5">
           <select class="form-control" name="subrId" id="subrId">  
             <option>Seleccionar Rubro</option>
-            <?php foreach ($rubros as $key => $item):?>
-            <option value="<?php echo $item['rubId'];?>"><?php echo $item['rubDescripcion'];?></option>
+            <?php foreach ($rubros as $key => $item):?>            
+              <option value="<?php echo $item['rubId'];?>" <?php echo ($data['article']['subrId']==$item['rubId'])?'selected':''?> ><?php echo $item['rubDescripcion'];?></option>
             <?php endforeach;?>
             
           </select>
@@ -126,7 +126,7 @@
           <select class="form-control" name="ivaId" id="ivaId">  
             <option>Seleccionar IVA</option>
             <?php foreach ($ivaAliCuotas as $key => $item):?>
-            <option value="<?php echo $item['ivaId'];?>"><?php echo $item['ivaDescripcion'];?></option>
+            <option value="<?php echo $item['ivaId'];?>" <?php echo ($data['article']['ivaId']==$item['ivaId'])?'selected':''?> ><?php echo $item['ivaDescripcion'];?></option>
             <?php endforeach;?>
 
           </select>
@@ -136,7 +136,7 @@
       <div class="form-group">
         <label class="col-sm-4"> Mínimo</label>
         <div class="col-sm-5">
-          <input type="" class="form-control" id="artMinimo" name="artMinimo" Min>
+          <input type="" class="form-control" id="artMinimo" name="artMinimo" value="<?php echo $data['article']['artMinimo'];?>">
         </div>
       </div>
 
@@ -144,7 +144,7 @@
       <div class="form-group">
         <label class="col-sm-4"> Medio</label>        
         <div class="col-sm-5">
-          <input type="" class="form-control" id="artMedio" name="artMedio">
+          <input type="" class="form-control" id="artMedio" name="artMedio" value="<?php echo $data['article']['artMedio'];?>">
         </div>       
       </div>
 
@@ -152,7 +152,7 @@
       <div class="form-group">
         <label class="col-sm-4"> Maximo</label>  
         <div class="col-sm-5">
-          <input type="" class="form-control" id="artMaximo" name="artMaximo">
+          <input type="" class="form-control" id="artMaximo" name="artMaximo" value="<?php echo $data['article']['artMaximo'];?>">
         </div>
       </div>
 
