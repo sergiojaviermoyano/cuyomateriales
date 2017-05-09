@@ -1,7 +1,7 @@
 <body class="login-page">
     <div class="login-box">
       <div class="login-logo">
-        <a href="../../index2.html">El<b> Constructor</b></a>
+        <a href="../../index2.html">Cuyo<b> Materiales</b></a>
       </div><!-- /.login-logo -->
       <div class="login-box-body">
         <p class="login-box-msg">Ingreso</p>
