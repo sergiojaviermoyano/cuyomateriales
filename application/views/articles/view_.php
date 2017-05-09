@@ -1,9 +1,10 @@
 
 <div class="row">
 	<div class="col-xs-12">
-		<div class="alert alert-danger alert-dismissable" id="error" style="display: none">
+		<div class="alert alert-danger alert-dismissable" id="errorArt" style="display: none">
 	        <h4><i class="icon fa fa-ban"></i> Error!</h4>
-	        Revise que todos los campos esten completos
+          <p>Revise que todos los campos esten completos<br></p>
+	        
       </div>
 	</div>
 </div>
@@ -90,10 +91,10 @@
     </div>
 
     <div class="form-group">
-         <label class="col-sm-4"> Sub-rubro </label>
+         <label class="col-sm-4"> Sub-rubro <strong style="color: #dd4b39">*</strong></label>
         <div class="col-sm-5">
           <select class="form-control" name="subrId" id="subrId">  
-            <option>Seleccionar Rubro</option>
+            <option value="">Seleccionar Rubro</option>
             <?php foreach ($rubros as $key => $item):?>            
               <option value="<?php echo $item['subrId'];?>" <?php echo ($data['article']['subrId']==$item['subrId'])?'selected':''?> ><?php echo $item['rubDescripcion'];?> - <?php echo $item['subrDescripcion'];?></option>
             <?php endforeach;?>
@@ -104,10 +105,10 @@
       
       <br>
       <div class="form-group">
-        <label class="col-sm-4"> Condición de IVA  </label>
+        <label class="col-sm-4"> Condición de IVA  <strong style="color: #dd4b39">*</strong> </label>
         <div class="col-sm-5">
           <select class="form-control" name="ivaId" id="ivaId">  
-            <option>Seleccionar IVA</option>
+            <option value="">Seleccionar IVA</option>
             <?php foreach ($ivaAliCuotas as $key => $item):?>
             <option value="<?php echo $item['ivaId'];?>" <?php echo ($data['article']['ivaId']==$item['ivaId'])?'selected':''?> ><?php echo $item['ivaDescripcion'];?></option>
             <?php endforeach;?>

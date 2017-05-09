@@ -124,27 +124,63 @@
   	}
 
   	var hayError = false;
+    var error_message="";
     if($('#artBarCode').val() == '')
     {
       hayError = true;
+      error_message += " * Por Favor, debe Ingresar un Código de Artículo. <br> ";
     }
 
     if($('#artDescription').val() == '')
     {
       hayError = true;
+      error_message += " * Por Favor, debe Ingresar una Descripción. <br> ";
+
     }
 
     if($('#artCoste').val() == '')
     {
       hayError = true;
+      error_message += " * Por Favor, debe Ingresar Costo. <br> ";
     }
+
+    if($('#subrId').val() == '')
+    {
+      hayError = true;
+      error_message += " * Por Favor, debe Seleccionar un Sub Rubro. <br> ";
+
+    }
+    
+    if($('#ivaId').val() == ''){
+      hayError = true;
+      error_message += " * Por Favor, debe Seleccionar una Condición de IVA. <br> ";
+    }
+
+    if($('#artMinimo').val() == ''){
+      hayError = true;
+      error_message += " * Por Favor, debe Seleccionar un Mínimo. <br> ";
+    }
+
+    if($('#artMedio').val() == ''){
+      hayError = true;
+      error_message += " * Por Favor, debe Seleccionar un Medio. <br> ";
+    }
+
+    if($('#artMaximo').val() == ''){
+      hayError = true;
+      error_message += " * Por Favor, debe Seleccionar un Maximo. <br> ";
+    }
+
+
 
     if(hayError == true){
+      console.debug("===> FALSE");
+      $("#errorArt").find("p").html(error_message);
     	$('#errorArt').fadeIn('slow');
-    	return;
+    	return false;
     }
 
-    $('#error').fadeOut('slow');
+    $('#errorArt').fadeOut('slow');
     WaitingOpen('Guardando cambios');
     	$.ajax({
           	type: 'POST',
