@@ -95,7 +95,7 @@
           <select class="form-control" name="subrId" id="subrId">  
             <option>Seleccionar Rubro</option>
             <?php foreach ($rubros as $key => $item):?>            
-              <option value="<?php echo $item['subrId'];?>" <?php echo ($data['article']['subrId']==$item['subrId'])?'selected':''?> ><?php echo $item['subrDescripcion'];?></option>
+              <option value="<?php echo $item['subrId'];?>" <?php echo ($data['article']['subrId']==$item['subrId'])?'selected':''?> ><?php echo $item['rubDescripcion'];?> - <?php echo $item['subrDescripcion'];?></option>
             <?php endforeach;?>
             
           </select>
