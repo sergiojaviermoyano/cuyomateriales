@@ -7,106 +7,89 @@
       </div>
 	</div>
 </div>
-    
-      <!-- Código de Articulo -->
-      <div class="row">
-        <div class="col-xs-4">
-            <label style="margin-top: 7px;">Código <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-        <div class="col-xs-5">
-            <input type="text" class="form-control" id="artBarCode" value="<?php echo $data['article']['artBarCode'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
-          </div>
-      </div><br>
+  <div class="form-horizontal">
+    <div class="form-group">
+      <label class="col-sm-4">Código <strong style="color: #dd4b39">*</strong>:  </label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="artBarCode" value="<?php echo $data['article']['artBarCode'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+      </div>
+    </div>
 
-      <!-- Código del Artículo -->
-      <div class="row">
-        <div class="col-xs-4">
-            <label style="margin-top: 7px;">Descripción <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-        <div class="col-xs-5">
-            <input type="text" class="form-control" id="artDescription" value="<?php echo $data['article']['artDescription'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
-          </div>
-      </div><br>
-      
-      <!-- Descripción del Artículo -->
-      <div class="row">
-        <div class="col-xs-4">
-            <label style="margin-top: 7px;">Se Compra x Caja <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-        <div class="col-xs-1">
-            <input type="checkbox" id="artIsByBox" style="margin-top:10px;" <?php echo($data['article']['artIsByBox'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
-          </div>
-        <div class="col-xs-3">
-            <label style="margin-top: 7px;">Unidades <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-        <div class="col-xs-4">
-            <input type="text" class="form-control" id="artCantBox" value="<?php echo $data['article']['artCantBox'];?>" <?php echo (($data['article']['artIsByBox'] != true || ($data['action'] == 'View' || $data['action'] == 'Del'))? 'disabled="disabled"' : '');?>  >
-          </div>
-      </div><br>
+    <div class="form-group">
+      <label class="col-sm-4">Descripción <strong style="color: #dd4b39">*</strong>:   </label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="artDescription" value="<?php echo $data['article']['artDescription'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+      </div>
+    </div>
 
-      <!-- Tipo de Material -->
-      <div class="row">
-        <div class="col-xs-4">
-            <label style="margin-top: 7px;">Precio Costo <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-        <div class="col-xs-5">
-            <input type="text" class="form-control" id="artCoste" value="<?php echo $data['article']['artCoste'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
-          </div>
-      </div><br>
+    <div class="form-group">
+      <label class="col-sm-4">Se Compra x Caja <strong style="color: #dd4b39">*</strong>:   </label>
+      <div class="col-sm-1">
+        <input type="checkbox" id="artIsByBox" style="margin-top:10px;" <?php echo($data['article']['artIsByBox'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+        
+      </div>      
+    </div>
+    <div class="form-group">
+        <label class="col-sm-4">Unidades <strong style="color: #dd4b39">*</strong>: </label>
+        <div class="col-sm-8">
+          <input type="text" class="form-control" id="artCantBox" value="<?php echo $data['article']['artCantBox'];?>" <?php echo (($data['article']['artIsByBox'] != true || ($data['action'] == 'View' || $data['action'] == 'Del'))? 'disabled="disabled"' : '');?>  >
+        </div>
+    </div>
 
-      <!-- Tipo de Madera -->
-      <div class="row">
-        <div class="col-xs-4">
-            <label style="margin-top: 7px;">Margen : </label>
-          </div>
-        <div class="col-xs-4">
+
+    <div class="form-group">
+      <label class="col-sm-4"> Precio Costo <strong style="color: #dd4b39">*</strong>:   </label>
+      <div class="col-sm-8">
+        <input type="text" class="form-control" id="artCoste" value="<?php echo $data['article']['artCoste'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label class="col-sm-4"> Margen :   </label>
+      <div class="col-sm-8">
            <input type="text" class="form-control" id="artMargin" value="<?php echo $data['article']['artMargin'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>  >
-          </div>
-        <div class="col-xs-3">
-            <label style="margin-top: 7px;">Es Porcentaje <strong style="color: #dd4b39">*</strong>: </label>
-          </div>
-        <div class="col-xs-1">
+
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-4"> Es Porcentaje <strong style="color: #dd4b39">*</strong>: </label>
+      <div class="col-sm-8">
             <input type="checkbox" id="artMarginIsPorcent" style="margin-top:10px;" <?php echo($data['article']['artMarginIsPorcent'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
-          </div>
-      </div><br>
 
-      <!-- -->
+      </div>
+    </div> 
 
-      <!-- Se vende por pie -->
-      <div class="row">
-        <div class="col-xs-4">
-            <label style="margin-top: 7px;">Precio Venta : </label>
-          </div>
-        <div class="col-xs-5" style="padding-top: 7px;">
-            <strong id="pventa">0.00</strong>
-          </div>
-      </div><br>
 
-      <!-- -->
-      <div class="row">
-        <div class="col-xs-4">
-            <label style="margin-top: 7px;">Estado: </label>
-          </div>
-        <div class="col-xs-5">
-            <select class="form-control" id="artEstado"  <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+    <div class="form-group">
+      <label class="col-sm-4"> Precio Venta :  </label>
+      <div class="col-sm-8">
+        <strong id="pventa">0.00</strong>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="col-sm-4">Estado:   </label>
+      <div class="col-sm-8">
+        <select class="form-control" id="artEstado"  <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
               <?php 
                   echo '<option value="AC" '.($data['article']['artEstado'] == 'AC' ? 'selected' : '').'>Activo</option>';
                   echo '<option value="IN" '.($data['article']['artEstado'] == 'IN' ? 'selected' : '').'>Inactivo</option>';
                   echo '<option value="SU" '.($data['article']['artEstado'] == 'SU' ? 'selected' : '').'>Suspendido</option>';
               ?>
             </select>
-          </div>
       </div>
+    </div>
 
-
-      <div class="form-group">
-        <label class="col-sm-4"> Fraccionado </label>
-        <div class="col-sm-5">
-          <input type="checkbox" class="checkbox" value="1" name="artSeFracciona" id='artSeFracciona' <?php (isset($data['artSeFracciona']) &&  $data['artSeFracciona']==1) ?'checked':''?> >
-        </div>
+    <div class="form-group">
+      <label class="col-sm-4"> Fraccionado </label>
+      <div class="col-sm-8">
+        <input type="checkbox" class="checkbox" value="1" name="artSeFracciona" id='artSeFracciona' <?php (isset($data['artSeFracciona']) &&  $data['artSeFracciona']==1) ?'checked':''?> >
       </div>
-      <br>
-      <div class="form-group">
+    </div>
+
+    <div class="form-group">
          <label class="col-sm-4"> Sub-rubro </label>
         <div class="col-sm-5">
           <select class="form-control" name="subrId" id="subrId">  
@@ -156,6 +139,16 @@
         </div>
       </div>
 
+    <!--
+    <div class="form-group">
+      <label class="col-sm-4">  </label>
+      <div class="col-sm-8">
+      </div>
+    </div> -->
+
+
+  </div>  
+  
 
 
 

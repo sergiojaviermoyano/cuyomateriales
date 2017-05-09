@@ -54,6 +54,11 @@ class Articles extends CI_Model
 				$art['artIsByBox'] = '';
 				$art['artCantBox'] = '';
 				$art['artEstado'] = 'AC';
+			  $art['subrId']= '';
+        $art['ivaId']= '';
+        $art['artMinimo']= '';
+        $art['artMedio']= '';
+        $art['artMaximo']= '';
 
 				$data['article'] = $art;
 			}
