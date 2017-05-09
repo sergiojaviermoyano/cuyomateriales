@@ -98,6 +98,7 @@ class Articles extends CI_Model
             $artMinimo 	=	$data['artMinimo'];
             $artMedio 	=	$data['artMedio'];
             $artMaximo 	=	$data['artMaximo'];
+            $fraction 	= 	$data['fraction'];
             
 
 			$data = array(
@@ -113,13 +114,15 @@ class Articles extends CI_Model
 				   'ivaId'						=> $ivaId,
 				   'artMinimo'						=> $artMinimo,
 				   'artMedio'						=> $artMedio,
-				   'artMaximo'						=> $artMaximo
+				   'artMaximo'						=> $artMaximo,
+				   'artSeFracciona'					=> ($fraction === 'true')
 				   
 				);
 
 			switch($act){
 				case 'Add':
 					//Agregar Artículo 
+				/*
 					$this->db->where('artBarCode',$code);
 					$this->db->or_where('artDescription',$name);
 					$check_article=$this->db->get('articles');
@@ -127,9 +130,11 @@ class Articles extends CI_Model
 					if($check_article->num_rows()>0){
 						return json_encode(array('result'=>'error','message'=>'El Código o la Descripcíon esta duplicado, ingrese otro valor'));
 					}
+					*/
 					
 					if($this->db->insert('articles', $data) == false) {
-						return json_encode(array('result'=>'error','message'=>''));
+						//return json_encode(array('result'=>'error','message'=>''));
+						return false;
 					} 
 					break;
 				

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50520
 File Encoding         : 65001
 
-Date: 2017-05-08 11:12:42
+Date: 2017-05-09 15:19:06
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -29,11 +29,24 @@ CREATE TABLE `articles` (
   `artCantBox` int(11) DEFAULT NULL,
   `artMarginIsPorcent` bit(1) NOT NULL,
   `artEstado` varchar(2) NOT NULL DEFAULT 'AC',
+  `artSeFracciona` bit(1) NOT NULL DEFAULT b'0',
+  `artMinimo` int(11) DEFAULT '0',
+  `artMedio` int(11) DEFAULT '0',
+  `artMaximo` int(11) DEFAULT '0',
+  `ivaId` int(11) NOT NULL,
+  `subrId` int(11) NOT NULL,
   PRIMARY KEY (`artId`),
   UNIQUE KEY `artBarCode` (`artBarCode`) USING BTREE,
-  UNIQUE KEY `artDescription` (`artDescription`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+  UNIQUE KEY `artDescription` (`artDescription`) USING BTREE,
+  KEY `ivaId` (`ivaId`),
+  KEY `subrId` (`subrId`),
+  CONSTRAINT `articles_ibfk_1` FOREIGN KEY (`ivaId`) REFERENCES `ivaalicuotas` (`ivaId`) ON UPDATE CASCADE,
+  CONSTRAINT `articles_ibfk_2` FOREIGN KEY (`subrId`) REFERENCES `subrubros` (`subrId`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- ----------------------------
+-- Records of articles
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for cajas
@@ -50,8 +63,45 @@ CREATE TABLE `cajas` (
   PRIMARY KEY (`cajaId`),
   KEY `usrId` (`usrId`),
   CONSTRAINT `cajas_ibfk_1` FOREIGN KEY (`usrId`) REFERENCES `sisusers` (`usrId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
 
+-- ----------------------------
+-- Records of cajas
+-- ----------------------------
+INSERT INTO `cajas` VALUES ('5', '2016-05-10 15:36:18', '2016-05-24 15:43:06', '2', '200.32', '4000.52', '5800.00');
+INSERT INTO `cajas` VALUES ('6', '2016-05-24 15:44:06', '2016-05-24 17:06:05', '2', '300.00', '200.00', '1000.00');
+INSERT INTO `cajas` VALUES ('7', '2016-05-24 17:07:04', '2016-05-24 17:23:43', '2', '20.50', '300.00', '320.00');
+INSERT INTO `cajas` VALUES ('8', '2016-05-24 17:29:55', '2016-05-30 12:45:48', '2', '40.00', '100.00', '300.00');
+INSERT INTO `cajas` VALUES ('9', '2016-05-30 16:34:40', '2016-05-30 17:27:20', '2', '321.10', '319.75', '500.00');
+INSERT INTO `cajas` VALUES ('10', '2016-05-30 17:28:03', '2016-05-30 17:33:02', '2', '30.00', '132.50', '500.00');
+INSERT INTO `cajas` VALUES ('11', '2016-05-30 17:33:12', '2016-07-04 16:04:05', '2', '121.00', '96.00', '300.00');
+INSERT INTO `cajas` VALUES ('12', '2016-07-11 11:23:42', '2017-01-14 19:36:54', '2', '100.00', '20917.75', '40.00');
+INSERT INTO `cajas` VALUES ('13', '2017-01-14 19:37:31', '2017-03-08 17:10:32', '2', '100.00', '67.25', '70.00');
+INSERT INTO `cajas` VALUES ('14', '2017-03-08 19:51:23', '2017-04-01 19:39:16', '2', '100.00', '119.50', '80.00');
+INSERT INTO `cajas` VALUES ('15', '2017-04-01 19:39:50', '2017-04-24 21:17:38', '2', '500.00', '127.00', '20.00');
+INSERT INTO `cajas` VALUES ('16', '2017-04-24 21:20:24', null, '2', '500.00', null, null);
+
+-- ----------------------------
+-- Table structure for ivaalicuotas
+-- ----------------------------
+DROP TABLE IF EXISTS `ivaalicuotas`;
+CREATE TABLE `ivaalicuotas` (
+  `ivaId` int(11) NOT NULL AUTO_INCREMENT,
+  `ivaDescripcion` varchar(20) NOT NULL,
+  `ivaPorcentaje` decimal(10,2) NOT NULL,
+  `ivaEstado` varchar(2) NOT NULL DEFAULT 'AC',
+  `ivaPorDefecto` bigint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ivaId`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of ivaalicuotas
+-- ----------------------------
+INSERT INTO `ivaalicuotas` VALUES ('1', 'Exen', '0.00', 'AC', '0');
+INSERT INTO `ivaalicuotas` VALUES ('2', 'No Grav', '0.00', 'AC', '0');
+INSERT INTO `ivaalicuotas` VALUES ('3', '10,5%', '10.50', 'AC', '0');
+INSERT INTO `ivaalicuotas` VALUES ('4', '21%', '21.00', 'AC', '1');
+INSERT INTO `ivaalicuotas` VALUES ('5', '27%', '27.00', 'AC', '0');
 
 -- ----------------------------
 -- Table structure for proveedores
@@ -71,7 +121,14 @@ CREATE TABLE `proveedores` (
   PRIMARY KEY (`prvId`),
   UNIQUE KEY `docId` (`docId`,`prvDocumento`) USING BTREE,
   CONSTRAINT `proveedores_ibfk_1` FOREIGN KEY (`docId`) REFERENCES `tipos_documentos` (`docId`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of proveedores
+-- ----------------------------
+INSERT INTO `proveedores` VALUES ('1', '', '', 'DEC.SA', '2', '37-12345678-1', 'Diagonal Sarmiento 778', '', 'AC', '0264 4961213');
+INSERT INTO `proveedores` VALUES ('2', 'callia', 'callia', 'callia srl', '1', '31324666', '', '', 'AC', '');
+INSERT INTO `proveedores` VALUES ('3', 'Loma ', 'Negra', 'Loma Negra SRL', '2', '20-31324208-1', 'B° Área 2 M/E C/23', 'sergio.moyano@outlook.com.ar', 'AC', '0264-155095890');
 
 -- ----------------------------
 -- Table structure for receptions
@@ -86,8 +143,11 @@ CREATE TABLE `receptions` (
   PRIMARY KEY (`recId`),
   KEY `prvId` (`prvId`),
   CONSTRAINT `receptions_ibfk_1` FOREIGN KEY (`prvId`) REFERENCES `proveedores` (`prvId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- ----------------------------
+-- Records of receptions
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for receptionsdetail
@@ -103,8 +163,31 @@ CREATE TABLE `receptionsdetail` (
   KEY `artId` (`artId`),
   CONSTRAINT `receptionsdetail_ibfk_1` FOREIGN KEY (`recId`) REFERENCES `receptions` (`recId`) ON UPDATE CASCADE,
   CONSTRAINT `receptionsdetail_ibfk_2` FOREIGN KEY (`artId`) REFERENCES `articles` (`artId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- ----------------------------
+-- Records of receptionsdetail
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for rubros
+-- ----------------------------
+DROP TABLE IF EXISTS `rubros`;
+CREATE TABLE `rubros` (
+  `rubId` int(11) NOT NULL AUTO_INCREMENT,
+  `rubDescripcion` varchar(30) NOT NULL,
+  `rubEstado` varchar(2) NOT NULL DEFAULT 'AC',
+  PRIMARY KEY (`rubId`),
+  UNIQUE KEY `rubDescripcion` (`rubDescripcion`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of rubros
+-- ----------------------------
+INSERT INTO `rubros` VALUES ('1', 'Hierro', 'AC');
+INSERT INTO `rubros` VALUES ('2', 'Cementos', 'AC');
+INSERT INTO `rubros` VALUES ('3', 'Herramientas', 'AC');
+INSERT INTO `rubros` VALUES ('4', 'Baño', 'AC');
 
 -- ----------------------------
 -- Table structure for sisactions
@@ -139,12 +222,14 @@ CREATE TABLE `sisgroups` (
   `grpId` int(11) NOT NULL AUTO_INCREMENT,
   `grpName` varchar(20) COLLATE utf8_spanish_ci NOT NULL,
   PRIMARY KEY (`grpId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- ----------------------------
 -- Records of sisgroups
 -- ----------------------------
 INSERT INTO `sisgroups` VALUES ('2', 'Administrador');
+INSERT INTO `sisgroups` VALUES ('3', 'Cajero');
+INSERT INTO `sisgroups` VALUES ('4', 'Deposito');
 
 -- ----------------------------
 -- Table structure for sisgroupsactions
@@ -159,41 +244,54 @@ CREATE TABLE `sisgroupsactions` (
   KEY `menuAccId` (`menuAccId`),
   CONSTRAINT `grpId` FOREIGN KEY (`grpId`) REFERENCES `sisgroups` (`grpId`) ON UPDATE CASCADE,
   CONSTRAINT `menuAccId` FOREIGN KEY (`menuAccId`) REFERENCES `sismenuactions` (`menuAccId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=275 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=313 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- ----------------------------
 -- Records of sisgroupsactions
 -- ----------------------------
-INSERT INTO `sisgroupsactions` VALUES ('240', '2', '1');
-INSERT INTO `sisgroupsactions` VALUES ('241', '2', '2');
-INSERT INTO `sisgroupsactions` VALUES ('242', '2', '3');
-INSERT INTO `sisgroupsactions` VALUES ('243', '2', '4');
-INSERT INTO `sisgroupsactions` VALUES ('244', '2', '5');
-INSERT INTO `sisgroupsactions` VALUES ('245', '2', '6');
-INSERT INTO `sisgroupsactions` VALUES ('246', '2', '7');
-INSERT INTO `sisgroupsactions` VALUES ('247', '2', '8');
-INSERT INTO `sisgroupsactions` VALUES ('248', '2', '9');
-INSERT INTO `sisgroupsactions` VALUES ('249', '2', '10');
-INSERT INTO `sisgroupsactions` VALUES ('250', '2', '11');
-INSERT INTO `sisgroupsactions` VALUES ('251', '2', '12');
-INSERT INTO `sisgroupsactions` VALUES ('252', '2', '21');
-INSERT INTO `sisgroupsactions` VALUES ('253', '2', '22');
-INSERT INTO `sisgroupsactions` VALUES ('254', '2', '23');
-INSERT INTO `sisgroupsactions` VALUES ('255', '2', '24');
-INSERT INTO `sisgroupsactions` VALUES ('256', '2', '25');
-INSERT INTO `sisgroupsactions` VALUES ('257', '2', '26');
-INSERT INTO `sisgroupsactions` VALUES ('258', '2', '28');
-INSERT INTO `sisgroupsactions` VALUES ('259', '2', '29');
-INSERT INTO `sisgroupsactions` VALUES ('260', '2', '30');
-INSERT INTO `sisgroupsactions` VALUES ('261', '2', '31');
-INSERT INTO `sisgroupsactions` VALUES ('262', '2', '32');
-INSERT INTO `sisgroupsactions` VALUES ('263', '2', '33');
-INSERT INTO `sisgroupsactions` VALUES ('264', '2', '34');
-INSERT INTO `sisgroupsactions` VALUES ('265', '2', '35');
-INSERT INTO `sisgroupsactions` VALUES ('266', '2', '36');
-INSERT INTO `sisgroupsactions` VALUES ('267', '2', '37');
-INSERT INTO `sisgroupsactions` VALUES ('268', '2', '38');
-INSERT INTO `sisgroupsactions` VALUES ('269', '2', '39');
+INSERT INTO `sisgroupsactions` VALUES ('270', '3', '29');
+INSERT INTO `sisgroupsactions` VALUES ('271', '3', '30');
+INSERT INTO `sisgroupsactions` VALUES ('272', '3', '31');
+INSERT INTO `sisgroupsactions` VALUES ('273', '3', '32');
+INSERT INTO `sisgroupsactions` VALUES ('274', '4', '33');
+INSERT INTO `sisgroupsactions` VALUES ('275', '2', '1');
+INSERT INTO `sisgroupsactions` VALUES ('276', '2', '2');
+INSERT INTO `sisgroupsactions` VALUES ('277', '2', '3');
+INSERT INTO `sisgroupsactions` VALUES ('278', '2', '4');
+INSERT INTO `sisgroupsactions` VALUES ('279', '2', '5');
+INSERT INTO `sisgroupsactions` VALUES ('280', '2', '6');
+INSERT INTO `sisgroupsactions` VALUES ('281', '2', '7');
+INSERT INTO `sisgroupsactions` VALUES ('282', '2', '8');
+INSERT INTO `sisgroupsactions` VALUES ('283', '2', '9');
+INSERT INTO `sisgroupsactions` VALUES ('284', '2', '10');
+INSERT INTO `sisgroupsactions` VALUES ('285', '2', '11');
+INSERT INTO `sisgroupsactions` VALUES ('286', '2', '12');
+INSERT INTO `sisgroupsactions` VALUES ('287', '2', '21');
+INSERT INTO `sisgroupsactions` VALUES ('288', '2', '22');
+INSERT INTO `sisgroupsactions` VALUES ('289', '2', '23');
+INSERT INTO `sisgroupsactions` VALUES ('290', '2', '24');
+INSERT INTO `sisgroupsactions` VALUES ('291', '2', '25');
+INSERT INTO `sisgroupsactions` VALUES ('292', '2', '26');
+INSERT INTO `sisgroupsactions` VALUES ('293', '2', '28');
+INSERT INTO `sisgroupsactions` VALUES ('294', '2', '29');
+INSERT INTO `sisgroupsactions` VALUES ('295', '2', '30');
+INSERT INTO `sisgroupsactions` VALUES ('296', '2', '31');
+INSERT INTO `sisgroupsactions` VALUES ('297', '2', '32');
+INSERT INTO `sisgroupsactions` VALUES ('298', '2', '33');
+INSERT INTO `sisgroupsactions` VALUES ('299', '2', '34');
+INSERT INTO `sisgroupsactions` VALUES ('300', '2', '35');
+INSERT INTO `sisgroupsactions` VALUES ('301', '2', '36');
+INSERT INTO `sisgroupsactions` VALUES ('302', '2', '37');
+INSERT INTO `sisgroupsactions` VALUES ('303', '2', '38');
+INSERT INTO `sisgroupsactions` VALUES ('304', '2', '39');
+INSERT INTO `sisgroupsactions` VALUES ('305', '2', '40');
+INSERT INTO `sisgroupsactions` VALUES ('306', '2', '41');
+INSERT INTO `sisgroupsactions` VALUES ('307', '2', '42');
+INSERT INTO `sisgroupsactions` VALUES ('308', '2', '43');
+INSERT INTO `sisgroupsactions` VALUES ('309', '2', '44');
+INSERT INTO `sisgroupsactions` VALUES ('310', '2', '45');
+INSERT INTO `sisgroupsactions` VALUES ('311', '2', '46');
+INSERT INTO `sisgroupsactions` VALUES ('312', '2', '47');
 
 -- ----------------------------
 -- Table structure for sismenu
@@ -207,7 +305,7 @@ CREATE TABLE `sismenu` (
   `menuView` varchar(50) COLLATE utf8_spanish_ci NOT NULL,
   `menuFather` int(11) DEFAULT NULL,
   PRIMARY KEY (`menuId`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- ----------------------------
 -- Records of sismenu
@@ -222,6 +320,9 @@ INSERT INTO `sismenu` VALUES ('17', 'Cajas', 'fa fa-money', 'box', 'index', null
 INSERT INTO `sismenu` VALUES ('18', 'Ventas', 'fa fa-cart-plus', 'sale', 'index', null);
 INSERT INTO `sismenu` VALUES ('19', 'Recepción', 'fa fa-fw fa-archive', 'reception', 'index', null);
 INSERT INTO `sismenu` VALUES ('20', 'Stock', 'fa fa-fw fa-industry', 'stock', 'index', null);
+INSERT INTO `sismenu` VALUES ('21', 'Configuración', 'fa fa-fw fa-cogs', '', '', null);
+INSERT INTO `sismenu` VALUES ('22', 'Rubros', '', 'rubro', 'index', '21');
+INSERT INTO `sismenu` VALUES ('23', 'Subrubros', '', 'rubro', 'indexSR', '21');
 
 -- ----------------------------
 -- Table structure for sismenuactions
@@ -233,8 +334,10 @@ CREATE TABLE `sismenuactions` (
   `actId` int(11) DEFAULT NULL,
   PRIMARY KEY (`menuAccId`),
   KEY `menuId` (`menuId`),
-  CONSTRAINT `sismenuactions_ibfk_1` FOREIGN KEY (`menuId`) REFERENCES `sismenu` (`menuId`) ON DELETE NO ACTION ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+  KEY `actId` (`actId`),
+  CONSTRAINT `sismenuactions_ibfk_1` FOREIGN KEY (`menuId`) REFERENCES `sismenu` (`menuId`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  CONSTRAINT `sismenuactions_ibfk_2` FOREIGN KEY (`actId`) REFERENCES `sisactions` (`actId`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- ----------------------------
 -- Records of sismenuactions
@@ -269,6 +372,14 @@ INSERT INTO `sismenuactions` VALUES ('36', '19', '4');
 INSERT INTO `sismenuactions` VALUES ('37', '20', '1');
 INSERT INTO `sismenuactions` VALUES ('38', '20', '4');
 INSERT INTO `sismenuactions` VALUES ('39', '20', '5');
+INSERT INTO `sismenuactions` VALUES ('40', '22', '1');
+INSERT INTO `sismenuactions` VALUES ('41', '22', '2');
+INSERT INTO `sismenuactions` VALUES ('42', '22', '3');
+INSERT INTO `sismenuactions` VALUES ('43', '22', '4');
+INSERT INTO `sismenuactions` VALUES ('44', '23', '1');
+INSERT INTO `sismenuactions` VALUES ('45', '23', '2');
+INSERT INTO `sismenuactions` VALUES ('46', '23', '3');
+INSERT INTO `sismenuactions` VALUES ('47', '23', '4');
 
 -- ----------------------------
 -- Table structure for sisusers
@@ -287,12 +398,13 @@ CREATE TABLE `sisusers` (
   PRIMARY KEY (`usrId`),
   KEY `grpId` (`grpId`),
   CONSTRAINT `sisusers_ibfk_1` FOREIGN KEY (`grpId`) REFERENCES `sisgroups` (`grpId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 -- ----------------------------
 -- Records of sisusers
 -- ----------------------------
-INSERT INTO `sisusers` VALUES ('2', 'admin', 'admin', 'admin', '1', 'e10adc3949ba59abbe56e057f20f883e', '2', '2017-05-06 22:23:06', 'SEk8wHTcqVgTOrJbbG7p8gc2cfoBhhToemboYFmphOWov6g0AGWzvbla2RHmRTFzuApqU7UX4xXxTjxbsO4zRGcWAGDn5vmFiAuwsuDtQRL2MHCbh9k4RmXZ6d6AX9hZpNetuFbfxzKgPtGD7tMjGegE64F7j5G0PO5ul8Xj1AEvu7qjT5lmxdftxgTKH7dCzvkbhDrhhVoYM25WpltAWyTXg8JcfkkjBoU2SkMWZ3G9uCtXz6TA2yJuRCAF0Tm');
+INSERT INTO `sisusers` VALUES ('2', 'admin', 'admin', 'admin', '1', 'e10adc3949ba59abbe56e057f20f883e', '2', '2017-05-09 14:44:56', 'gXXcTWBUD80xznGkbij4ETlXEg0LB6pLiotGaeZrExk4de7GhDqWeqyZWT6FKIeILZyqNKto708Rtdg8qthgTuCH1FxdYVwWDxDbz4d8bgJeJKJ3PxFpXONNQ7jMgVgZGyq1PBPLC4IJ0cR4LxtG8uI5vp7ARhupxAT4UbILcv7sJaZuZRY0uSfJuDSE4ylWGUGNCnjE8iG58Qe0yd2P7PaYjjKJcUmJ2l6T9JpYr2qdRJAsxjrnes9Qgpn9AMJ');
+INSERT INTO `sisusers` VALUES ('3', 'pepe', 'pepe', 'morales', '1', 'e10adc3949ba59abbe56e057f20f883e', '3', '2017-04-01 20:09:29', 'Vvda5SbXSI0nULm9zzAGOYwRmF2bqcxULKMPJ371lSWJSEYqk88l5KcyAeOpUrYtK0vMtO5Ca5k5QQvB6MqkVQnvxHtAQRbAa34hE75SOAF6hRNFaOscvcqbvgU18eJrS0UwUFfsPky5gMRa8vkZwa9elW3Q2QiRx370LbRwNJp9QgcN6WfVgNMDrzDfwF7QAhF1kmQZWDS5TkKkzmSc7SuMQsSSstaLuNE34mpKnUr3nUt2Y3vheLJHI2mhJH7');
 
 -- ----------------------------
 -- Table structure for stock
@@ -310,7 +422,31 @@ CREATE TABLE `stock` (
   KEY `recId` (`recId`),
   CONSTRAINT `stock_ibfk_1` FOREIGN KEY (`artId`) REFERENCES `articles` (`artId`) ON UPDATE NO ACTION,
   CONSTRAINT `stock_ibfk_2` FOREIGN KEY (`recId`) REFERENCES `receptions` (`recId`) ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of stock
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for subrubros
+-- ----------------------------
+DROP TABLE IF EXISTS `subrubros`;
+CREATE TABLE `subrubros` (
+  `subrId` int(11) NOT NULL AUTO_INCREMENT,
+  `subrDescripcion` varchar(30) NOT NULL,
+  `rubId` int(11) NOT NULL,
+  `subrEstado` varchar(2) NOT NULL DEFAULT 'AC',
+  PRIMARY KEY (`subrId`),
+  UNIQUE KEY `subrDescripcion` (`subrDescripcion`) USING BTREE,
+  KEY `rubId` (`rubId`),
+  CONSTRAINT `subrubros_ibfk_1` FOREIGN KEY (`rubId`) REFERENCES `rubros` (`rubId`) ON DELETE NO ACTION ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of subrubros
+-- ----------------------------
+INSERT INTO `subrubros` VALUES ('1', 'Pileta', '4', 'AC');
 
 -- ----------------------------
 -- Table structure for tipos_documentos
@@ -348,7 +484,11 @@ CREATE TABLE `ventas` (
   KEY `cajaId` (`cajaId`),
   CONSTRAINT `ventas_ibfk_1` FOREIGN KEY (`usrId`) REFERENCES `sisusers` (`usrId`) ON UPDATE CASCADE,
   CONSTRAINT `ventas_ibfk_2` FOREIGN KEY (`cajaId`) REFERENCES `cajas` (`cajaId`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of ventas
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for ventasdetalle
@@ -364,4 +504,8 @@ CREATE TABLE `ventasdetalle` (
   `artFinal` decimal(10,2) NOT NULL,
   `venCant` int(11) NOT NULL,
   PRIMARY KEY (`vendId`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- ----------------------------
+-- Records of ventasdetalle
+-- ----------------------------

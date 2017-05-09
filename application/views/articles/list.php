@@ -18,7 +18,7 @@
                 <th width="20%">Acciones</th>
                 <th width="5%">Código</th>
                 <th>Descripción</th>
-                <th>P.Costo</th>
+                <!--<th>P.Costo</th>-_>
                 <!--<th>P.Venta</th>-->
                 <th width="5%">Estado</th>
               </tr>
@@ -43,7 +43,7 @@
   	                echo '</td>';
                     echo '<td style="text-align: center">'.$a['artBarCode'].'</td>';
   	                echo '<td style="text-align: left">'.$a['artDescription'].'</td>';
-                    echo '<td style="text-align: right">'.$a['artCoste'].'</td>';
+                    #echo '<td style="text-align: right">'.$a['artCoste'].'</td>';
                     echo '<td style="text-align: center">'.($a['artEstado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['artEstado'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')).'</td>';
   	                echo '</tr>';
                     
@@ -156,6 +156,7 @@
       error_message += " * Por Favor, debe Seleccionar una Condición de IVA. <br> ";
     }
 
+    /*
     if($('#artMinimo').val() == ''){
       hayError = true;
       error_message += " * Por Favor, debe Seleccionar un Mínimo. <br> ";
@@ -170,7 +171,7 @@
       hayError = true;
       error_message += " * Por Favor, debe Seleccionar un Maximo. <br> ";
     }
-
+    */
 
 
     if(hayError == true){
@@ -195,6 +196,7 @@
                     status:   $('#artEstado').val(),
                     box:      $('#artIsByBox').prop('checked'),
                     boxCant:  $('#artCantBox').val(),
+                    fraction: $('#artSeFracciona').prop('checked'),
                     subrId:   $("#subrId").val(),
                     ivaId:    $("#ivaId").val(),
                     artMinimo:   $("#artMinimo").val(),
@@ -209,7 +211,7 @@
     					},
     		error: function(result){
     					WaitingClose();
-    					alert("error");
+              ProcesarError(result.responseText, 'modalArticle');
     				},
           	dataType: 'json'
     		});
