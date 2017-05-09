@@ -114,24 +114,19 @@
 
           </select>
         </div>
-      </div>
-      <br>
+      </div>      
       <div class="form-group">
         <label class="col-sm-4"> Mínimo</label>
         <div class="col-sm-5">
           <input type="" class="form-control" id="artMinimo" name="artMinimo" value="<?php echo $data['article']['artMinimo'];?>">
         </div>
       </div>
-
-      <br>
       <div class="form-group">
         <label class="col-sm-4"> Medio</label>        
         <div class="col-sm-5">
           <input type="" class="form-control" id="artMedio" name="artMedio" value="<?php echo $data['article']['artMedio'];?>">
         </div>       
       </div>
-
-      <br>
       <div class="form-group">
         <label class="col-sm-4"> Maximo</label>  
         <div class="col-sm-5">
