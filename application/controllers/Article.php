@@ -22,7 +22,8 @@ class article extends CI_Controller {
 	
 	public function getArticle(){
 		
-		$rubros=$this->Rubros->Rubro_List();
+		$rubros=$this->Rubros->SubRubro_List();
+
 		$ivaAliCuotas=$this->IvaAliCuotas->Iva_List();
 		$data['rubros']=$rubros;
 		$data['ivaAliCuotas']=$ivaAliCuotas;
