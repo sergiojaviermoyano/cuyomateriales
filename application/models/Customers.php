@@ -15,6 +15,7 @@ class Customers extends CI_Model
 		$this->db->select('clientes.*, tipos_documentos.docDescripcion');
 		$this->db->from('clientes');
 		$this->db->join('tipos_documentos', 'tipos_documentos.docId = clientes.docId', 'left');
+		$this->db->where(array('cliDefault' => 0));
 		$query= $this->db->get();
 		
 		if ($query->num_rows()!=0)

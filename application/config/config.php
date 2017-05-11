@@ -305,7 +305,7 @@ $config['cache_query_string'] = FALSE;
 | http://codeigniter.com/user_guide/libraries/encryption.html
 |
 */
-$config['encryption_key'] = 'maderaselgaucho_session';
+$config['encryption_key'] = 'cuyomateriales_session';
 
 /*
 |--------------------------------------------------------------------------
