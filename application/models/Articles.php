@@ -59,6 +59,7 @@ class Articles extends CI_Model
         $art['artMinimo']= '';
         $art['artMedio']= '';
         $art['artMaximo']= '';
+        $art['artSeFracciona']= '';
 
 				$data['article'] = $art;
 			}
