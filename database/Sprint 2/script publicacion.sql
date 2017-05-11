@@ -55,3 +55,41 @@ insert into sismenuactions values (null, (Select menuId from sismenu where menuN
 insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Lista_de_Precios'),(select actId from sisactions where actDescription = 'Edit'));
 insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Lista_de_Precios'),(select actId from sisactions where actDescription = 'Del'));
 insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Lista_de_Precios'),(select actId from sisactions where actDescription = 'View'))
+
+#agregar tabla orden de compra 
+DROP TABLE IF EXISTS `ordendecompra`;
+CREATE TABLE `ordendecompra` (
+  `ocId` int(11) NOT NULL AUTO_INCREMENT,
+  `ocObservacion` varchar(50) DEFAULT NULL,
+  `ocFecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `ocEstado` varchar(2) NOT NULL DEFAULT 'AC',
+  `ocEsPresupuesto` bit(1) NOT NULL DEFAULT b'0',
+  `usrId` int(11) NOT NULL,
+  `lpId` int(11) NOT NULL,
+  `cliId` int(11) NOT NULL,
+  PRIMARY KEY (`ocId`),
+  KEY `usrId` (`usrId`),
+  KEY `lpId` (`lpId`),
+  KEY `cliId` (`cliId`),
+  CONSTRAINT `ordendecompra_ibfk_1` FOREIGN KEY (`usrId`) REFERENCES `sisusers` (`usrId`) ON UPDATE CASCADE,
+  CONSTRAINT `ordendecompra_ibfk_2` FOREIGN KEY (`lpId`) REFERENCES `listadeprecios` (`lpId`) ON UPDATE CASCADE,
+  CONSTRAINT `ordendecompra_ibfk_3` FOREIGN KEY (`cliId`) REFERENCES `clientes` (`cliId`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+#agregar tabla orden de compra detalle
+DROP TABLE IF EXISTS `ordendecompradetalle`;
+CREATE TABLE `ordendecompradetalle` (
+  `ocdId` int(11) NOT NULL AUTO_INCREMENT,
+  `ocId` int(11) NOT NULL,
+  `artId` int(11) NOT NULL,
+  `artDescripcion` varchar(50) NOT NULL,
+  `artPCosto` decimal(10,2) NOT NULL,
+  `artPVenta` decimal(10,2) NOT NULL,
+  `ocdCantidad` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`ocdId`),
+  KEY `ocId` (`ocId`),
+  KEY `artId` (`artId`),
+  CONSTRAINT `ordendecompradetalle_ibfk_1` FOREIGN KEY (`ocId`) REFERENCES `ordendecompra` (`ocId`) ON UPDATE CASCADE,
+  CONSTRAINT `ordendecompradetalle_ibfk_2` FOREIGN KEY (`artId`) REFERENCES `articles` (`artId`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
