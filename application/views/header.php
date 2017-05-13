@@ -39,7 +39,7 @@
     <script src="<?php  echo base_url();?>assets/plugin/jQuery/jQuery-2.1.4.min.js"></script>
     <!-- Bootstrap 3.3.4 -->
     <script src="<?php  echo base_url();?>assets/js/bootstrap.min.js"></script>
-    <!-- iCheck -->    
+    <!-- iCheck -->
     <script src="<?php  echo base_url();?>assets/plugin/iCheck/icheck.min.js"></script>
     <!-- funciones comunes al sistema -->
     <script src="<?php  echo base_url();?>assets/js/propios.js"></script>
@@ -72,15 +72,15 @@
     -->
 
     <link rel="stylesheet" href="<?php  echo base_url();?>assets/css/jquery-ui.css">
-    <script src="<?php  echo base_url();?>assets/js/jquery-ui.js"></script>  
+    <script src="<?php  echo base_url();?>assets/js/jquery-ui.js"></script>
 
     <script src="<?php  echo base_url();?>assets/plugin/fullcalendar/moment.min.js"></script>
-    <script src="<?php  echo base_url();?>assets/plugin/fullcalendar/fullcalendar.min.js"></script> 
+    <script src="<?php  echo base_url();?>assets/plugin/fullcalendar/fullcalendar.min.js"></script>
 
     <!-- bootstrap color picker -->
-    <script src="<?php  echo base_url();?>assets/plugin/colorpicker/bootstrap-colorpicker.min.js"></script> 
+    <script src="<?php  echo base_url();?>assets/plugin/colorpicker/bootstrap-colorpicker.min.js"></script>
 
-
+  
   </head>
 
 

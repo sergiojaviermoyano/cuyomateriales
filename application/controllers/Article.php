@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class article extends CI_Controller {
 
-	function __construct() 
+	function __construct()
         {
 		parent::__construct();
 		$this->load->model('Articles');
@@ -19,9 +19,9 @@ class article extends CI_Controller {
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('articles/list', $data, true));
 	}
-	
+
 	public function getArticle(){
-		
+
 		$rubros=$this->Rubros->SubRubro_List();
 
 		$ivaAliCuotas=$this->IvaAliCuotas->Iva_List();
@@ -32,10 +32,10 @@ class article extends CI_Controller {
 
 		echo json_encode($response);
 	}
-	
+
 	public function setArticle(){
 
-		
+
 		$data = $this->Articles->setArticle($this->input->post());
 		if($data  == false)
 		{
@@ -43,7 +43,7 @@ class article extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode(true);	
+			echo json_encode(true);
 		}
 	}
 
@@ -55,11 +55,12 @@ class article extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode($data);	
+			echo json_encode($data);
 		}
-	} 
+	}
 
 	public function searchByAll() {
+		
 		$data = $this->Articles->searchByAll($this->input->post());
 		if($data  == false)
 		{
@@ -67,7 +68,7 @@ class article extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode($data);	
+			echo json_encode($data);
 		}
 	}
 }

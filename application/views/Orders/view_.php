@@ -35,12 +35,19 @@
       </div>
     </div>
 
+		<div class="form-group">
+      <label class="col-sm-3">Observación :  </label>
+      <div class="col-sm-9">
+        <textarea name="name" class="form-control" rows="2" ></textarea>
+      </div>
+    </div>
+
     <hr>
 
     <div class="form-group">
       <label class="col-sm-3">Artículo <strong style="color: #dd4b39">*</strong>:   </label>
       <div class="col-sm-5">
-        <input type="text" class="form-control" placeholder="Articulo" id="articleField" name="articleField" >
+        <input type="text" class="form-control typeahead" placeholder="Articulo" id="articleField" name="articleField"   data-provide="typeahead" >
       </div>
       <div class="col-sm-2">
         <input type="text" class="form-control" placeholder="Cantidad" id="articleCant" name="articleCant"  >
@@ -99,13 +106,54 @@
 
 
   </div>
-
-
-
-
+  <script src="<?php echo base_url();?>assets/Typeahead/bootstrap3-typeahead.js"></script>
 <script>
   $(function(){
-    $("#order_detail").DataTable();
+		$('.typeahead').typeahead({
+			hint: true,
+		  highlight: true,
+		  minLength: 1,
+			source: function (query, process) {
+					var strng=$('.typeahead').val();
+					var input = [];
+					input.push(strng);
+					var data_ajax={
+					  method: "POST",
+						url: "article/searchByAll",
+					  data: { code: strng },
+					  success:function(data){
+							objects = [];
+							map = {};
+							$.each(data, function(i, object) {
+									var key= object.artBarCode+" - "+object.artDescription
+									map[key] = object;
+									objects.push(key);
+							});
+							return process(objects);
+					  },
+					  error:function(error_msg){
+					  	alert( "error_msg: " + error_msg );
+					  },
+						dataType: 'json'
+					};
+					$.ajax(data_ajax);
+        },updater: function(item) {
+					var data=map[item];
+          $("#tbCliente").prop('maxLength', item.length);
+					$("#codigoTango").val(map[item].cod_client);
+					//$("#tbCliente").val(data.name).data('id',map[item].cod_client);
+					$("#direccionCliente").val(data.domicilio);
+					$("#telefonoCliente").val(data.telefono);
+					$("#cuit").val(data.cuit);
+					$("#dirCliente").val(data.domicilio);
+					$("#facturarA").val(data.name);
+					$("#codigoTangoFacturar").val(map[item].cod_client);
+          return data.razon_soci;
+        },
+  		autoSelect: false
+		});
+
+    //$("#order_detail").DataTable();
   });
 
 </script>
