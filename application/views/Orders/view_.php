@@ -46,14 +46,17 @@
 
     <div class="form-group">
       <label class="col-sm-3">Artículo <strong style="color: #dd4b39">*</strong>:   </label>
-      <div class="col-sm-5">
-        <input type="text" class="form-control typeahead" placeholder="Articulo" id="articleField" name="articleField"   data-provide="typeahead" >
-      </div>
-      <div class="col-sm-2">
+      <div class="col-sm-5 " id="articleField_container">
+        <input type="text" class="form-control typeahead" placeholder="Articulo" id="articleField" name="articleField"   data-provide="typeahead" data-id="" >
+				<span id="articleField_error" class="help-block hidden">Seleccione un Artículo.</span>
+			</div>
+      <div class="col-sm-2" id="articleCant_container">
         <input type="text" class="form-control" placeholder="Cantidad" id="articleCant" name="articleCant"  >
-      </div>
+				<span id="articleCant_error" class="help-block hidden">Ingrese una Cantidad mayor a 0.</span>
+
+			</div>
       <div class="col-sm-2">
-        <button type="button" class="btn btn-success btn-sm " name="button"> <i class="fa fa-plus" aria-hidden="true"></i> Agregar</button>
+        <button id="addItem_bt" type="button" class="btn btn-success btn-sm " name="button"> <i class="fa fa-plus" aria-hidden="true"></i> Agregar</button>
       </div>
     </div>
 
@@ -64,13 +67,24 @@
           <th>Descripcion</th>
           <th>Cantidad</th>
           <th>P.Venta</th>
-          <th>Total</th>
+          <th class="text-center">Total</th>
         </tr>
       </thead>
       <tbody>
       </tbody>
-
+			<tfoot>
+				<tr>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th class="text-center">
+						<span class="order-total"> $ XXXXXX</span>
+					</th>
+				</tr>
+			</tfoot>
     </table>
+
 
     <!--
     <div class="form-group">
@@ -114,20 +128,20 @@
 		  highlight: true,
 		  minLength: 1,
 			source: function (query, process) {
-					var strng=$('.typeahead').val();
-					var input = [];
-					input.push(strng);
-					var data_ajax={
-					  method: "POST",
+				var strng=$('.typeahead').val();
+				var input = [];
+				input.push(strng);
+				var data_ajax={
+						method: "POST",
 						url: "article/searchByAll",
 					  data: { code: strng },
 					  success:function(data){
 							objects = [];
 							map = {};
 							$.each(data, function(i, object) {
-									var key= object.artBarCode+" - "+object.artDescription
-									map[key] = object;
-									objects.push(key);
+								var key= object.artBarCode+" - "+object.artDescription
+								map[key] = object;
+								objects.push(key);
 							});
 							return process(objects);
 					  },
@@ -139,21 +153,54 @@
 					$.ajax(data_ajax);
         },updater: function(item) {
 					var data=map[item];
-          $("#tbCliente").prop('maxLength', item.length);
-					$("#codigoTango").val(map[item].cod_client);
-					//$("#tbCliente").val(data.name).data('id',map[item].cod_client);
-					$("#direccionCliente").val(data.domicilio);
-					$("#telefonoCliente").val(data.telefono);
-					$("#cuit").val(data.cuit);
-					$("#dirCliente").val(data.domicilio);
-					$("#facturarA").val(data.name);
-					$("#codigoTangoFacturar").val(map[item].cod_client);
-          return data.razon_soci;
+					$('#articleField').attr('data-artBarCode',data.artBarCode);
+					$('#articleField').attr('data-artDescription',data.artDescription);
+					$('#articleField').attr('data-pVenta',data.pVenta);
+          return data.artDescription;
         },
   		autoSelect: false
 		});
 
-    //$("#order_detail").DataTable();
+
+
+
+		$("#addItem_bt").on('click',function(){
+
+			if($("#articleField").val().length<1){
+				$("#articleField_container").addClass("has-error");
+				$("#articleField_error").removeClass("hidden");
+				return false;
+			}else{
+				$("#articleField_container").removeClass("has-error");
+				$("#articleField_error").addClass("hidden");
+			}
+			if($("#articleCant").val().length<1){
+				$("#articleCant_container").addClass("has-error");
+				$("#articleCant_error").removeClass("hidden");
+				return false;
+			}else{
+				$("#articleCant_container").removeClass("has-error");
+				$("#articleCant_error").addClass("hidden");
+			}
+
+			var articleData=$("#articleField").data();
+
+			var new_row="";
+			new_row +="<tr>";
+			new_row +="<td>"+articleData.artbarcode+"</td>";
+			new_row +="<td>"+articleData.artdescription+"</td>";
+			new_row +="<td>"+$("#articleCant").val()+"</td>";
+			new_row +="<td> $ "+articleData.pventa+"</td>";
+			new_row +="<td class='text-center'>"+($("#articleCant").val()*articleData.pventa)+"</td>";
+			new_row +=""
+			new_row +="</tr>";
+			$("#order_detail tbody").append(new_row);
+			$("#articleField").val(null).focus();
+			$("#articleCant").val(null);
+		})
+		.on('keypress',function(){
+			console.debug("===> value: %o",$(this).val());
+		});
   });
 
 </script>
