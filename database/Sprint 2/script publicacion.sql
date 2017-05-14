@@ -93,3 +93,26 @@ CREATE TABLE `ordendecompradetalle` (
   CONSTRAINT `ordendecompradetalle_ibfk_1` FOREIGN KEY (`ocId`) REFERENCES `ordendecompra` (`ocId`) ON UPDATE CASCADE,
   CONSTRAINT `ordendecompradetalle_ibfk_2` FOREIGN KEY (`artId`) REFERENCES `articles` (`artId`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#Agregar crud de clientes
+insert into sismenu VALUES
+(null, 'Cobranza', 'fa fa-fw fa-dollar', 'sale', 'index', null);
+
+insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Cobranza'),(select actId from sisactions where actDescription = 'Cob'));
+insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Cobranza'),(select actId from sisactions where actDescription = 'Anu'));
+insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Cobranza'),(select actId from sisactions where actDescription = 'AyC'));
+
+#modificar tabla de orden de compra
+ALTER TABLE `ordendecompra`
+ADD COLUMN `venId`  int NULL AFTER `cliId`;
+
+ALTER TABLE `ordendecompra` ADD FOREIGN KEY (`venId`) REFERENCES `ventas` (`venId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+#modificar tabla ventas
+ALTER TABLE `ventas`
+MODIFY COLUMN `venFecha`  timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `venId`;
+
+ALTER TABLE `ventas`
+ADD COLUMN `cliId`  int NOT NULL AFTER `cajaId`;
+
+ALTER TABLE `ventas` ADD FOREIGN KEY (`cliId`) REFERENCES `clientes` (`cliId`) ON DELETE RESTRICT ON UPDATE CASCADE;

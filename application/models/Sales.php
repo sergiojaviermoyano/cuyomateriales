@@ -8,6 +8,213 @@ class Sales extends CI_Model
 		parent::__construct();
 	}
 	
+	function getView($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$response = array();
+			//Siempre preguntar si esta abierta la caja (para las opciones 1 y 2)
+			//para el usuario logueado
+			$userdata = $this->session->userdata('user_data');
+			
+			//verificar si hay cajas abiertas
+			$this->db->select('*');
+			$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
+			$this->db->from('cajas');
+			$query = $this->db->get();
+			$result = $query->result_array();
+			if(count($result) > 0){
+				$result = $query->result_array();
+				$response['cajaId'] = $result[0]['cajaId'];
+				$caja = $result[0];
+			} else {
+				$response['cajaId'] = -1;
+				$response['caja'] = null;
+			}
+
+			switch ($data['id']) {
+				case '1':
+					$this->db->select('*');
+					$this->db->from('ordendecompra');
+					$this->db->where(array('ocEstado' => 'AC'));
+					$this->db->order_by('ocFecha', 'asc');
+					$query = $this->db->get();
+					$response['ordenes'] = $query->result_array();
+					break;
+				
+				case '2':
+					$this->db->select('*');
+					$this->db->from('ventas');
+					$this->db->where(array('cajaId' => $response['cajaId']));
+					$this->db->order_by('venFecha', 'asc');
+					$query = $this->db->get();
+					$response['ventas'] = $query->result_array();
+					break;
+
+				case '3':
+					if($response['cajaId'] != -1){
+						$response['caja'] = $caja;
+						//calcular ventas
+						$this->db->select('sum(ventasdetalle.artFinal * ventasdetalle.venCant) as suma', false);
+						$this->db->from('ventasdetalle');
+						$this->db->join('ventas', 'ventas.venId = ventasdetalle.venId');
+						$this->db->where(array('ventas.cajaId'=>$response['cajaId']));
+						$query = $this->db->get();
+						$response['caja']['cajaImpVentas'] = $query->row()->suma == null ? '0.00' : $query->row()->suma;
+					}
+					$response['user'] = $userdata[0];
+					break;
+			}
+
+			return $response;
+		}
+	}
+
+	function getOrder($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$idOrder = $data['id'];
+			$data = array();
+			$query = $this->db->get_where('ordendecompra',array('ocId'=>$idOrder));
+			if ($query->num_rows() != 0)
+			{
+				$order = $query->result_array();
+				$data['order'] = $order[0];
+
+				$query = $this->db->get_where('ordendecompradetalle',array('ocId'=>$idOrder));
+				if ($query->num_rows() != 0)
+				{
+					$orderD = $query->result_array();
+					$data['orderdetalle'] = $orderD;
+				}	
+			}
+			return $data;
+		}
+	}
+
+	function getMPagos($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$id = $data['id'];
+			$total = $data['to'];
+
+			$data = array();
+			$data['idOrden'] = $id;
+			$data['total']	= $total;
+			$data['tmp']	= array();
+
+			$query = $this->db->get_where('tipomediopago',array('tmpEstado'=>'AC'));
+			if ($query->num_rows() != 0)
+				{
+					$tmp = $query->result_array();
+					//$data['tmp'] = $tmp;
+					$data['tmp'] = array();
+					foreach ($tmp as $item) {
+						$query = $this->db->get_where('mediosdepago',array('medEstado'=>'AC', 'tmpId' => $item['tmpId']));	
+						if ($query->num_rows() != 0)
+						{
+							$tmpD = $query->result_array();
+							$item['tmpD'] = $tmpD;
+						} else { 
+							$item['tmpD'] = array(); 
+						}
+
+						$data['tmp'][] = $item;	
+					}
+				}	
+			return $data;
+		}
+	}
+
+	function setSale($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$ocId = $data['id'];
+			$pago = $data['pa'];
+
+			//Datos del usuario
+			$userdata = $this->session->userdata('user_data');
+			$usrId = $userdata[0]['usrId'];
+
+			//Datos de la caja 
+			$this->db->select('*');
+			$this->db->where(array('cajaCierre'=>null, 'usrId' => $usrId));
+			$this->db->from('cajas');
+			$query = $this->db->get();
+			$result = $query->result_array();
+			if(count($result) > 0){
+				$result = $query->result_array();
+				$cajaId = $result[0]['cajaId'];
+			} else {
+				return false;
+			}
+
+			//Datos de la orden
+			$orden = $this->getOrder($data);
+
+			$venta = array(
+				'usrId'			=> $usrId,
+				'cajaId'		=> $cajaId,
+				'cliId'			=> $orden['order']['cliId']
+				);
+
+			if($this->db->insert('ventas', $venta) == false) {
+				return false;
+			} else {
+				$idVenta = $this->db->insert_id();
+				
+				foreach ($orden['orderdetalle'] as $a) {
+					$insert = array(
+							'venId' 		=> $idVenta,
+							'artId' 		=> $a['artId'],
+							'artCode' 		=> '',
+							'artDescription'=> $a['artDescripcion'],
+							'artCoste'		=> $a['artPCosto'],
+							'artFinal'		=> $a['artPVenta'],
+							'venCant'		=> $a['ocdCantidad']
+						);
+
+					if($this->db->insert('ventasdetalle', $insert) == false) {
+						return false;
+					}
+
+					$insert = array(
+							'artId' 		=> $a['artId'],
+							'stkCant'		=> $a['ocdCantidad'] * -1,
+							'stkOrigen'		=> 'VN'
+						);
+
+					if($this->db->insert('stock', $insert) == false) {
+						return false;
+					}
+				}
+
+				//Actualizar orden de compra
+				$update = array('ocEstado' => 'FA', 'venId' => $idVenta);
+				if($this->db->update('ordendecompra', $update, array('ocId'=>$ocId)) == false) {
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
+	/*
 	function Sale_List(){
 		$data = array();
 		//verificar si hay cajas abiertas
@@ -265,5 +472,6 @@ class Sales extends CI_Model
 			return $venId.'.pdf';
 		}
 	}
+	*/
 }
 ?>

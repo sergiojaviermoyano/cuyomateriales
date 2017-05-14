@@ -110,45 +110,37 @@ class Boxs extends CI_Model
 		else
 		{
 			$id = $data['id'];
-			$act = $data['act'];
 			$ape = $data['ape'];
 			$ven = $data['ven'];
 			$cie = $data['cie'];
+			
+			//Agregar caja
+			if($id == -1){
+				$userdata = $this->session->userdata('user_data');
 
-			switch($act){
-				case 'Add':
-					//Agregar caja
-					$userdata = $this->session->userdata('user_data');
+				$data = array(
+				   'cajaApertura' 	=> date('Y-m-d H:i:s'),
+				   'cajaCierre'		=> null,
+				   'usrId'			=> $userdata[0]['usrId'],
+				   'cajaImpApertura'=> $ape,
+				   'cajaImpVentas'	=> null,
+				   'cajaImpRendicion'=>null
+				);
 
-					$data = array(
-					   'cajaApertura' 	=> date('Y-m-d H:i:s'),
-					   'cajaCierre'		=> null,
-					   'usrId'			=> $userdata[0]['usrId'],
-					   'cajaImpApertura'=> $ape,
-					   'cajaImpVentas'	=> null,
-					   'cajaImpRendicion'=>null
-					);
-
-					if($this->db->insert('cajas', $data) == false) {
-						return false;
-					}
-					break;
-
-				case 'Close':
-					//Cerrar caja
-					$data = array(
-					   'cajaCierre'		=> date('Y-m-d H:i:s'),
-					   'cajaImpVentas'	=> $ven,
-					   'cajaImpRendicion'=>$cie
-					);
-					if($this->db->update('cajas', $data, array('cajaId'=>$id)) == false) {
-						return false;
-					}
-					break;
+				if($this->db->insert('cajas', $data) == false) {
+					return false;
+				}
+			} else {
+				//Cerrar caja
+				$data = array(
+				   'cajaCierre'		=> date('Y-m-d H:i:s'),
+				   'cajaImpVentas'	=> $ven,
+				   'cajaImpRendicion'=> $cie
+				);
+			 	if($this->db->update('cajas', $data, array('cajaId'=>$id)) == false) {
+			 		return false;
+			 	}
 			}
-
-			return true;
-
 		}
 	}
 }

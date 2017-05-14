@@ -4,7 +4,7 @@
     <div class="col-xs-12">
       <div class="box">
         <div class="box-header">
-          <h3 class="box-title">Ventas</h3>
+          <h3 class="box-title">Cobranza</h3>
           <?php
           if (strpos($permission,'Add') !== false) {
             if($list['openBox'] == 1) {
@@ -16,47 +16,36 @@
           ?>
         </div><!-- /.box-header -->
         <div class="box-body">
-          <table id="sales" class="table table-bordered table-hover">
-            <thead>
-              <tr>
-                <th width="20%">Acciones</th>
-                <th>Número</th>
-                <th width="10%">Fecha</th>
-                <th>Importe</th>
-                <th>Usuario</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
+          <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
               <?php
-                if(isset($list['data'])) {
-                	foreach($list['data'] as $s)
-      		        {
-  	                echo '<tr>';                  
-                    echo '<td>';
-  	                if (strpos($permission,'Del') !== false) {
-                      if($s['venEstado'] === 'AC')
-                        echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadSale('.$s['venId'].',\'Del\')"></i>';
-                    }
-                    if (strpos($permission,'View') !== false) {
-                        echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadSale('.$s['venId'].',\'View\')"></i> ';
+                if (strpos($permission,'Cob') !== false) {
+                  echo '<li><a href="#tab_1" data-toggle="tab" onClick="load(1)">Ordenes de Compra</a></li>';
+                }
 
-                        echo '<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('.$s['venId'].')"></i> ';
-                    }
-  	                		
-  	                echo '</td>';
-  	                echo '<td style="text-align: left">'.str_pad($s['venId'], 10, "0", STR_PAD_LEFT).'</td>';
-                    $date = date_create($s['venFecha']);
-                    echo '<td style="text-align: center">'.date_format($date, 'd-m-Y H:i').'</td>';
-                    echo '<td style="text-align: right">'.number_format($s['ven'], 2, ',', '.').'</td>';
-                    echo '<td style="text-align: left">'.$s['usrName'].', '.$s['usrLastName'].'</td>';
-                    echo '<td style="text-align: center">'.($s['venEstado'] === 'AC' ? '<small class="label bg-green">AC</small>': '<small class="label bg-red">CN</small>') .'</td>';
-  	                echo '</tr>';
-      		        }
+                if (strpos($permission,'Anu') !== false) {
+                  echo '<li><a href="#tab_2" data-toggle="tab" onClick="load(2)">Facturación</a></li>';
+                }
+
+                if (strpos($permission,'AyC') !== false) {
+                  echo '<li><a href="#tab_2" data-toggle="tab" onClick="load(3)">Caja</a></li>';
                 }
               ?>
-            </tbody>
-          </table>
+              
+            </ul>
+            <div class="tab-content" id="contentTab">
+
+            </div>
+            <!--
+            <div class="tab-content">
+              <div class="tab-pane active" id="tab_1">
+              </div>
+              <div class="tab-pane active" id="tab_2">
+              </div>
+              <div class="tab-pane active" id="tab_3">
+              </div>
+            </div>
+            -->
         </div><!-- /.box-body -->
       </div><!-- /.box -->
     </div><!-- /.col -->
@@ -64,6 +53,27 @@
 </section><!-- /.content -->
 
 <script>
+function load(idTab){
+  idRubro = id_;
+  acRubro = action;
+  WaitingOpen('Cargando ...');
+    $.ajax({
+          type: 'POST',
+          data: { id : idTab},
+      url: 'index.php/sale/getTabContent', 
+      success: function(result){
+                    $("#contentTab").html(result);
+                    WaitingClose();
+            },
+      error: function(result){
+            WaitingClose();
+            alert(result);
+            //ProcesarError(result.responseText, 'modalRubro');
+          },
+          dataType: 'json'
+      });
+}
+
 var isOpenWindow = false;
   $(function () {
     $('#sales').DataTable({
@@ -479,6 +489,7 @@ var isOpenWindow = false;
 </div>
 
 <!-- Modal -->
+<!--
 <div class="modal fade" id="modalSale" tabindex="2000" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document" style="width: 80%">
     <div class="modal-content">
@@ -564,6 +575,7 @@ var isOpenWindow = false;
     </div>
   </div>
 </div>
+-->
 
 <!-- Modal -->
 <div class="modal fade" id="modalSale_" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
