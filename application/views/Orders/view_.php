@@ -23,10 +23,11 @@
     </div>
 
     <div class="form-group">
+
       <label class="col-sm-3">Cliente <strong style="color: #dd4b39">*</strong>:  </label>
       <div class="col-sm-9">
         <select class="form-control" name="lpId" id="lpId" <?php echo ($data['lpId'] == true ? 'disabled="disabled"' : '');?>>
-          <option value="">Lista de Precios</option>
+          <option value="">Seleccionar Cliente</option>
           <?php foreach ($Clientes as $key => $item):?>
             <option value="<?php echo $item['cliId'];?>" <?php echo ($data['order']['cliId']==$item['cliId'])?'selected':''?> ><?php echo $item['cliNombre'];?> </option>
           <?php endforeach;?>
@@ -153,6 +154,7 @@
 					$.ajax(data_ajax);
         },updater: function(item) {
 					var data=map[item];
+					console.debug("===> data: %o",data);
 					$('#articleField').attr('data-artBarCode',data.artBarCode);
 					$('#articleField').attr('data-artDescription',data.artDescription);
 					$('#articleField').attr('data-pVenta',data.pVenta);
@@ -184,7 +186,7 @@
 			}
 
 			var articleData=$("#articleField").data();
-
+			console.debug("===> articleData: %o",articleData);
 			var new_row="";
 			new_row +="<tr>";
 			new_row +="<td>"+articleData.artbarcode+"</td>";
@@ -192,15 +194,19 @@
 			new_row +="<td>"+$("#articleCant").val()+"</td>";
 			new_row +="<td> $ "+articleData.pventa+"</td>";
 			new_row +="<td class='text-center'>"+($("#articleCant").val()*articleData.pventa)+"</td>";
-			new_row +=""
+			//new_row +=""
 			new_row +="</tr>";
+			$("#articleField").data(null);
+			console.debug("===> new_row: %o",new_row);
+			console.debug("===> new_row: %o",$("#articleField").data());
+
 			$("#order_detail tbody").append(new_row);
 			$("#articleField").val(null).focus();
 			$("#articleCant").val(null);
 		})
-		.on('keypress',function(){
+		/*.on('keypress',function(){
 			console.debug("===> value: %o",$(this).val());
-		});
+		});*/
   });
 
 </script>

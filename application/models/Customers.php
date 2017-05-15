@@ -7,7 +7,7 @@ class Customers extends CI_Model
 	{
 		parent::__construct();
 	}
-	
+
 	function Customers_List(){
 
 		$this->db->order_by('cliApellido','asc');
@@ -17,17 +17,18 @@ class Customers extends CI_Model
 		$this->db->join('tipos_documentos', 'tipos_documentos.docId = clientes.docId', 'left');
 		$this->db->where(array('cliDefault' => 0));
 		$query= $this->db->get();
-		
+
 		if ($query->num_rows()!=0)
 		{
-			return $query->result_array();	
+			return $query->result_array();
 		}
 		else
 		{
 			return false;
 		}
 	}
-	
+
+
 	function getCustomer($data = null){
 		if($data == null)
 		{
@@ -48,7 +49,7 @@ class Customers extends CI_Model
 				$data['customer'] = $c[0];
 			} else {
 				$cust = array();
-				
+
 				//select max id de cliente
 				$this->db->select_max('cliId');
  				$query = $this->db->get('clientes');
@@ -79,12 +80,12 @@ class Customers extends CI_Model
 			$query= $this->db->get_where('tipos_documentos',array('DP'));
 			if ($query->num_rows() != 0)
 			{
-				$data['docs'] = $query->result_array();	
+				$data['docs'] = $query->result_array();
 			}
 			return $data;
 		}
 	}
-	
+
 	function setCustomer($data = null){
 		if($data == null)
 		{
@@ -117,10 +118,10 @@ class Customers extends CI_Model
 
 			switch($act){
 				case 'Add':
-					//Agregar Cliente 
+					//Agregar Cliente
 					if($this->db->insert('clientes', $data) == false) {
 						return false;
-					} 
+					}
 					break;
 
 				 case 'Edit':
@@ -140,6 +141,6 @@ class Customers extends CI_Model
 			return true;
 
 		}
-	}	
+	}
 }
 ?>
