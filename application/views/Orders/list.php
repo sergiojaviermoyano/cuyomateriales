@@ -107,7 +107,7 @@
       $.ajax({
           	type: 'POST',
           	data: { id : id_, act: action },
-    		    url: '/order/getOrder',
+    		    url: 'index.php/order/getOrder',
     		    success: function(result){
 			                WaitingClose();
 			                $("#modalBodyOrder").html(result.html);
