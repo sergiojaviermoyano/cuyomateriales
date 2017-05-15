@@ -184,6 +184,7 @@ class Articles extends CI_Model
 				$pUnit = $articles['artCoste'];
 				if($articles['artIsByBox'] == 1){
 					$pUnit = $articles['artCoste'] / $articles['artCantBox'];
+					$articles['artCoste'] = $pUnit;
 				}
 
 				if($articles['artMarginIsPorcent'] == 1){

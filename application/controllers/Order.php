@@ -6,9 +6,9 @@ class order extends CI_Controller {
 	function __construct()
         {
 		parent::__construct();
-    $this->load->model('Orders');
+    	$this->load->model('Orders');
 		$this->load->model('Lists');
-    $this->load->model('Customers');
+    	$this->load->model('Customers');
 		$this->Users->updateSession(true);
 	}
 
@@ -20,9 +20,8 @@ class order extends CI_Controller {
 
 	public function getOrder(){
 
-    $data['ListaPrecios']=$this->Lists->List_List();
-    $data['Clientes']=$this->Customers->Customers_List();
-
+    	$data['ListaPrecios']=$this->Lists->List_List();
+    	$data['Clientes']=$this->Customers->Customers_List();
 		$data['data'] = $this->Orders->getOrder($this->input->post());
 		$response['html'] = $this->load->view('orders/view_', $data, true);
 

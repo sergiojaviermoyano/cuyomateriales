@@ -15,7 +15,7 @@ class Customers extends CI_Model
 		$this->db->select('clientes.*, tipos_documentos.docDescripcion');
 		$this->db->from('clientes');
 		$this->db->join('tipos_documentos', 'tipos_documentos.docId = clientes.docId', 'left');
-		$this->db->where(array('cliDefault' => 0));
+		//$this->db->where(array('cliDefault' => 0));
 		$query= $this->db->get();
 
 		if ($query->num_rows()!=0)
@@ -63,6 +63,7 @@ class Customers extends CI_Model
 				$cust['cliTelefono'] = '';
 				$cust['cliMail'] = '';
 				$cust['cliEstado'] = '';
+				$cust['cliDefault'] = false;
 				$cust['docId'] = '';
 
 				$data['customer'] = $cust;

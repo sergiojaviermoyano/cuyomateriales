@@ -27,24 +27,25 @@
               if($list) {  
               	foreach($list as $c)
     		        {
-	                echo '<tr>';
-	                echo '<td>';
-                  if (strpos($permission,'Edit') !== false) {
-	                	echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadCust('.$c['cliId'].',\'Edit\')"></i>';
+                  if(!$c['cliDefault']){
+  	                echo '<tr>';
+  	                echo '<td>';
+                    if (strpos($permission,'Edit') !== false) {
+  	                	echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadCust('.$c['cliId'].',\'Edit\')"></i>';
+                    }
+                    if (strpos($permission,'Del') !== false) {
+  	                	echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadCust('.$c['cliId'].',\'Del\')"></i>';
+                    }
+                    if (strpos($permission,'View') !== false) {
+  	                	echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadCust('.$c['cliId'].',\'View\')"></i>';
+                    }
+  	                echo '</td>';
+  	                echo '<td style="text-align: left">'.$c['cliApellido'].' , '.$c['cliNombre'].'</td>';
+                    echo '<td style="text-align: left"> ( '.$c['docDescripcion'].' ) '.$c['cliDocumento'].'</td>';
+                    echo '<td style="text-align: left">'.$c['cliDomicilio'].'</td>';
+                    echo '<td style="text-align: left">'.($c['cliTelefono'] != "" ? $c['cliTelefono'] : '').'</td>';
+  	                echo '</tr>';
                   }
-                  if (strpos($permission,'Del') !== false) {
-	                	echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadCust('.$c['cliId'].',\'Del\')"></i>';
-                  }
-                  if (strpos($permission,'View') !== false) {
-	                	echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadCust('.$c['cliId'].',\'View\')"></i>';
-                  }
-	                echo '</td>';
-	                echo '<td style="text-align: left">'.$c['cliApellido'].' , '.$c['cliNombre'].'</td>';
-                  echo '<td style="text-align: left"> ( '.$c['docDescripcion'].' ) '.$c['cliDocumento'].'</td>';
-                  echo '<td style="text-align: left">'.$c['cliDomicilio'].'</td>';
-                  echo '<td style="text-align: left">'.($c['cliTelefono'] != "" ? $c['cliTelefono'] : '').'</td>';
-	                echo '</tr>';
-                  
     		        }
               }
               ?>

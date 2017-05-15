@@ -16,8 +16,8 @@
             <thead>
               <tr>
                 <th width="20%">Acciones</th>
-                <th>Fecha</th>
                 <th>Observación</th>
+                <th>Fecha</th>
                 <th>Estado</th>
               </tr>
             </thead>
@@ -30,7 +30,9 @@
   	                echo '<td>';
 
                     if (strpos($permission,'Edit') !== false) {
-  	                	echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$p['ocId'].',\'Edit\')"></i>';
+                      if($p['ocEstado'] == 'AC'){
+  	                	  echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$p['ocId'].',\'Edit\')"></i>';
+                      }
                     }
 
                     if (strpos($permission,'Del') !== false) {
@@ -42,19 +44,21 @@
                     }
 
   	                echo '</td>';
-  	                echo '<td style="text-align: right">'.$p['ocFecha'].'</td>';
-
                     echo '<td style="text-align: left">'.$p['ocObservacion'].'</td>';
-
+  	                echo '<td style="text-align: center">'.date("d-m-Y H:i", strtotime($p['ocFecha'])).'</td>';
 
                     echo '<td style="text-align: center">';
                     switch($p['ocEstado']){
                       case 'AC':
-                        echo '<small class="label pull-left bg-green">Activo</small>';
+                        echo '<small class="label pull-left bg-green">Activa</small>';
                         break;
 
                       case 'IN':
-                        echo '<small class="label pull-left bg-red">Inactivo</small>';
+                        echo '<small class="label pull-left bg-red">Inactiva</small>';
+                        break;
+
+                      case 'FA':
+                        echo '<small class="label pull-left bg-blue">Facturada</small>';
                         break;
                     }
   	                echo '</tr>';
@@ -127,20 +131,43 @@
 
   $('#btnSave').click(function(){
 
+    debugger;
+    var hayError = false;
   	if(acOrder == 'View')
   	{
   		$('#modalOrder').modal('hide');
   		return;
   	}
 
-  	var hayError = false;
-    if($('#prvRazonSocial').val() == '')
+    if($('#lpId').val() == -1)
     {
-    	hayError = true;
+      hayError = true;
     }
 
-    if($('#prvDocumento').val() == '')
+    if($('#ocObservacion').val() == "")
     {
+      hayError = true;
+    }
+
+    var items = parseInt($('#saleItems').html());
+    var venta = parseFloat($('#saleTotal').html());
+    var sale = [];
+    if(items > 0 && venta > 0){
+      var table = $('#order_detail > tbody> tr');
+      table.each(function(r) {
+        var object = {
+          artId:          parseInt(this.children[6].textContent),
+          artCode:        this.children[1].textContent,
+          artDescription: this.children[2].textContent,
+          artCoste:       parseFloat(this.children[8].textContent),
+          artFinal:       parseFloat(this.children[4].textContent),
+          venCant:        parseInt(this.children[3].textContent),
+          artVenta:       parseFloat(this.children[7].textContent),
+        };
+
+        sale.push(object);
+      });
+    } else {
       hayError = true;
     }
 
@@ -156,15 +183,10 @@
           	data: {
                     id : idOrder,
                     act: acOrder,
-                    nom: $('#prvNombre').val(),
-                    ape: $('#prvApellido').val(),
-                    rz: $('#prvRazonSocial').val(),
-                    tp: $('#docId').val(),
-                    doc: $('#prvDocumento').val(),
-                    dom: $('#prvDomicilio').val(),
-                    mai: $('#prvMail').val(),
-                    est: $('#prvEstado').val(),
-                    tel: $('#prvTelefono').val()
+                    obser:  $('#ocObservacion').val(),
+                    cliId:  $('#cliId').val(),
+                    lpId:   $('#lpId').val(),
+                    art:    sale
                   },
     		url: 'index.php/Order/setOrder',
     		success: function(result){
@@ -174,11 +196,25 @@
     					},
     		error: function(result){
     					WaitingClose();
-    					alert("error");
+    					ProcesarError(result.responseText, 'modalOrder');
     				},
           	dataType: 'json'
     		});
   });
+
+  function Calcular(){
+    var table = $('#order_detail > tbody> tr');
+
+    var items = 0;
+    var total = 0;
+    table.each(function(r) {
+      items += parseInt(this.children[3].textContent);
+      total += parseFloat(this.children[5].textContent);
+    });
+
+    $('#saleItems').html(items);
+    $('#saleTotal').html(parseFloat(total).toFixed(2));
+  }
 
 </script>
 
@@ -196,6 +232,51 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalSearch" tabindex="3000" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="width: 50%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction__"> </span> Artículo</h4> 
+      </div>
+      <div class="modal-body" id="modalBodySearch">
+        
+        <div class="row">
+          <div class="col-xs-10 col-xs-offset-1"><center>Producto</center></div>
+        </div>
+        <div class="row">
+          <div class="col-xs-10 col-xs-offset-1">
+            <input type="text" class="form-control" id="artIdSearch" value="" min="0">
+          </div>
+        </div><br>
+
+        <div class="row">
+          <div class="col-xs-10 col-xs-offset-1">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th width="1%"></th>
+                  <th width="10%">Código</th>
+                  <th>Descripción</th>
+                </tr>
+              </thead>
+            </table>
+            <table id="saleDetailSearch" style="height:20em; display:block; overflow: auto;" class="table table-bordered">
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" onclick="cancelarBusqueda()">Cancelar</button>
       </div>
     </div>
   </div>

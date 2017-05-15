@@ -116,3 +116,10 @@ ALTER TABLE `ventas`
 ADD COLUMN `cliId`  int NOT NULL AFTER `cajaId`;
 
 ALTER TABLE `ventas` ADD FOREIGN KEY (`cliId`) REFERENCES `clientes` (`cliId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+#Agregar crud de orden de compra
+insert into sismenu VALUES
+(null, 'Ordenes_de_Compra', 'fa fa-fw fa-shopping-cart', 'order', 'index', null);
+
+insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Ordenes_de_Compra'),(select actId from sisactions where actDescription = 'Add'));
+insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Ordenes_de_Compra'),(select actId from sisactions where actDescription = 'Edit'));

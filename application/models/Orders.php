@@ -65,19 +65,87 @@ class Orders extends CI_Model
 				$readonly = true;
 			}
 			$data['read'] = $readonly;
-
-			//Tipos de Documento
-			$this->db->order_by('docDescripcion');
-			$query= $this->db->get_where('tipos_documentos',array('DP'));
-			if ($query->num_rows() != 0)
-			{
-				$data['docs'] = $query->result_array();
-			}
+			$data['act'] = $action;
 
 			return $data;
 		}
 	}
 
+	function setOrder($data = null){
+		/*
+		id : idOrder,
+        act: acOrder,
+        obser:  $('#ocObservacion').val(),
+        cliId:  $('#cliId').val(),
+        lpId:   $('#lpId').val(),
+        art:    sale
+        */
+        if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$action = 	$data['act'];
+			$id = 		$data['id'];
+			$obser = 	$data['obser'];
+			$cliId = 	$data['cliId'];
+			$lpId =		$data['lpId'];
+			$arts = 	$data['art'];
+			
+			//Datos del vendedor
+			$userdata = $this->session->userdata('user_data');
+			$usrId = $userdata[0]['usrId'];
+
+			$data = array(
+				'ocObservacion'	=>$obser,
+				'usrId'			=>$usrId,
+				'lpId'			=>$lpId,
+				'cliId'			=>$cliId
+				);
+
+			switch ($action) {
+				case 'Add':
+					if($this->db->insert('ordendecompra', $data) == false) {
+						return false;
+					} else {
+						$idOrder = $this->db->insert_id();
+				
+						foreach ($arts as $a) {
+							$insert = array(
+									'ocId'	 		=> $idOrder,
+									'artId' 		=> $a['artId'],
+									//'artCode' 		=> '',
+									'artDescripcion'=> $a['artDescription'],
+									'artPCosto'		=> $a['artCoste'],
+									'artPVenta'		=> $a['artFinal'],
+									'ocdCantidad'	=> $a['venCant']
+								);
+							/*
+									artId:          parseInt(this.children[6].textContent),
+									artCode:        this.children[1].textContent,
+									artDescription: this.children[2].textContent,
+									artCoste:       parseFloat(this.children[8].textContent),
+									artFinal:       parseFloat(this.children[4].textContent),
+									venCant:        parseInt(this.children[3].textContent),
+									artVenta:       parseFloat(this.children[7].textContent),
+							*/
+
+							if($this->db->insert('ordendecompradetalle', $insert) == false) {
+								return false;
+							}
+						}
+					}
+					break;
+				
+				default:
+					# code...
+					break;
+			}
+			return true;
+		}
+	}
+	/*
 	function setProvider($data = null){
 		if($data == null)
 		{
@@ -137,6 +205,7 @@ class Orders extends CI_Model
 
 		}
 	}
+	*/
 
 }
 ?>
