@@ -134,7 +134,7 @@
 				input.push(strng);
 				var data_ajax={
 						method: "POST",
-						url: "article/searchByAll",
+						url: "index.php/article/searchByAll",
 					  data: { code: strng },
 					  success:function(data){
 							objects = [];
