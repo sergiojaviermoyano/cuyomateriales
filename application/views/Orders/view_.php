@@ -212,7 +212,7 @@ var isOpenWindow = false;
         Buscar();
       }
   });
-
+var idSale = 1;
   function Buscar(){
     WaitingOpen('Buscando');
     $.ajax({

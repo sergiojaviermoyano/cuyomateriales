@@ -130,8 +130,6 @@
 
 
   $('#btnSave').click(function(){
-
-    debugger;
     var hayError = false;
   	if(acOrder == 'View')
   	{
