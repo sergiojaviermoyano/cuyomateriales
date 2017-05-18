@@ -12,7 +12,7 @@
 	<div class="row">
 	 <label class="col-sm-3">Lista de Precios <strong style="color: #dd4b39">*</strong>:  </label>
 	  <div class="col-sm-9">
-<?php 
+<?php
 if($data['act'] == 'Add' ){ ?>
 	    <select class="form-control" id="lpId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
 	      <option value="-1" data-porcent="0">Lista de Precios</option>
@@ -44,7 +44,7 @@ if($data['act'] == 'Add' ){ ?>
       <?php endforeach;?>
     </select>
   </div>
-</div> 
+</div>
 
 <div class="row">
   <label class="col-sm-3">Observación <strong style="color: #dd4b39">*</strong>: </label>
@@ -203,9 +203,10 @@ if($data['act'] == 'Add' ){ ?>
 /*
   });
 */
+
 var isOpenWindow = false;
-  $('#artId').keyup(function(e){ 
-    var code = e.which; 
+  $('#artId').keyup(function(e){
+    var code = e.which;
     if(code==13)e.preventDefault();
     if(code==32||code==13||code==188||code==186){
         //Buscar articulo
@@ -214,18 +215,20 @@ var isOpenWindow = false;
   });
 var idSale = 1;
   function Buscar(){
+
     WaitingOpen('Buscando');
     $.ajax({
           type: 'POST',
           data: { code: $('#artId').val() },
-          url: 'index.php/article/searchByCode', 
+          url: 'index.php/article/searchByCode',
           success: function(result){
                         if(result != false){
                           var selected = $('#lpId').find('option:selected');
-                 					var margin = parseFloat(selected.data('porcent')); 
+                 					var margin = parseFloat(selected.data('porcent'));
                  					//calcular precio de venta
                  					var pVenta = parseFloat(result.pVenta);
                  					if(margin > 0){
+														console.debug(" =>>> %o * ( %o ) / 100: ",pVenta,margin,(pVenta * (margin / 100)));
                  						pVenta += pVenta * (margin / 100);
                  					}
                           WaitingClose();
@@ -234,9 +237,9 @@ var idSale = 1;
                           row += '<td width="1%"><i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer;" onclick="delete_('+idSale+')"></i></td>';
                           row += '<td width="10%">'+result.artBarCode+'</td>';
                           row += '<td>'+result.artDescription+'</td>';
-                          row += '<td width="10%" style="text-align: right">'+cantidad+'</td>';
-                          row += '<td width="10%" style="text-align: right">'+parseFloat(pVenta).toFixed(2)+'</td>';
-                          row += '<td width="10%" style="text-align: right">'+(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2)+'</td>';
+                          row += '<td width="10%" class="td_cant" style="text-align: right"   data-pventa="'+pVenta+'"  >'+cantidad+'</td>';
+                          row += '<td width="10%" class="td_pventa"  style="text-align: right" >'+parseFloat(pVenta).toFixed(2)+'</td>';
+                          row += '<td width="10%" class="td_total" style="text-align: right">'+(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2)+'</td>';
                           row += '<td style="display: none">'+result.artId+'</td>';
                           row += '<td style="display: none">'+result.pVenta+'</td>';
                           row += '<td style="display: none">'+result.artCoste+'</td>';
@@ -299,7 +302,7 @@ var idSale = 1;
     $.ajax({
           type: 'POST',
           data: { code: $('#artIdSearch').val() },
-          url: 'index.php/article/searchByAll', 
+          url: 'index.php/article/searchByAll',
           success: function(resultList){
                         if(resultList != false){
                           WaitingClose();
@@ -336,4 +339,29 @@ var idSale = 1;
     isOpenWindow = true;
     setTimeout(function () { $('#artId').focus(); }, 1000);
   }
+
+
+	$(function(){
+		$('#lpId').on('change',function(){
+			var selected = $('#lpId').find('option:selected');
+			var margin = parseFloat(selected.data('porcent'));
+			var td_cant=$("table").find("td.td_cant");
+			var td_pventa=$("td_pventa").find("td.td_pventa");
+			var td_total=$("table").find("td.td_total");
+			var total=0;
+			$.each(td_cant,function(index,item){
+				var cantidad=parseInt($(item).text());
+				var pVenta = $(item).data('pventa');
+				pVenta=parseFloat(pVenta);
+				if(margin > 0){
+					pVenta += pVenta * (margin / 100);
+				}
+				var sub_total=(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2);
+				$(td_total[index]).text(sub_total);
+				total =total+parseFloat(sub_total);
+			});
+			$("#saleTotal").text(total);
+		});
+
+	});
 </script>
