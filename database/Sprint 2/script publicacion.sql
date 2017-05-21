@@ -123,3 +123,19 @@ insert into sismenu VALUES
 
 insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Ordenes_de_Compra'),(select actId from sisactions where actDescription = 'Add'));
 insert into sismenuactions values (null, (Select menuId from sismenu where menuName = 'Ordenes_de_Compra'),(select actId from sisactions where actDescription = 'Edit'));
+
+#agregar tabla recibos
+CREATE TABLE `recibos` (
+`rcbId`  int NOT NULL AUTO_INCREMENT ,
+`venId`  int NOT NULL ,
+`medId`  int NOT NULL ,
+`rcbImporte`  decimal(10,2) NOT NULL ,
+`rcbDesc1`  varchar(50) NULL ,
+`rcbDesc2`  varchar(50) NULL ,
+`rcbDesc3`  varchar(50) NULL ,
+`rcbEstado`  varchar(2) NOT NULL DEFAULT 'AC' ,
+PRIMARY KEY (`rcbId`),
+FOREIGN KEY (`venId`) REFERENCES `ventas` (`venId`) ON DELETE RESTRICT ON UPDATE CASCADE,
+FOREIGN KEY (`medId`) REFERENCES `mediosdepago` (`medId`) ON DELETE RESTRICT ON UPDATE CASCADE
+)
+;

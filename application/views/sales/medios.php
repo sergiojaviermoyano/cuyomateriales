@@ -58,7 +58,7 @@
 				echo '<div class="col-xs-5" style="margin-top: 7px;">Importe</div>';
 				echo '<div class="col-xs-1" style="text-align: center; margin-top: 7px;"><i class="fa fa-fw fa-dollar"></i></div>';
 				echo '<div class="col-xs-5">';
-				echo '<input type="text" class="form-control" id="'.$item['tmpId'].'_importe" value="">';
+				echo '<input class="form-control" id="'.$item['tmpId'].'_importe" value="" type="number" step="any">';
 				echo '</div>';
 				echo '</div><br>';
 
@@ -90,7 +90,7 @@
 				echo '</div>';
 				echo '<div class="col-xs-1" style="text-align: center; margin-top: 7px;"><i class="fa fa-fw fa-dollar"></i></div>';
 				echo '<div class="col-xs-5">';
-				echo '<input type="text" class="form-control" id="'.$item['tmpD'][0]['medId'].'_importe" value="">';
+				echo '<input class="form-control" id="'.$item['tmpD'][0]['medId'].'_importe" value="" type="number" step="any">';
 				echo '</div>';
 				echo '</div><br>';
 				echo '<div class="row">';
@@ -119,6 +119,13 @@ function showDiv(id){
 	}
 	LastDiv = '#'+id+'_load';
 	$(LastDiv).show();
+	var element = $('#'+id+'_medId').val();
+	if(typeof element == "undefined" || element == null){
+		$('#'+id+'_importe').focus();	
+	} else {
+		$('#'+id+'_medId').focus();
+	}
+
 }
 
 function hideDiv(id){

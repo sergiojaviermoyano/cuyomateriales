@@ -49,7 +49,7 @@ class Sales extends CI_Model
 					$this->db->select('*');
 					$this->db->from('ventas');
 					$this->db->where(array('cajaId' => $response['cajaId']));
-					$this->db->order_by('venFecha', 'asc');
+					$this->db->order_by('venFecha', 'desc');
 					$query = $this->db->get();
 					$response['ventas'] = $query->result_array();
 					break;
@@ -61,9 +61,18 @@ class Sales extends CI_Model
 						$this->db->select('sum(ventasdetalle.artFinal * ventasdetalle.venCant) as suma', false);
 						$this->db->from('ventasdetalle');
 						$this->db->join('ventas', 'ventas.venId = ventasdetalle.venId');
-						$this->db->where(array('ventas.cajaId'=>$response['cajaId']));
+						$this->db->where(array('ventas.cajaId'=>$response['cajaId'], 'ventas.venEstado' => 'AC'));
 						$query = $this->db->get();
 						$response['caja']['cajaImpVentas'] = $query->row()->suma == null ? '0.00' : $query->row()->suma;
+
+						$query = $this->db->query('select r.medId, m.medDescripcion, sum(r.rcbImporte) as importe from recibos as r 
+												  join ventas as v on v.venId = r.venId
+												  join mediosdepago as m on m.medId = r.medId
+												  where v.cajaId = '.$response['cajaId'].'
+												  GROUP BY r.medId');
+
+						$response['caja']['medios'] = $query->result_array();
+
 					}
 					$response['user'] = $userdata[0];
 					break;
@@ -92,9 +101,38 @@ class Sales extends CI_Model
 				if ($query->num_rows() != 0)
 				{
 					$orderD = $query->result_array();
-					$data['orderdetalle'] = $orderD;
+					$data['orderdetalle'] = array();
+					foreach ($orderD as $item) {
+						$query= $this->db->get_where('articles',array('artId' => $item['artId']));
+						if ($query->num_rows() != 0)
+						{
+							$art = $query->result_array();
+							$item['artBarCode'] = $art[0]['artBarCode'];
+						}
+
+						$data['orderdetalle'][] = $item;		
+					}
+					
+				}
+
+				//Get Lista de Precios
+				$query= $this->db->get_where('listadeprecios',array('lpId' => $data['order']['lpId']));
+				if ($query->num_rows() != 0)
+				{
+					$lista = $query->result_array();
+					$data['lista'] = $lista[0];
+				}
+
+				//Get Usuario
+				$query= $this->db->get_where('sisusers',array('usrId' => $data['order']['usrId']));
+				if ($query->num_rows() != 0)
+				{
+					$user = $query->result_array();
+					$data['user'] = $user[0];
 				}	
 			}
+
+			
 			return $data;
 		}
 	}
@@ -178,6 +216,7 @@ class Sales extends CI_Model
 			} else {
 				$idVenta = $this->db->insert_id();
 				
+				//Actualizar detalle
 				foreach ($orden['orderdetalle'] as $a) {
 					$insert = array(
 							'venId' 		=> $idVenta,
@@ -203,6 +242,31 @@ class Sales extends CI_Model
 						return false;
 					}
 				}
+
+				//Insertar medios de pago
+				foreach ($pago as $item) {
+					$insert = array(
+							'venId'			=>	$idVenta,
+							'medId'			=>	$item['mId'],
+							'rcbImporte'	=>	$item['imp'],
+							'rcbDesc1'		=>	$item['de1'],
+							'rcbDesc2'		=>	$item['de2'],
+							'rcbDesc3'		=>	$item['de3']
+						);
+
+					if($this->db->insert('recibos', $insert) == false) {
+						return false;
+					}
+				}
+
+				/*
+				mId:      $('#'+tmpId+'_medId').val(),
+		        imp:      $('#'+tmpId+'_importe').val(),
+		        tmp:      tmpId,
+		        de1:      $('#'+tmpId+'_des1').val(),
+		        de2:      $('#'+tmpId+'_des2').val(),
+		        de3:      $('#'+tmpId+'_des3').val(),
+		        */
 
 				//Actualizar orden de compra
 				$update = array('ocEstado' => 'FA', 'venId' => $idVenta);

@@ -33,6 +33,26 @@
     </div>
 </div><br>
 
+<?php 
+if(isset($data['caja']['medios'] ))
+{
+?>
+<div class="row">
+  <div class="col-xs-4">
+    <label style="margin-top: 7px;">Detalle: </label>
+  </div>
+  <div class="col-xs-5">
+      <?php
+      foreach ($data['caja']['medios'] as $item) {
+        echo $item['medDescripcion'].' : <b>$'.$item['importe'].'</b><hr>';
+      }
+      ?>
+    </div>
+</div><br>
+<?php
+}
+?>
+
 <div class="row">
 	<div class="col-xs-4">
       <label style="margin-top: 7px;">Redición <strong style="color: #dd4b39">*</strong>: </label>

@@ -2,16 +2,16 @@
 //var_dump($data);
 ?>
 <div class="row">
-	<div class="col-xs-1"><i class="fa fa-fw fa-user"></i></div>
-	<div class="col-xs-5"><?php echo $data['order']['cliId'];?></div>
 	<div class="col-xs-1"><i class="fa fa-fw fa-bar-chart-o"></i></div>
-	<div class="col-xs-5"><?php echo $data['order']['lpId'];?></div>
+	<div class="col-xs-5"><?php echo $data['lista']['lpDescripcion'];?></div>
+  <!--<div class="col-xs-1"><i class="fa fa-fw fa-user"></i></div>
+  <div class="col-xs-5"><?php echo $data['order']['cliId'];?></div>-->
 </div> <br>
 <div class="row">
 	<div class="col-xs-1"><i class="fa fa-fw fa-comment"></i></div>
-	<div class="col-xs-5"><?php echo $data['order']['ocObservacion'];?></div>
+	<div class="col-xs-5"><strong><?php echo $data['order']['ocObservacion'];?></strong></div>
 	<div class="col-xs-1"><i class="fa fa-fw fa-edit"></i></div>
-	<div class="col-xs-2"><?php echo $data['order']['usrId'];?></div>
+	<div class="col-xs-2"><?php echo $data['user']['usrName'].', '.$data['user']['usrLastName'];?></div>
 	<div class="col-xs-3"><?php echo date("d-m-Y H:i", strtotime($data['order']['ocFecha']));?></div>
 </div>  <br>
 
@@ -51,7 +51,7 @@
   		foreach ($data['orderdetalle'] as $key => $item):
   			echo '<tr>';
   			echo '<td width="35px"></td>';
-			echo '<td width="10%">'.$item['artId'].'</td>';
+			echo '<td width="10%">'.$item['artBarCode'].'</td>';
 			echo '<td>'.$item['artDescripcion'].'</td>';
 			echo '<td width="10%" style="text-align: right">'.$item['artPVenta'].'</td>';
 			echo '<td width="10%" style="text-align: right">'.$item['ocdCantidad'].'</td>';

@@ -12,7 +12,7 @@ class sale extends CI_Controller {
 
 	public function index($permission)
 	{
-		//$data['list'] = $this->Sales->Sale_List();
+		//$data['list'] = $this->Sales->Sale_List(); 
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('sales/list', $data, true));
 	}

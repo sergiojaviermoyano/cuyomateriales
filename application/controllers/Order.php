@@ -42,4 +42,9 @@ class order extends CI_Controller {
 			echo json_encode(true);
 		}
 	}
+
+
+	public function printOrder(){
+		echo json_encode($this->Orders->printOrder($this->input->post()));
+	}
 }

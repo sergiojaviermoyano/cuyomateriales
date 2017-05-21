@@ -157,6 +157,158 @@ class Orders extends CI_Model
 			return true;
 		}
 	}
+
+	function printOrder($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$data['act'] = 'Print';
+			$result = $this->getOrder($data);
+			
+			//Datos del Cliente
+			$query= $this->db->get_where('clientes',array('cliId' => $result['order']['cliId']));
+				if ($query->num_rows() != 0)
+				{
+					$user = $query->result_array();
+					$data['cliente'] = $user[0];
+				}
+
+			//Datos del Vendedor
+			$query= $this->db->get_where('sisusers',array('usrId' => $result['order']['usrId']));
+				if ($query->num_rows() != 0)
+				{
+					$user = $query->result_array();
+					$data['user'] = $user[0];
+				}	
+
+			//Lista de Precio
+			$query= $this->db->get_where('listadeprecios',array('lpId' => $result['order']['lpId']));
+				if ($query->num_rows() != 0)
+				{
+					$lista = $query->result_array();
+					$data['lista'] = $lista[0];
+				}
+
+			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
+			$html = '<table width="100%">';
+			$html .= '	<tr>
+							<th width="50%">
+								<h1 style="color: #FE642E">CUYO</h1>
+								<h3 style="color: #FE642E">MATERIALES PARA LA CONSTRUCCIÓN</h3>
+								Calle 25 de Mayo 595 - Caucete - San Juan<br>
+								Tel: 154670159<br>
+								E-mail: luisgallardo@hotmail.com
+							</th>
+							<th style="vertical-align: top">
+								Documento no válido como factura.<br>
+								'.($result['order']['ocEsPresupuesto'] ? '<h3>Presupuesto</h3> <br>' : '') .'
+								<br>Número de Orden: <b>0000-'.$ordId.'</b><br>
+								Vendedor: <b>'.$data['user']['usrName'].' '.$data['user']['usrLastName'].'</b><br>
+								Fecha: <b>'.date("d-m-Y H:i", strtotime($result['order']['ocFecha'])).'</b><br>
+							</th>
+						</tr>';
+			$html .= '	<tr><td colspan="2"><hr></td></tr>';
+			$html .= '	<tr><td colspan="2">
+							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].'</b><br>
+							Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'</b>
+						</td></tr>';
+			$html .= '	<tr><td colspan="2"><hr></td></tr>';
+			$html .= '	<tr><td colspan="2">';
+
+			$html .= '<table width="100%">';
+			$html .= '<tr>
+						<th>Artículo</th>
+						<th>Precio</th>
+						<th>Cantidad</th>
+						<th>Total</th>
+					</tr>';
+			$total = 0;
+			
+			foreach ($result['detalleCompra'] as $art) {
+				$html .= '<tr>';
+				$html .= '<td>('.$art['artId'].')'.$art['artDescripcion'].'</td>';
+				$html .= '<td style="text-align: right">'.number_format($art['artPVenta'], 2, ',', '.').'</td>';
+				$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';
+				$coste = $art['artPVenta'] * $art['ocdCantidad'];
+				$total += $coste;
+				$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td colspan="4" style="padding-top: 5px"><hr> </td>';
+				$html .= '</tr>';
+			}
+			$html .= '<tr><td><h5>Total</h5></td>';
+			$html .= '<td colspan="3" style="text-align: right"><h3>'.number_format($total, 2, ',', '.').'</h3></td></tr>';
+			$html .= '</table>';
+			
+
+			$html .= '	</td></tr>';
+			$html .= '</table>';
+			/*
+			$html  = '<label>Nro: </label><b>'.$ordId.'</b><br>';
+			$date = new DateTime($result['sale']['venFecha']);
+			$html .= '<label>Fecha: </label><b>'.$date->format('d-m-Y H:i:s').'</b><br>';
+			$html .= '<label>Caja: </label><b>'.str_pad($result['sale']['cajaId'], 10, "0", STR_PAD_LEFT).'</b><br>';
+			$html .= '<label>Vendedor: </label><b>'.$result['sale']['usrName'].', '.$result['sale']['usrLastName'].'</b><br>';
+			$html .= '<hr>';
+			$html .= '<table width="100%">';
+			$html .= '<tr><th>Art.</th><th>Precio</th><th>Cant.</th><th>Tot.</th></tr>';
+			$total = 0;
+			foreach ($result['detail'] as $art) {
+				$html .= '<tr>';
+				$html .= '<td>'.$art['artCode'].'</td>';
+				$html .= '<td style="text-align: right">'.number_format($art['artFinal'], 2, ',', '.').'</td>';
+				$html .= '<td style="text-align: right">'.$art['venCant'].'</td>';
+				$coste = $art['artFinal'] * $art['venCant'];
+				$total += $coste;
+				$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td colspan="4">'.$art['artDescription'].'</td>';
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td colspan="4" style="padding-top: 5px"> </td>';
+				$html .= '</tr>';
+			}
+			$html .= '<tr><td><h5>Total</h5></td>';
+			$html .= '<td colspan="3" style="text-align: right"><h4>'.number_format($total, 2, ',', '.').'</h4></td></tr>';
+			$html .= '</table>';
+			$html .= '<hr>';
+			*/
+
+			//se incluye la libreria de dompdf
+			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
+			//se crea una nueva instancia al DOMPDF
+			$dompdf = new DOMPDF();
+			//se carga el codigo html
+			$dompdf->load_html(utf8_decode($html));
+			//aumentamos memoria del servidor si es necesario
+			ini_set("memory_limit","300M"); 
+			//Tamaño de la página y orientación 
+			$dompdf->set_paper('a4', 'landscape');
+			//lanzamos a render
+			$dompdf->render();
+			//guardamos a PDF
+			//$dompdf->stream("TrabajosPedndientes.pdf");
+			$output = $dompdf->output();
+			file_put_contents('assets/reports/'.$ordId.'.pdf', $output);
+
+			//Eliminar archivos viejos ---------------
+			$dir = opendir('assets/reports/');
+			while($f = readdir($dir))
+			{
+			 
+			if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
+			unlink('assets/reports/'.$f);
+			}
+			closedir($dir);
+			//----------------------------------------
+			return $ordId.'.pdf';
+		}
+	}
 	/*
 	function setProvider($data = null){
 		if($data == null)

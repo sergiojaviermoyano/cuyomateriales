@@ -106,8 +106,9 @@ function Factuar(ocId){
         });
   
 }
-
+var pagos = [];
 $('#btnCobrar').click(function(){
+  pagos = [];
   WaitingOpen('Cargando medios...');
       $.ajax({
             type: 'POST',
@@ -129,9 +130,12 @@ $('#btnCobrar').click(function(){
         });
 });
 
-var pagos = [];
 function addItem(medId, tmpId, tipo){
-  //alert(medId + "--" + tmpId + tipo);
+  //Buscar si ya esta el tmpId en el array y eliminar
+  pagos = pagos.filter(function( obj ) {
+    return obj.tmp !== tmpId;
+  });
+  
   if(medId == -1){
     //Medio multiple (tarjeta)
     if($('#'+tmpId+'_medId').val() == -1 || $('#'+tmpId+'_importe').val() == ''){
@@ -150,7 +154,7 @@ function addItem(medId, tmpId, tipo){
       $(div).hide();
     }
   } else {
-    //Medio simple (efectivo)
+    //Medio simple (efectivo / cta cte / etc)
     if($('#'+medId+'_importe').val() == ''){
       alert('Completa el valor');
     }else{

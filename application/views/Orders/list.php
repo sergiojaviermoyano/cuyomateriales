@@ -28,6 +28,7 @@
       		        {
   	                echo '<tr>';
   	                echo '<td>';
+                    echo '<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('.$p['ocId'].')"></i> ';
 
                     if (strpos($permission,'Edit') !== false) {
                       if($p['ocEstado'] == 'AC'){
@@ -214,6 +215,29 @@
     $('#saleTotal').html(parseFloat(total).toFixed(2));
   }
 
+  function Print(id__){
+    WaitingOpen('Generando reporte...');
+    LoadIconAction('modalAction__','Print');
+    $.ajax({
+            type: 'POST',
+            data: { 
+                    id : id__
+                  },
+        url: 'index.php/order/printOrder', 
+        success: function(result){
+                      WaitingClose();
+                      var url = "./assets/reports/" + result;
+                      $('#printDoc').attr('src', url);
+                      setTimeout("$('#modalPrint').modal('show')",800);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalPrint');
+            },
+            dataType: 'json'
+        });
+  }
+
 </script>
 
 <!-- Modal -->
@@ -275,6 +299,26 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" onclick="cancelarBusqueda()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalPrint" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document" style="width: 50%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel__"><span id="modalAction__"> </span> Comprobante</h4> 
+      </div>
+      <div class="modal-body" id="modalBodyPrint">
+        <div>
+          <iframe style="width: 100%; height: 600px;" id="printDoc" src=""></iframe>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
   </div>

@@ -16,35 +16,29 @@
                 <thead>
                   <tr>
                     <th width="20%">Acciones</th>
-                    <th>Descripción</th>
+                    <th width="10%">Número</th>
+                    <th>Fecha</th>
                     <th>Estado</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php
-                    foreach($data['ventas'] as $r)
+                    foreach($data['ventas'] as $v)
                     {
                             echo '<tr>';
                             echo '<td>';
-                            if (strpos($permission,'Edit') !== false) {
-                              echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadRub('.$r['rubId'].',\'Edit\')"></i>';
-                            }
-                            if (strpos($permission,'Del') !== false) {
-                              echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadRub('.$r['rubId'].',\'Del\')"></i>';
-                            }
-                            if (strpos($permission,'View') !== false) {
-                              echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadRub('.$r['rubId'].',\'View\')"></i>';
-                            }
+                            //echo '<i class="fa fa-fw fa-ban" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadRub('.$r['rubId'].',\'View\')"></i>';
                             echo '</td>';
-                            echo '<td style="text-align: left">'.$r['rubDescripcion'].'</td>';
+                            echo '<td style="text-align: center"> 0000-'.str_pad($v['venId'], 8, "0", STR_PAD_LEFT).'</td>';
+                            echo '<td style="text-align: center">'.date("d-m-Y H:i", strtotime($v['venFecha'])).'</td>';
                             echo '<td style="text-align: center">';
-                            switch($r['rubEstado']){
+                            switch($v['venEstado']){
                               case 'AC':
-                                echo '<small class="label pull-left bg-green">Activo</small>';
+                                echo '<small class="label pull-left bg-green">Activa</small>';
                                 break;
 
-                              case 'IN':
-                                echo '<small class="label pull-left bg-red">Inactivo</small>';
+                              case 'AN':
+                                echo '<small class="label pull-left bg-red">Anulada</small>';
                                 break;
                             }
                             echo '</td>';
