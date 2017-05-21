@@ -31,17 +31,28 @@ class Orders extends CI_Model
 		}
 		else
 		{
+
 			$action = $data['act'];
 			$idOrder = $data['id'];
-
 			$data = array();
-
-			//Datos del proveedor
+			//Datos del Ordern
 			$query= $this->db->get_where('ordendecompra',array('ocId'=>$idOrder));
-			if ($query->num_rows() != 0)
+
+
+			if ($query->num_rows() > 0)
 			{
 				$order = $query->result_array();
 				$data['order'] = $order[0];
+
+				$this->db->select("ocd.*, a.artBarCode");
+				$this->db->from('ordendecompradetalle ocd');
+				$this->db->join('articles a','a.artId=ocd.artId');
+				$this->db->where('ocId',$idOrder);
+				$query = $this->db->get();
+				$detalleCompra=($query->num_rows()>0)?$query->result_array():array();
+
+				$data['detalleCompra']=$detalleCompra;
+
 			} else {
 				$Order = array();
 				$this->db->select_max('ocId');
@@ -57,6 +68,7 @@ class Orders extends CI_Model
 				$Order['lpId'] = '';
 				$Order['cliId'] = '';
 				$data['order'] = $Order;
+				$data['detalleCompra']=array();
 			}
 
 			//Readonly
@@ -92,7 +104,7 @@ class Orders extends CI_Model
 			$cliId = 	$data['cliId'];
 			$lpId =		$data['lpId'];
 			$arts = 	$data['art'];
-			
+
 			//Datos del vendedor
 			$userdata = $this->session->userdata('user_data');
 			$usrId = $userdata[0]['usrId'];
@@ -110,7 +122,7 @@ class Orders extends CI_Model
 						return false;
 					} else {
 						$idOrder = $this->db->insert_id();
-				
+
 						foreach ($arts as $a) {
 							$insert = array(
 									'ocId'	 		=> $idOrder,
@@ -137,7 +149,7 @@ class Orders extends CI_Model
 						}
 					}
 					break;
-				
+
 				default:
 					# code...
 					break;

@@ -109,7 +109,7 @@
   	LoadIconAction('modalAction',action);
   	WaitingOpen('Cargando Proveedor');
       $.ajax({
-          	type: 'POST',
+          	method: 'POST',
           	data: { id : id_, act: action },
     		    url: 'index.php/order/getOrder',
     		    success: function(result){
@@ -240,10 +240,10 @@
   <div class="modal-dialog" role="document" style="width: 50%">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction__"> </span> Artículo</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction__"> </span> Artículo</h4>
       </div>
       <div class="modal-body" id="modalBodySearch">
-        
+
         <div class="row">
           <div class="col-xs-10 col-xs-offset-1"><center>Producto</center></div>
         </div>

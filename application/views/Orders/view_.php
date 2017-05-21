@@ -49,7 +49,7 @@ if($data['act'] == 'Add' ){ ?>
 <div class="row">
   <label class="col-sm-3">Observación <strong style="color: #dd4b39">*</strong>: </label>
   <div class="col-sm-9">
-    <input type="text" class="form-control" id="ocObservacion"/>
+    <input type="text" class="form-control" id="ocObservacion" value="<?php echo $data['order']['ocObservacion'] ?>"/>
   </div>
 </div>
 
@@ -98,6 +98,19 @@ if($data['act'] == 'Add' ){ ?>
         </tr>
       </thead>
       <tbody>
+				<?php foreach ($data['detalleCompra'] as $key => $value):?>
+					<tr>
+						<td width="1%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square" onClick="delete_(1)"></i></td>
+						<td width="10%"><?php echo $value['artBarCode']?></td>
+						<td><?php echo $value['artDescripcion']?></td>
+						<td width="10%" class="td_cant" style="text-align: right"   data-pventa="<?php echo $value['artPCosto']?>" ><?php echo  (int)$value['ocdCantidad']?></td>
+						<td width="10%" class="td_pventa"  style="text-align: right" ><?php echo $value['artPCosto']?></td>
+						<td width="10%" class="td_total" style="text-align: right"><?php echo $value['artPVenta']?></td>
+						<td style="display: none"><?php echo $value['artId']?></td>
+						<td style="display: none"><?php echo $value['artPVenta']?></td>
+						<td style="display: none"><?php echo $value['artPCosto']?></td>
+					</tr>
+				<?php endforeach;?>
       </tbody>
     </table>
 
@@ -362,6 +375,9 @@ var idSale = 1;
 			});
 			$("#saleTotal").text(total);
 		});
+
+
+		$("#lpId").trigger("change");
 
 	});
 </script>
