@@ -98,7 +98,10 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
         </tr>
       </thead>
       <tbody>
+				<?php $cant_total=0?>
 				<?php foreach ($data['detalleCompra'] as $key => $value):?>
+					<?php $cant_total+=(int)$value['ocdCantidad']?>
+
 					<tr id="<?php echo $key+1;?>">
 						<td width="1%"><i style="color: #dd4b39; cursor: pointer;" class="fa fa-fw fa-times-circle" onClick="delete_(<?php echo $key+1;?>)"></i></td>
 						<td width="10%"><?php echo $value['artBarCode']?></td>
@@ -116,7 +119,7 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
 
 <div class="row">
   <div class="col-xs-1 col-xs-offset-1">
-      <label style="font-size: 20px; margin-top: 10px;" id="saleItems">0</label>
+      <label style="font-size: 20px; margin-top: 10px;" id="saleItems"><?php echo $cant_total;?></label>
   </div>
 
   <div class="col-xs-2 col-xs-offset-4">
@@ -358,11 +361,11 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
 
 	$(function(){
 		$('#lpId').on('change',function(){
-      debugger;
+      //debugger;
 			var selected = $('#lpId').find('option:selected');
 			var margin = parseFloat(selected.data('porcent'));
 			var td_cant=$("table").find("td.td_cant");
-			var td_pventa=$("td_pventa").find("td.td_pventa");
+			var td_pventa=$("table").find("td.td_pventa");
 			var td_total=$("table").find("td.td_total");
 			var total=0;
 			$.each(td_cant,function(index,item){
@@ -377,8 +380,9 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
           margin  *= -1;
           pVenta -= pVenta * (margin / 100);
         }
+				console.debug(")))> pVenta: %o",pVenta);
 				var sub_total=(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2);
-				$(td_pventa[index]).text(pVenta);
+				$(td_pventa[index]).text(pVenta.toFixed(2));
         $(td_total[index]).text(sub_total);
 				total =total+parseFloat(sub_total);
 			});
