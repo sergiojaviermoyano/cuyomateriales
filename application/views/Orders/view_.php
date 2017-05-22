@@ -323,10 +323,11 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                           $.each(resultList, function(index, result){
                             if(result.artEstado == 'AC'){
                               var row = '<tr>';
-                              row += '<td width="1%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
+                              row += '<td width="10%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
                               row += 'onClick="agregar('+result.artBarCode+')"></i></td>';
-                              row += '<td width="10%">'+result.artBarCode+'</td>';
+                              row += '<td width="20%">('+result.artBarCode+')</td>';
                               row += '<td>'+result.artDescription+'</td>';
+                              row += '<td width="20%" style="text-align: right"><b> $ '+parseFloat(result.pVenta).toFixed(2)+'</b></td>';
                               row += '</tr>';
                               $('#saleDetailSearch > tbody').prepend(row);
                             }
