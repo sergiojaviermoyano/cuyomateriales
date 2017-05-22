@@ -5,9 +5,16 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Ordenes de Compra</h3>
+          
           <?php
           if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadOrder(0,\'Add\')" id="btnAdd">Agregar</button>';
+          }
+          ?>
+
+          <?php
+          if (strpos($permission,'Budget') !== false) {
+            echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadOrder(0,\'Pre\')" id="btnAdd">Presupuesto</button>';
           }
           ?>
         </div><!-- /.box-header -->
@@ -220,10 +227,10 @@
     LoadIconAction('modalAction__','Print');
     $.ajax({
             type: 'POST',
-            data: { 
+            data: {
                     id : id__
                   },
-        url: 'index.php/order/printOrder', 
+        url: 'index.php/order/printOrder',
         success: function(result){
                       WaitingClose();
                       var url = "./assets/reports/" + result;
@@ -313,7 +320,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel__"><span id="modalAction__"> </span> Comprobante</h4> 
+        <h4 class="modal-title" id="myModalLabel__"><span id="modalAction__"> </span> Comprobante</h4>
       </div>
       <div class="modal-body" id="modalBodyPrint">
         <div>

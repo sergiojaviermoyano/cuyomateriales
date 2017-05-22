@@ -118,6 +118,11 @@ class Orders extends CI_Model
 
 			switch ($action) {
 				case 'Add':
+				case 'Pre':
+
+
+					$data['ocEsPresupuesto']=($action=='Pre')?1:0;
+
 					if($this->db->insert('ordendecompra', $data) == false) {
 						return false;
 					} else {
