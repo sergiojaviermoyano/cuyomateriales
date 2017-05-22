@@ -92,7 +92,7 @@ class Orders extends CI_Model
         lpId:   $('#lpId').val(),
         art:    sale
         */
-        if($data == null)
+    if($data == null)
 		{
 			return false;
 		}
@@ -149,7 +149,34 @@ class Orders extends CI_Model
 						}
 					}
 					break;
+				case 'Edit':{
+					if($this->db->update('ordendecompra', $data, array('ocId'=>$id)) == false) {
+				 		return false;
+				 	}
+					if($this->db->delete('ordendecompradetalle', array('ocId'=>$id)) == false) {
+				 		return false;
+				 	}	else {
+						$idOrder = $id;
 
+						foreach ($arts as $a) {
+							$insert = array(
+								'ocId'	 		=> $idOrder,
+								'artId' 		=> $a['artId'],
+								//'artCode' 		=> '',
+								'artDescripcion'=> $a['artDescription'],
+								'artPCosto'		=> $a['artCoste'],
+								'artPVenta'		=> $a['artFinal'],
+								'ocdCantidad'	=> $a['venCant']
+							);
+
+							if($this->db->insert('ordendecompradetalle', $insert) == false) {
+							 return false;
+						 }
+					 }
+				 }
+
+				break;
+			}
 				default:
 					# code...
 					break;
@@ -167,7 +194,7 @@ class Orders extends CI_Model
 		{
 			$data['act'] = 'Print';
 			$result = $this->getOrder($data);
-			
+
 			//Datos del Cliente
 			$query= $this->db->get_where('clientes',array('cliId' => $result['order']['cliId']));
 				if ($query->num_rows() != 0)
@@ -182,7 +209,7 @@ class Orders extends CI_Model
 				{
 					$user = $query->result_array();
 					$data['user'] = $user[0];
-				}	
+				}
 
 			//Lista de Precio
 			$query= $this->db->get_where('listadeprecios',array('lpId' => $result['order']['lpId']));
@@ -226,7 +253,7 @@ class Orders extends CI_Model
 						<th>Total</th>
 					</tr>';
 			$total = 0;
-			
+
 			foreach ($result['detalleCompra'] as $art) {
 				$html .= '<tr>';
 				$html .= '<td>('.$art['artId'].')'.$art['artDescripcion'].'</td>';
@@ -243,7 +270,7 @@ class Orders extends CI_Model
 			$html .= '<tr><td><h5>Total</h5></td>';
 			$html .= '<td colspan="3" style="text-align: right"><h3>'.number_format($total, 2, ',', '.').'</h3></td></tr>';
 			$html .= '</table>';
-			
+
 
 			$html .= '	</td></tr>';
 			$html .= '</table>';
@@ -286,8 +313,8 @@ class Orders extends CI_Model
 			//se carga el codigo html
 			$dompdf->load_html(utf8_decode($html));
 			//aumentamos memoria del servidor si es necesario
-			ini_set("memory_limit","300M"); 
-			//Tamaño de la página y orientación 
+			ini_set("memory_limit","300M");
+			//Tamaño de la página y orientación
 			$dompdf->set_paper('a4', 'landscape');
 			//lanzamos a render
 			$dompdf->render();
@@ -300,7 +327,7 @@ class Orders extends CI_Model
 			$dir = opendir('assets/reports/');
 			while($f = readdir($dir))
 			{
-			 
+
 			if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
 			unlink('assets/reports/'.$f);
 			}
