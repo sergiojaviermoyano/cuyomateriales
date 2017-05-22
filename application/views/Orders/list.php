@@ -279,16 +279,19 @@
 
         <div class="row">
           <div class="col-xs-10 col-xs-offset-1">
+              <!--
             <table class="table table-bordered">
               <thead>
                 <tr>
-                  <th width="1%"></th>
+                  <th width="10%"></th>
                   <th width="10%">Código</th>
-                  <th>Descripción</th>
+                  <th width="60%">Descripción</th>
+                  <th width="20%">Precio</th>
                 </tr>
               </thead>
             </table>
-            <table id="saleDetailSearch" style="height:20em; display:block; overflow: auto;" class="table table-bordered">
+            -->
+            <table id="saleDetailSearch" style="max-height:20em; display: table; overflow: auto;" class="table table-bordered" width="100%">
               <tbody>
 
               </tbody>
