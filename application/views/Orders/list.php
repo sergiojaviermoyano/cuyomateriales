@@ -5,7 +5,8 @@
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Ordenes de Compra</h3>
-          
+          <br>
+          <div class="btn-group" role="group" aria-label="Basic example">
           <?php
           if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadOrder(0,\'Add\')" id="btnAdd">Agregar</button>';
@@ -14,9 +15,10 @@
 
           <?php
           if (strpos($permission,'Budget') !== false) {
-            echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadOrder(0,\'Pre\')" id="btnAdd">Presupuesto</button>';
+            echo '<button class="btn btn-block btn-info" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadOrder(0,\'Pre\')" id="btnAdd">Presupuesto</button>';
           }
           ?>
+          </div>
         </div><!-- /.box-header -->
         <div class="box-body">
           <table id="provid" class="table table-bordered table-hover">
@@ -31,32 +33,33 @@
             <tbody>
               <?php
                 if($orders) {
-                	foreach($orders as $p)
+                	foreach($orders as $o)
       		        {
   	                echo '<tr>';
   	                echo '<td>';
-                    echo '<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('.$p['ocId'].')"></i> ';
+                    echo '<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('.$o['ocId'].')"></i> ';
 
                     if (strpos($permission,'Edit') !== false) {
-                      if($p['ocEstado'] == 'AC'){
-  	                	  echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$p['ocId'].',\'Edit\')"></i>';
+                      if($o['ocEstado'] == 'AC'){
+  	                	  echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$o['ocId'].',\'Edit\')"></i>';
                       }
                     }
 
                     if (strpos($permission,'Del') !== false) {
-  	                	echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$p['ocId'].',\'Del\')"></i>';
+  	                	echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$o['ocId'].',\'Del\')"></i>';
                     }
 
                     if (strpos($permission,'View') !== false) {
-  	                	echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$p['ocId'].',\'View\')"></i>';
+  	                	echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$o['ocId'].',\'View\')"></i>';
                     }
 
   	                echo '</td>';
-                    echo '<td style="text-align: left">'.$p['ocObservacion'].'</td>';
-  	                echo '<td style="text-align: center">'.date("d-m-Y H:i", strtotime($p['ocFecha'])).'</td>';
+                    echo '<td style="text-align: left">'.($o['ocEsPresupuesto'] ? '<small class="label pull-left bg-navy" style="margin-top:4px;">Presupuesto</small>  ' : '').'&nbsp; &nbsp;     '.$o['ocObservacion'].'</td>';
+                    //echo '<td style="text-align: left">'.$o['ocObservacion'].'</td>';
+  	                echo '<td style="text-align: center">'.date("d-m-Y H:i", strtotime($o['ocFecha'])).'</td>';
 
                     echo '<td style="text-align: center">';
-                    switch($p['ocEstado']){
+                    switch($o['ocEstado']){
                       case 'AC':
                         echo '<small class="label pull-left bg-green">Activa</small>';
                         break;
