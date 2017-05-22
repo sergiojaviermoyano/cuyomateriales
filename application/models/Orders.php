@@ -10,7 +10,7 @@ class Orders extends CI_Model
 
 	function Orders_List(){
 
-		$this->db->order_by('ocFecha', 'asc');
+		$this->db->order_by('ocFecha', 'desc');
 
 		$query= $this->db->get('ordendecompra');
 
