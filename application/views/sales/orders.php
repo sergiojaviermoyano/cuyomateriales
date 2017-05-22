@@ -28,7 +28,7 @@
                             echo '<td>';
                               echo '<i class="fa fa-fw fa-money" style="color: #00a65a; cursor: pointer; margin-left: 15px;" onclick="Factuar('.$o['ocId'].')"></i>';
                             echo '</td>';
-                            echo '<td style="text-align: left">'.$o['ocObservacion'].'</td>';
+                            echo '<td style="text-align: left">'.($o['ocEsPresupuesto'] ? '<small class="label pull-left bg-navy" style="margin-top:4px;">Presupuesto</small>  ' : '').''.$o['ocObservacion'].'</td>';
                             echo '<td style="text-align: center">';
                               echo date("d-m-Y H:i", strtotime($o['ocFecha']));
                             echo '</td>';

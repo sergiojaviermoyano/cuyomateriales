@@ -5,7 +5,7 @@
 	<div class="col-xs-6">
 		<?php 
 		foreach ($data['tmp'] as $key => $item):
-			echo '<div class="row" onClick="showDiv('.$item['tmpId'].')">';
+			echo '<div class="row" onClick="showDiv('.$item['tmpId'].')" id="'.$item['tmpId'].'">';
 				echo '<div class="col-xs-5">';
 				echo $item['tmpDescripción'];
 				echo '</div>';
@@ -58,7 +58,12 @@
 				echo '<div class="col-xs-5" style="margin-top: 7px;">Importe</div>';
 				echo '<div class="col-xs-1" style="text-align: center; margin-top: 7px;"><i class="fa fa-fw fa-dollar"></i></div>';
 				echo '<div class="col-xs-5">';
-				echo '<input class="form-control" id="'.$item['tmpId'].'_importe" value="" type="number" step="any">';
+				echo '<input class="form-control" id="'.$item['tmpId'].'_importe" value="" type="text">';
+				?>
+				<script>
+				$('#'+<?php echo $item['tmpId'];?>+'_importe').maskMoney({allowNegative: true, thousands:'', decimal:'.'});
+				</script>
+				<?php
 				echo '</div>';
 				echo '</div><br>';
 
@@ -90,8 +95,13 @@
 				echo '</div>';
 				echo '<div class="col-xs-1" style="text-align: center; margin-top: 7px;"><i class="fa fa-fw fa-dollar"></i></div>';
 				echo '<div class="col-xs-5">';
-				echo '<input class="form-control" id="'.$item['tmpD'][0]['medId'].'_importe" value="" type="number" step="any">';
+				echo '<input class="form-control" id="'.$item['tmpD'][0]['medId'].'_importe" value="" type="text">';
 				echo '</div>';
+				?>
+				<script>
+				$('#'+<?php echo $item['tmpD'][0]['medId'];?>+'_importe').maskMoney({allowNegative: true, thousands:'', decimal:'.'});
+				</script>
+				<?php
 				echo '</div><br>';
 				echo '<div class="row">';
 				echo '<div class="col-xs-12" style="text-align: center;">';
