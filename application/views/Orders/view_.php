@@ -13,7 +13,7 @@
 	 <label class="col-sm-3">Lista de Precios <strong style="color: #dd4b39">*</strong>:  </label>
 	  <div class="col-sm-9">
 <?php
-if($data['act'] == 'Add' ){ ?>
+if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
 	    <select class="form-control" id="lpId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
 	      <option value="-1" data-porcent="0">Lista de Precios</option>
 	      <?php foreach ($ListaPrecios as $key => $item):?>

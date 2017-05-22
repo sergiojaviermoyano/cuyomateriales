@@ -54,8 +54,9 @@
                     }
 
   	                echo '</td>';
-                    echo '<td style="text-align: left">'.($o['ocEsPresupuesto'] ? '<small class="label pull-left bg-navy" style="margin-top:4px;">Presupuesto</small>  ' : '').'&nbsp; &nbsp;     '.$o['ocObservacion'].'</td>';
-                    //echo '<td style="text-align: left">'.$o['ocObservacion'].'</td>';
+                    //echo '<td style="text-align: left">'.($o['ocEsPresupuesto'] ? '<small class="label pull-left bg-navy" style="margin-top:4px;">Presupuesto</small>  ' : '').''.$o['ocObservacion'].'</td>';
+                    echo '<td style="text-align: left">'.($o['ocEsPresupuesto'] ? '<small class="label pull-left bg-navy" style="font-size: 14px; margin-right: 5px;" title="Presupuesto">P</small>  ' : '').'&nbsp; &nbsp;     '.$o['ocObservacion'].'</td>';
+                      //echo '<td style="text-align: left">'.$o['ocObservacion'].'</td>';
   	                echo '<td style="text-align: center">'.date("d-m-Y H:i", strtotime($o['ocFecha'])).'</td>';
 
                     echo '<td style="text-align: center">';
