@@ -99,13 +99,13 @@ if($data['act'] == 'Add' ){ ?>
       </thead>
       <tbody>
 				<?php foreach ($data['detalleCompra'] as $key => $value):?>
-					<tr>
-						<td width="1%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square" onClick="delete_(1)"></i></td>
+					<tr id="<?php echo $key+1;?>">
+						<td width="1%"><i style="color: #dd4b39; cursor: pointer;" class="fa fa-fw fa-times-circle" onClick="delete_(<?php echo $key+1;?>)"></i></td>
 						<td width="10%"><?php echo $value['artBarCode']?></td>
 						<td><?php echo $value['artDescripcion']?></td>
-						<td width="10%" class="td_cant" style="text-align: right"   data-pventa="<?php echo $value['artPCosto']?>" ><?php echo  (int)$value['ocdCantidad']?></td>
-						<td width="10%" class="td_pventa"  style="text-align: right" ><?php echo $value['artPCosto']?></td>
-						<td width="10%" class="td_total" style="text-align: right"><?php echo $value['artPVenta']?></td>
+						<td width="10%" class="td_cant" style="text-align: right"   data-pventa="<?php echo $value['artPVenta']?>" ><?php echo  (int)$value['ocdCantidad']?></td>
+						<td width="10%" class="td_pventa"  style="text-align: right" ><?php echo $value['artPVenta']?></td>
+						<td width="10%" class="td_total" style="text-align: right"></td>
 						<td style="display: none"><?php echo $value['artId']?></td>
 						<td style="display: none"><?php echo $value['artPVenta']?></td>
 						<td style="display: none"><?php echo $value['artPCosto']?></td>
@@ -226,7 +226,7 @@ var isOpenWindow = false;
         Buscar();
       }
   });
-var idSale = 1;
+var idSale = $('#order_detail > tbody').find('tr').length+1;
   function Buscar(){
 
     WaitingOpen('Buscando');
@@ -282,6 +282,7 @@ var idSale = 1;
   });
 
     function delete_(id){
+			console.debug("");
     $('#'+id).remove();
     Calcular();
     $('#artId').focus();
@@ -374,7 +375,7 @@ var idSale = 1;
 				$(td_total[index]).text(sub_total);
 				total =total+parseFloat(sub_total);
 			});
-			$("#saleTotal").text(total);
+			$("#saleTotal").text(total.toFixed(2));
 		});
 
 

@@ -25,13 +25,14 @@ class order extends CI_Controller {
     $data['Clientes']=$this->Customers->Customers_List();
 
 		$data['data'] = $this->Orders->getOrder($this->input->post());
-		
+
 		$response['html'] = $this->load->view('orders/view_', $data, true);
 
 		echo json_encode($response);
 	}
 
 	public function setOrder(){
+
 		$data = $this->Orders->setOrder($this->input->post());
 		if($data  == false)
 		{
