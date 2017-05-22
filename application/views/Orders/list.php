@@ -6,19 +6,19 @@
         <div class="box-header">
           <h3 class="box-title">Ordenes de Compra</h3>
           <br>
-          <div class="btn-group" role="group" aria-label="Basic example">
+
           <?php
           if (strpos($permission,'Add') !== false) {
-            echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadOrder(0,\'Add\')" id="btnAdd">Agregar</button>';
+            echo '<button class="btn  btn-success" style="" data-toggle="modal" onclick="LoadOrder(0,\'Add\')" id="btnAdd">Agregar</button>';
           }
           ?>
 
           <?php
           if (strpos($permission,'Budget') !== false) {
-            echo '<button class="btn btn-block btn-info" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadOrder(0,\'Pre\')" id="btnAdd">Presupuesto</button>';
+            echo '<button class="btn  btn-info" style="" data-toggle="modal" onclick="LoadOrder(0,\'Pre\')" id="btnAdd">Presupuesto</button>';
           }
           ?>
-          </div>
+
         </div><!-- /.box-header -->
         <div class="box-body">
           <table id="provid" class="table table-bordered table-hover">
