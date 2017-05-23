@@ -3,11 +3,11 @@
           <ul class="sidebar-menu">
             <li class="treeview active">
               <a href="#"> <!-- onClick="cargarView('dash', 'calendar', '')"-->
-                <i class="fa fa-dashboard"></i> <span>Escritorio</span> 
+                <i class="fa fa-dashboard"></i> <span>Escritorio</span>
               </a>
             </li>
-            <?php 
-              
+            <?php
+
                foreach ($menu as $m) {
                   if(count($m['childrens']) > 0) {
                     echo '<li class="treeview">
@@ -24,7 +24,7 @@
                               }
                               echo '<li>
                                       <a href="#" onClick="cargarView(\''.$ch['menuController'].'\',\''.$ch['menuView'].'\', \''.$actions.'\')">
-                                        <i class="'.$ch['menuIcon'].'"></i> '.str_replace("_", " ", $ch['menuName']).' 
+                                        <i class="'.$ch['menuIcon'].'"></i> '.str_replace("_", " ", $ch['menuName']).'
                                       </a>
                                     </li>';
                             }
@@ -44,12 +44,12 @@
                             </a>
                           </li>';
                   }
-                } 
-                
+                }
+
             ?>
         </ul>
       </section>
-    </aside> 
+    </aside>
 
       <script>
       function cargarView(controller, metodh, actions)
@@ -60,7 +60,7 @@
         $.ajax({
             type: 'POST',
             //data: null,
-            url: '<?php echo base_url(); ?>index.php/'+controller+'/'+metodh+'/'+actions, 
+            url: '<?php echo base_url(); ?>index.php/'+controller+'/'+metodh+'/'+actions,
             success: function(result){
                           WaitingClose();
                           $("#content").html(result);

@@ -16,7 +16,7 @@ class rubro extends CI_Controller {
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('rubros/list', $data, true));
 	}
-	
+
 	public function getRubro(){
 		$data['data'] = $this->Rubros->getRubro($this->input->post());
 		$response['html'] = $this->load->view('rubros/view_', $data, true);
@@ -31,7 +31,7 @@ class rubro extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode(true);	
+			echo json_encode(true);
 		}
 	}
 
@@ -42,7 +42,7 @@ class rubro extends CI_Controller {
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('rubros/listSR', $data, true));
 	}
-	
+
 	public function getSubRubro(){
 		$data['data'] = $this->Rubros->getSubRubro($this->input->post());
 		$response['html'] = $this->load->view('rubros/viewSR_', $data, true);
@@ -57,7 +57,22 @@ class rubro extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode(true);	
+			echo json_encode(true);
 		}
 	}
+
+	public function getSubRubro_by_rubro($rubId=0){
+
+		$subRubro = $this->Rubros->getSubRubro_by_rubId($this->input->get());
+
+		echo json_encode($subRubro);
+	}
+
+	public function upgrate($permission){
+		$data['permission'] = $permission;
+		$data['rubros'] =  $this->Rubros->Rubro_List();
+		echo json_encode($this->load->view('rubros/upgrate', $data, true));
+	}
+
+
 }

@@ -6,7 +6,7 @@
         <div class="box-header">
           <h3 class="box-title">Rubros</h3>
           <?php
-          if (strpos($permission,'Add') !== false) {
+          if (strpos($permission,'Edit') !== false) {
             echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadRub(0,\'Add\')" id="btnAdd" >Agregar</button>';
           }
           ?>
@@ -95,7 +95,7 @@
       $.ajax({
             type: 'POST',
             data: { id : id_, act: action },
-        url: 'index.php/rubro/getRubro', 
+        url: 'index.php/rubro/getRubro',
         success: function(result){
                       WaitingClose();
                       $("#modalBodyRubro").html(result.html);
@@ -132,13 +132,13 @@
     WaitingOpen('Guardando cambios');
       $.ajax({
             type: 'POST',
-            data: { 
-                    id :      idRubro, 
-                    act:      acRubro, 
-                    name:     $('#rubDescripcion').val(), 
+            data: {
+                    id :      idRubro,
+                    act:      acRubro,
+                    name:     $('#rubDescripcion').val(),
                     status:   $('#rubEstado').val()
                   },
-        url: 'index.php/rubro/setRubro', 
+        url: 'index.php/rubro/setRubro',
         success: function(result){
                       WaitingClose();
                       $('#modalRubro').modal('hide');
@@ -160,10 +160,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Rubro</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Rubro</h4>
       </div>
       <div class="modal-body" id="modalBodyRubro">
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>

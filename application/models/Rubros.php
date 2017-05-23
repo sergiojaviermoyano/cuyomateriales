@@ -7,15 +7,15 @@ class Rubros extends CI_Model
 	{
 		parent::__construct();
 	}
-	
+
 	function Rubro_List(){
 		$this->db->from('rubros');
 		$this->db->order_by('rubDescripcion', 'asc');
-		$query = $this->db->get(); 
-		
+		$query = $this->db->get();
+
 		if ($query->num_rows()!=0)
 		{
-			return $query->result_array();	
+			return $query->result_array();
 		}
 		else
 		{
@@ -57,7 +57,7 @@ class Rubros extends CI_Model
 			}
 			$data['read'] = $readonly;
 			$data['action'] = $action;
-			
+
 			return $data;
 		}
 	}
@@ -73,35 +73,35 @@ class Rubros extends CI_Model
             $act 	= $data['act'];
             $name 	= $data['name'];
             $status = $data['status'];
-            
+
 
 			$data = array(
 				   'rubDescripcion' 				=> $name,
-				   'rubEstado' 						=> $status				   
+				   'rubEstado' 						=> $status
 				);
 
 			switch($act){
 				case 'Add':
-					//Agregar Rubro 
+					//Agregar Rubro
 					if($this->db->insert('rubros', $data) == false) {
 						return false;
-					} 
+					}
 					break;
-				
+
 				 case 'Edit':
 				 	//Actualizar rubro
 				 	if($this->db->update('rubros', $data, array('rubId'=>$id)) == false) {
 				 		return false;
 				 	}
 				 	break;
-					
+
 				 case 'Del':
 				 	//Eliminar rubro
 				 	if($this->db->delete('rubros', array('rubId'=>$id)) == false) {
 				 		return false;
 				 	}
 				 	break;
-				 	
+
 			}
 			return true;
 
@@ -114,15 +114,32 @@ class Rubros extends CI_Model
 		$this->db->from('subrubros');
 		$this->db->join('rubros', ' rubros.rubId = subrubros.rubId');
 		$this->db->order_by('subrDescripcion', 'asc');
-		$query = $this->db->get(); 
-		
+		$query = $this->db->get();
+
 		if ($query->num_rows()!=0)
 		{
-			return $query->result_array();	
+			return $query->result_array();
 		}
 		else
 		{
 			return false;
+		}
+	}
+
+	function getSubRubro_by_rubId($data){
+		$this->db->select('*');
+		$this->db->from('subrubros');
+		$this->db->where('rubId',$data['rubId']);
+		$this->db->order_by('subrDescripcion', 'asc');
+		$query = $this->db->get();
+
+		if ($query->num_rows()!=0)
+		{
+			return $query->result_array();
+		}
+		else
+		{
+			return array();
 		}
 	}
 
@@ -167,9 +184,9 @@ class Rubros extends CI_Model
 			$query= $this->db->get_where('rubros',array('rubEstado' => 'AC'));
 			if ($query->num_rows() != 0)
 			{
-				$data['rubros'] = $query->result_array();	
+				$data['rubros'] = $query->result_array();
 			}
-			
+
 			return $data;
 		}
 	}
@@ -186,36 +203,36 @@ class Rubros extends CI_Model
             $name 	= $data['name'];
             $status = $data['status'];
             $rubId  = $data['rbId'];
-            
+
 
 			$data = array(
 				   'subrDescripcion' 				=> $name,
 				   'rubId'							=> $rubId,
-				   'subrEstado'						=> $status				   
+				   'subrEstado'						=> $status
 				);
 
 			switch($act){
 				case 'Add':
-					//Agregar subrubro 
+					//Agregar subrubro
 					if($this->db->insert('subrubros', $data) == false) {
 						return false;
-					} 
+					}
 					break;
-				
+
 				 case 'Edit':
 				 	//Actualizar subrubro
 				 	if($this->db->update('subrubros', $data, array('subrId'=>$id)) == false) {
 				 		return false;
 				 	}
 				 	break;
-					
+
 				 case 'Del':
 				 	//Eliminar subrubro
 				 	if($this->db->delete('subrubros', array('subrId'=>$id)) == false) {
 				 		return false;
 				 	}
 				 	break;
-				 	
+
 			}
 			return true;
 
