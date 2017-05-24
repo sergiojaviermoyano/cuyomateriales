@@ -320,7 +320,7 @@ class Orders extends CI_Model
 			//aumentamos memoria del servidor si es necesario
 			ini_set("memory_limit","300M");
 			//Tamaño de la página y orientación
-			$dompdf->set_paper('a4', 'landscape');
+			$dompdf->set_paper('a4','portrait');
 			//lanzamos a render
 			$dompdf->render();
 			//guardamos a PDF
