@@ -256,10 +256,10 @@ class Articles extends CI_Model
 			$subQuery =  $this->db->get_compiled_select();
 			$this->db->where("subrId IN (".$subQuery.")", NULL, FALSE);
 		}else{
-			$this->db->where('subrId',$data['rubId']);
+			$this->db->where('subrId',$data['subrId']);
 		}
 
-		if($this->db->update("articles")){
+		if($this->db->update("articles")){			
 			return true;
 		}else{
 			return false;
