@@ -1,4 +1,4 @@
-
+<input type="hidden" id="permission" value="<?php echo $permission;?>">
 <section class="content">
   <div class="row">
     <div class="col-xs-6">
@@ -41,9 +41,9 @@
           </div>
 
           <div class="form-group">
-            <label for="subrId" class="control-label col-sm-2">Precio Costo</label>
+            <label for="subrId" class="control-label col-sm-2">Importe a Actualizar</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" name="artCoste" id="artCoste" value="">
+              <input type="text" class="form-control" name="incrementValue" id="incrementValue" value="">
             </div>
           </div>
 
@@ -86,6 +86,7 @@
 
     $("form").submit(function(){
       var data=$(this).serialize();
+      WaitingOpen('Cargando Subrubro');
       console.debug("===> data: %o",data);
 
       $.ajax({
@@ -93,7 +94,10 @@
             data:data,
             url: 'index.php/article/update_prices_by_rubro',
             success: function(result){
+              console.debug(result);
                WaitingClose();
+               //$('#modalArticle').modal('hide');
+               setTimeout("cargarView('rubro', 'upgrate', '"+$('#permission').val()+"');",1000);
                /*
                $("#subrId").empty();
                var output ='<option value=""> Seleccione SubRubro</option>';

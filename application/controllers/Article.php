@@ -62,6 +62,7 @@ class article extends CI_Controller {
 	public function searchByAll() {
 
 		$data = $this->Articles->searchByAll($this->input->post());
+
 		if($data  == false)
 		{
 			echo json_encode(false);
@@ -73,7 +74,15 @@ class article extends CI_Controller {
 	}
 
 	public function update_prices_by_rubro(){
-		var_dump($this->input->post());
-		return true;
+		$data=$this->Articles->update_prices_by_rubro($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode(true);
+		}
 	}
+
 }
