@@ -56,9 +56,12 @@
   </div><!-- /.row -->
 </section><!-- /.content -->
 
-
 <script type="text/javascript">
   $(function(){
+
+    $("#incrementValue").maskMoney({allowNegative: true, thousands:'', decimal:'.'});
+
+
     $("#rubId").on('change',function(){
       var rubId=$(this).val();
       WaitingOpen('Cargando Subrubro');
