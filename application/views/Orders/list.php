@@ -43,7 +43,7 @@
 <script>
   $(function () {
     $('#order_table').DataTable({
-      "paging": true,
+     "paging": true,
       "lengthChange": true,
       "searching": true,
       "ordering": true,
@@ -74,7 +74,11 @@
                     td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'View\')"></i>';
                   }
 
-              var td_2=item.ocObservacion;
+              var td_2="";
+                 if(item.ocEsPresupuesto==1){
+                   td_2+= '<small class="label pull-left bg-navy" style="font-size: 14px; margin-right: 5px;" title="Presupuesto">P</small>  &nbsp; &nbsp; ';
+                 }
+                 td_2+= item.ocObservacion;//item.ocObservacion;
               var td_3=item.ocFecha;
               var td_4="";
 
@@ -96,9 +100,12 @@
                   break;
                 }
               }
-              output.push([td_1,td_2,td_3,td_4]);
-            });
+              //for(i=0;i<=100000;i++){
+                output.push([td_1,td_2,td_3,td_4]);
 
+              //}
+
+            });
             return output;
           }
         }
