@@ -37,12 +37,20 @@ class Sales extends CI_Model
 
 			switch ($data['id']) {
 				case '1':
+					$query = $this->db->get('configuracion');
+					if ($query->num_rows() != 0)
+					{
+						$configuration = $query->result_array();
+						$response['validez'] = $configuration[0];
+					}
+
 					$this->db->select('*');
 					$this->db->from('ordendecompra');
 					$this->db->where(array('ocEstado' => 'AC'));
 					$this->db->order_by('ocFecha', 'asc');
 					$query = $this->db->get();
 					$response['ordenes'] = $query->result_array();
+
 					break;
 				
 				case '2':

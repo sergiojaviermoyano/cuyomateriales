@@ -24,15 +24,25 @@
                   <?php
                     foreach($data['ordenes'] as $o)
                     {
-                            echo '<tr>';
-                            echo '<td>';
-                              echo '<i class="fa fa-fw fa-money" style="color: #00a65a; cursor: pointer; margin-left: 15px;" onclick="Factuar('.$o['ocId'].')"></i>';
-                            echo '</td>';
-                            echo '<td style="text-align: left">'.($o['ocEsPresupuesto'] ? '<small class="label pull-left bg-navy" style="font-size: 14px; margin-right: 5px;" title="Presupuesto">P</small>  ' : '').''.$o['ocObservacion'].'</td>';
-                            echo '<td style="text-align: center">';
-                              echo date("d-m-Y H:i", strtotime($o['ocFecha']));
-                            echo '</td>';
-                            echo '</tr>';
+                        $datetime1 = new DateTime($o['ocFecha']);
+                        $datetime2 = new DateTime(date('Y-m-d H:i:s'));
+                        $interval = $datetime1->diff($datetime2);
+                        $int = $interval->format('%R%a');
+                            
+                      echo '<tr style="background: ">';
+                      echo '<td>';
+                        echo '<i class="fa fa-fw fa-money" style="color: #00a65a; cursor: pointer; margin-left: 15px;" onclick="Factuar('.$o['ocId'].')"></i>';
+                      echo '</td>';
+                      echo '<td style="text-align: left">';
+                      echo ($o['ocEsPresupuesto'] ? '<small class="label pull-left bg-navy" style="font-size: 14px; margin-right: 5px;" title="Presupuesto">P</small>  ' : '').'';
+                      if(intval ($int) > intval ($data['validez']['validezpresupuesto'])){
+                          echo '<small class="label pull-left bg-orange" style="font-size: 14px; margin-right: 5px;">Vencida</small>';
+                      }
+                      echo $o['ocObservacion'].'</td>';
+                      echo '<td style="text-align: center">';
+                        echo date("d-m-Y H:i", strtotime($o['ocFecha']));
+                      echo '</td>';
+                      echo '</tr>';
                     }
                   ?>
                 </tbody>
