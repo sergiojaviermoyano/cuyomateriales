@@ -62,7 +62,7 @@
               var td_1="";
                   td_1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
 
-                  if(permission.indexOf("Edit")>0){
+                  if(permission.indexOf("Edit")>0  && item.ocEstado!='AC'){
                     td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Edit\')"></i>';
                   }
 
