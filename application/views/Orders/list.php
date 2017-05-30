@@ -21,7 +21,7 @@
 
         </div><!-- /.box-header -->
         <div class="box-body">
-          <table id="provid" class="table table-bordered table-hover">
+          <table id="order_table" class="table table-bordered table-hover">
             <thead>
               <tr>
                 <th width="20%">Acciones</th>
@@ -31,54 +31,7 @@
               </tr>
             </thead>
             <tbody>
-              <?php
-                if($orders) {
-                	foreach($orders as $o)
-      		        {
-  	                echo '<tr>';
-  	                echo '<td>';
-                    echo '<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('.$o['ocId'].')"></i> ';
 
-                    if (strpos($permission,'Edit') !== false) {
-                      if($o['ocEstado'] == 'AC'){
-  	                	  echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$o['ocId'].',\'Edit\')"></i>';
-                      }
-                    }
-
-                    if (strpos($permission,'Del') !== false) {
-  	                	echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$o['ocId'].',\'Del\')"></i>';
-                    }
-
-                    if (strpos($permission,'View') !== false) {
-  	                	echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('.$o['ocId'].',\'View\')"></i>';
-                    }
-
-  	                echo '</td>';
-                    //echo '<td style="text-align: left">'.($o['ocEsPresupuesto'] ? '<small class="label pull-left bg-navy" style="margin-top:4px;">Presupuesto</small>  ' : '').''.$o['ocObservacion'].'</td>';
-                    echo '<td style="text-align: left">'.($o['ocEsPresupuesto'] ? '<small class="label pull-left bg-navy" style="font-size: 14px; margin-right: 5px;" title="Presupuesto">P</small>  ' : '').'&nbsp; &nbsp;     '.$o['ocObservacion'].'</td>';
-                      //echo '<td style="text-align: left">'.$o['ocObservacion'].'</td>';
-  	                echo '<td style="text-align: center">'.date("d-m-Y H:i", strtotime($o['ocFecha'])).'</td>';
-
-                    echo '<td style="text-align: center">';
-                    switch($o['ocEstado']){
-                      case 'AC':
-                        echo '<small class="label pull-left bg-green">Activa</small>';
-                        break;
-
-                      case 'IN':
-                        echo '<small class="label pull-left bg-red">Inactiva</small>';
-                        break;
-
-                      case 'FA':
-                        echo '<small class="label pull-left bg-blue">Facturada</small>';
-                        break;
-                    }
-  	                echo '</tr>';
-
-      		        }
-
-                }
-              ?>
             </tbody>
           </table>
         </div><!-- /.box-body -->
@@ -89,25 +42,65 @@
 
 <script>
   $(function () {
-    //$("#groups").DataTable();
-    $('#provid').DataTable({
+    $('#order_table').DataTable({
       "paging": true,
       "lengthChange": true,
       "searching": true,
       "ordering": true,
       "info": true,
       "autoWidth": true,
-      "language": {
-            "lengthMenu": "Ver _MENU_ filas por página",
-            "zeroRecords": "No hay registros",
-            "info": "Mostrando página _PAGE_ de _PAGES_",
-            "infoEmpty": "No hay registros disponibles",
-            "infoFiltered": "(filtrando de un total de _MAX_ registros)",
-            "sSearch": "Buscar:  ",
-            "oPaginate": {
-                "sNext": "Sig.",
-                "sPrevious": "Ant."
+      'ajax':{
+          "dataType": 'json',
+          "contentType": "application/json; charset=utf-8",
+          "type": "POST",
+          "url":'index.php/order/listingOrders',
+          "dataSrc": function (json) {
+            var output=[];
+            var permission=$("#permission").val();
+            permission= permission.split('-');
+            $.each(json,function(index,item){
+              var td_1="";
+                  td_1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
+
+                  if(permission.indexOf("Edit")>0){
+                    td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Edit\')"></i>';
+                  }
+
+                  if(permission.indexOf("Del")>0){
+                    td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Del\')"></i>';
+                  }
+
+                  if(permission.indexOf("View")>0){
+                    td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'View\')"></i>';
+                  }
+
+              var td_2=item.ocObservacion;
+              var td_3=item.ocFecha;
+              var td_4="";
+
+              switch (item.ocEstado) {
+                case 'AC':{
+                  td_4='<small class="label pull-left bg-green">Activa</small>';
+                  break;
+                }
+                case 'IN':{
+                  td_4='<small class="label pull-left bg-red">Inactiva</small>';
+                  break;
+                }
+                case 'FA':{
+                  td_4='<small class="label pull-left bg-blue">Facturada</small>';
+                  break;
+                }
+                default:{
+                  td_4='';
+                  break;
+                }
               }
+              output.push([td_1,td_2,td_3,td_4]);
+            });
+
+            return output;
+          }
         }
     });
   });

@@ -19,6 +19,16 @@ class order extends CI_Controller {
 		echo json_encode($this->load->view('orders/list', $data, true));
 	}
 
+
+	public function listingOrders(){
+		$orders = $this->Orders->Orders_List();
+
+		/*foreach ($orders as $key => $order) {
+			var_dump($order);
+		}*/
+		echo json_encode($orders);
+	}
+
 	public function getOrder(){
 
     $data['ListaPrecios']=$this->Lists->List_List();
