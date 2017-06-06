@@ -127,6 +127,7 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
   </div>
   <div class="col-xs-3 text-right">
       <label style="font-size: 30px; color: red;" id="saleTotal">0.00</label>
+			<input type="hidden" name="redondeo" id="redondeo" value="<?php echo $data['order']['redondeo'];?>">
   </div>
 </div>
 

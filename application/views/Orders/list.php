@@ -167,6 +167,8 @@
 
     var items = parseInt($('#saleItems').html());
     var venta = parseFloat($('#saleTotal').html());
+    var redondeo =parseFloat($('#redondeo').val());
+
     var sale = [];
     if(items > 0 && venta > 0){
       var table = $('#order_detail > tbody> tr');
@@ -202,7 +204,8 @@
                     obser:  $('#ocObservacion').val(),
                     cliId:  $('#cliId').val(),
                     lpId:   $('#lpId').val(),
-                    art:    sale
+                    art:    sale,
+                    redondeo: redondeo
                   },
     		url: 'index.php/Order/setOrder',
     		success: function(result){
@@ -229,7 +232,10 @@
     });
 
     $('#saleItems').html(items);
-    $('#saleTotal').html(parseFloat(total).toFixed(2));
+
+    var redondeo=parseFloat(total).toFixed(0)-parseFloat(total).toFixed(2);
+    $("#modalOrder").find("#redondeo").val(redondeo.toFixed(2));
+    $('#saleTotal').html(parseFloat(total).toFixed(0));
   }
 
   function Print(id__){

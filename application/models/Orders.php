@@ -107,6 +107,7 @@ class Orders extends CI_Model
 				$Order['usrId'] = '';
 				$Order['lpId'] = '';
 				$Order['cliId'] = '';
+				$Order['redondeo'] = '0';
 				$data['order'] = $Order;
 				$data['detalleCompra']=array();
 			}
@@ -132,6 +133,7 @@ class Orders extends CI_Model
         lpId:   $('#lpId').val(),
         art:    sale
         */
+		
     if($data == null)
 		{
 			return false;
@@ -144,6 +146,8 @@ class Orders extends CI_Model
 			$cliId = 	$data['cliId'];
 			$lpId =		$data['lpId'];
 			$arts = 	$data['art'];
+			$redondeo = 	$data['redondeo'];
+
 
 			//Datos del vendedor
 			$userdata = $this->session->userdata('user_data');
@@ -153,7 +157,8 @@ class Orders extends CI_Model
 				'ocObservacion'	=>$obser,
 				'usrId'			=>$usrId,
 				'lpId'			=>$lpId,
-				'cliId'			=>$cliId
+				'cliId'			=>$cliId,
+				'redondeo'  =>$redondeo
 				);
 
 			switch ($action) {
