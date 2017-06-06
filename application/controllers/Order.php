@@ -21,12 +21,17 @@ class order extends CI_Controller {
 
 
 	public function listingOrders(){
-		$orders = $this->Orders->Orders_List();
 
-		/*foreach ($orders as $key => $order) {
-			var_dump($order);
-		}*/
-		echo json_encode($orders);
+		$totalOrdenes=$this->Orders->getTotalOrders($_REQUEST);
+		$orders = $this->Orders->Orders_List_datatable($_REQUEST);
+
+		$result=array(
+			'draw'=>$_REQUEST['draw'],
+			'recordsTotal'=>$totalOrdenes,
+			'recordsFiltered'=>$totalOrdenes,
+			'data'=>$orders,
+		);
+		echo json_encode($result);
 	}
 
 	public function getOrder(){

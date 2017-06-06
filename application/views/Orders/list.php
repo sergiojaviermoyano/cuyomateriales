@@ -40,10 +40,13 @@
   </div><!-- /.row -->
 </section><!-- /.content -->
 
+
 <script>
   $(function () {
-    $('#order_table').DataTable({
-     "paging": true,
+    var dataTable= $('#order_table').DataTable({
+      "processing": true,
+      "serverSide": true,
+      "paging": true,
       "lengthChange": true,
       "searching": true,
       "ordering": true,
@@ -51,14 +54,15 @@
       "autoWidth": true,
       'ajax':{
           "dataType": 'json',
-          "contentType": "application/json; charset=utf-8",
-          "type": "POST",
+          //"contentType": "application/json; charset=utf-8",
+          "method": "POST",
           "url":'index.php/order/listingOrders',
           "dataSrc": function (json) {
+            console.debug(json);
             var output=[];
             var permission=$("#permission").val();
             permission= permission.split('-');
-            $.each(json,function(index,item){
+            $.each(json.data,function(index,item){
               var td_1="";
                   td_1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
 
@@ -107,6 +111,9 @@
 
             });
             return output;
+          },
+          error:function(the_error){
+            console.debug(the_error);
           }
         }
     });

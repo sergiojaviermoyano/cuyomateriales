@@ -10,12 +10,52 @@ class Orders extends CI_Model
 
 	function Orders_List(){
 
+
+
+
 		$this->db->order_by('ocFecha', 'desc');
+
+
 
 		$query= $this->db->get('ordendecompra');
 
 		if ($query->num_rows()!=0)
 		{
+			return $query->result_array();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	function getTotalOrders($data=null){
+		//$this->db->order_by('ocFecha', 'desc');
+		$this->db->order_by('ocFecha', 'desc');
+
+		if($data['search']['value']!=''){
+			$this->db->like('ocObservacion', $data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);
+		}
+		$query= $this->db->get('ordendecompra');
+		return $query->num_rows();
+	}
+
+	function Orders_List_datatable($data=null){
+
+
+		$this->db->order_by('ocFecha', 'desc');
+		//$this->db->limit($data['length'],$data['start']);
+		$this->db->limit($data['length'],$data['start']);
+		if($data['search']['value']!=''){
+			$this->db->like('ocObservacion', $data['search']['value']);
+		}
+		$query= $this->db->get('ordendecompra');
+		//echo ($this->db->last_query()."<br>");
+
+		if ($query->num_rows()!=0)
+		{
+
 			return $query->result_array();
 		}
 		else
