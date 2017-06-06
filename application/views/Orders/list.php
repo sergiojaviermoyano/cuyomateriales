@@ -58,7 +58,6 @@
           "method": "POST",
           "url":'index.php/order/listingOrders',
           "dataSrc": function (json) {
-            console.debug(json);
             var output=[];
             var permission=$("#permission").val();
             permission= permission.split('-');
