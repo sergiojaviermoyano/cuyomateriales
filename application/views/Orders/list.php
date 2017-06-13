@@ -165,6 +165,7 @@
                       $(".select2").select2({
                         allowClear: true
                       });
+                      Calcular();
     					},
     		    error: function(result){
     					WaitingClose();
@@ -172,6 +173,8 @@
     				},
           	dataType: 'json'
     		});
+
+
   }
 
 
@@ -251,7 +254,6 @@
 
   function Calcular(){
     var table = $('#order_detail > tbody> tr');
-
     var items = 0;
     var total = 0;
     table.each(function(r) {
@@ -260,10 +262,14 @@
     });
 
     $('#saleItems').html(items);
-
     var redondeo=parseFloat(total).toFixed(0)-parseFloat(total).toFixed(2);
     $("#modalOrder").find("#redondeo").val(redondeo.toFixed(2));
-    $('#saleTotal').html(parseFloat(total).toFixed(0));
+    if(redondeo>=0){
+      $("#label_discount").text("+"+redondeo.toFixed(2));//parseFloat($("#modalOrder").find("#redondeo").val()).toFixed(2));
+    }else{
+      $("#label_discount").text(redondeo.toFixed(2));//parseFloat($("#modalOrder").find("#redondeo").val()).toFixed(2));
+    }
+    $('#saleTotal').html(parseFloat(total).toFixed(0)+".00");
   }
 
   function Print(id__){

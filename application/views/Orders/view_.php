@@ -123,10 +123,13 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
   </div>
 
   <div class="col-xs-2 col-xs-offset-4">
+			<label style="font-size: 15px; margin-top: 10px;">Redondeo:</label>
+			<br>
       <label style="font-size: 20px; margin-top: 10px;">Total</label>
   </div>
   <div class="col-xs-3 text-right">
-      <label style="font-size: 30px; color: red;" id="saleTotal">0.00</label>
+      <label style="font-size: 15px; color: red;" id="label_discount">0.00</label><br>
+			<label style="font-size: 30px; color: red;" id="saleTotal">0.00</label>
 			<input type="hidden" name="redondeo" id="redondeo" value="<?php echo $data['order']['redondeo'];?>">
   </div>
 </div>
