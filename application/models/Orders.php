@@ -133,7 +133,7 @@ class Orders extends CI_Model
         lpId:   $('#lpId').val(),
         art:    sale
         */
-		
+
     if($data == null)
 		{
 			return false;
@@ -165,7 +165,7 @@ class Orders extends CI_Model
 				case 'Add':
 				case 'Pre':
 
-
+					$this->db->trans_start(); // Query will be rolled back
 					$data['ocEsPresupuesto']=($action=='Pre')?1:0;
 
 					if($this->db->insert('ordendecompra', $data) == false) {
@@ -177,27 +177,18 @@ class Orders extends CI_Model
 							$insert = array(
 									'ocId'	 		=> $idOrder,
 									'artId' 		=> $a['artId'],
-									//'artCode' 		=> '',
 									'artDescripcion'=> $a['artDescription'],
 									'artPCosto'		=> $a['artCoste'],
 									'artPVenta'		=> $a['artFinal'],
 									'ocdCantidad'	=> $a['venCant']
 								);
-							/*
-									artId:          parseInt(this.children[6].textContent),
-									artCode:        this.children[1].textContent,
-									artDescription: this.children[2].textContent,
-									artCoste:       parseFloat(this.children[8].textContent),
-									artFinal:       parseFloat(this.children[4].textContent),
-									venCant:        parseInt(this.children[3].textContent),
-									artVenta:       parseFloat(this.children[7].textContent),
-							*/
 
 							if($this->db->insert('ordendecompradetalle', $insert) == false) {
 								return false;
 							}
 						}
 					}
+					$this->db->trans_complete();
 					break;
 				case 'Edit':{
 					if($this->db->update('ordendecompra', $data, array('ocId'=>$id)) == false) {

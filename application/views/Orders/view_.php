@@ -355,7 +355,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
   });
 
   function agregar(barCode){
-    debugger;
+    //debugger;
     $('#artId').val(barCode);
     $('#modalSearch').modal('hide');
     $('#modalReception').modal('show');
