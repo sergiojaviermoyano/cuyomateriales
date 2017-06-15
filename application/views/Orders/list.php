@@ -13,12 +13,6 @@
           }
           ?>
 
-          <?php
-          if (strpos($permission,'Budget') !== false) {
-            echo '<button class="btn  btn-info" style="" data-toggle="modal" onclick="LoadOrder(0,\'Pre\')" id="btnAdd">Presupuesto</button>';
-          }
-          ?>
-
         </div><!-- /.box-header -->
         <div class="box-body">
           <table id="order_table" class="table table-bordered table-hover">
@@ -177,14 +171,16 @@
 
   }
 
-
-  $('#btnSave').click(function(){
+  function validate(esPresupuesto){
+    if(esPresupuesto == 1){
+      acOrder = 'Pre';
+    }
     var hayError = false;
-  	if(acOrder == 'View')
-  	{
-  		$('#modalOrder').modal('hide');
-  		return;
-  	}
+    if(acOrder == 'View')
+    {
+      $('#modalOrder').modal('hide');
+      return;
+    }
 
     if($('#lpId').val() == -1)
     {
@@ -221,15 +217,15 @@
     }
 
     if(hayError == true){
-    	$('#error').fadeIn('slow');
-    	return;
+      $('#error').fadeIn('slow');
+      return;
     }
 
     $('#error').fadeOut('slow');
     WaitingOpen('Guardando cambios');
-    	$.ajax({
-          	type: 'POST',
-          	data: {
+      $.ajax({
+            type: 'POST',
+            data: {
                     id : idOrder,
                     act: acOrder,
                     obser:  $('#ocObservacion').val(),
@@ -238,18 +234,27 @@
                     art:    sale,
                     redondeo: redondeo
                   },
-    		url: 'index.php/Order/setOrder',
-    		success: function(result){
-                			WaitingClose();
-                			$('#modalOrder').modal('hide');
-                			setTimeout("cargarView('Order', 'index', '"+$('#permission').val()+"');",1000);
-    					},
-    		error: function(result){
-    					WaitingClose();
-    					ProcesarError(result.responseText, 'modalOrder');
-    				},
-          	dataType: 'json'
-    		});
+        url: 'index.php/Order/setOrder',
+        success: function(result){
+                      WaitingClose();
+                      $('#modalOrder').modal('hide');
+                      setTimeout("cargarView('Order', 'index', '"+$('#permission').val()+"');",1000);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalOrder');
+            },
+            dataType: 'json'
+        });
+  }
+
+  $('#btnPre').click(function(){
+    validate(1);
+  });
+
+  $('#btnSave').click(function(){
+    validate(0);
+    
   });
 
   function Calcular(){
@@ -309,6 +314,11 @@
 
       </div>
       <div class="modal-footer">
+        <?php
+          if (strpos($permission,'Budget') !== false) {
+            echo '<button type="button" class="btn btn-warning pull-left" id="btnPre">Presupuesto</button>';
+          }
+        ?>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
       </div>

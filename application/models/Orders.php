@@ -312,40 +312,8 @@ class Orders extends CI_Model
 			$html .= '<td colspan="3" style="text-align: right"><h3>'.number_format($total, 2, ',', '.').'</h3></td></tr>';
 			$html .= '</table>';
 
-
 			$html .= '	</td></tr>';
 			$html .= '</table>';
-			/*
-			$html  = '<label>Nro: </label><b>'.$ordId.'</b><br>';
-			$date = new DateTime($result['sale']['venFecha']);
-			$html .= '<label>Fecha: </label><b>'.$date->format('d-m-Y H:i:s').'</b><br>';
-			$html .= '<label>Caja: </label><b>'.str_pad($result['sale']['cajaId'], 10, "0", STR_PAD_LEFT).'</b><br>';
-			$html .= '<label>Vendedor: </label><b>'.$result['sale']['usrName'].', '.$result['sale']['usrLastName'].'</b><br>';
-			$html .= '<hr>';
-			$html .= '<table width="100%">';
-			$html .= '<tr><th>Art.</th><th>Precio</th><th>Cant.</th><th>Tot.</th></tr>';
-			$total = 0;
-			foreach ($result['detail'] as $art) {
-				$html .= '<tr>';
-				$html .= '<td>'.$art['artCode'].'</td>';
-				$html .= '<td style="text-align: right">'.number_format($art['artFinal'], 2, ',', '.').'</td>';
-				$html .= '<td style="text-align: right">'.$art['venCant'].'</td>';
-				$coste = $art['artFinal'] * $art['venCant'];
-				$total += $coste;
-				$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
-				$html .= '</tr>';
-				$html .= '<tr>';
-				$html .= '<td colspan="4">'.$art['artDescription'].'</td>';
-				$html .= '</tr>';
-				$html .= '<tr>';
-				$html .= '<td colspan="4" style="padding-top: 5px"> </td>';
-				$html .= '</tr>';
-			}
-			$html .= '<tr><td><h5>Total</h5></td>';
-			$html .= '<td colspan="3" style="text-align: right"><h4>'.number_format($total, 2, ',', '.').'</h4></td></tr>';
-			$html .= '</table>';
-			$html .= '<hr>';
-			*/
 
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
@@ -377,67 +345,6 @@ class Orders extends CI_Model
 			return $ordId.'.pdf';
 		}
 	}
-	/*
-	function setProvider($data = null){
-		if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$id = $data['id'];
-            $act = $data['act'];
-            $id = $data['id'];
-            $act = $data['act'];
-            $nom = $data['nom'];
-            $ape = $data['ape'];
-            $rz = $data['rz'];
-            $tp = $data['tp'];
-            $doc = $data['doc'];
-            $dom = $data['dom'];
-            $mai = $data['mai'];
-            $est = $data['est'];
-            $tel = $data['tel'];
-
-			$data = array(
-				   'prvNombre' 			=> $nom,
-				   'prvApellido' 		=> $ape,
-				   'prvRazonSocial' 	=> $rz,
-				   'docId' 				=> $tp,
-				   'prvDocumento' 		=> $doc,
-				   'prvDomicilio'		=> $dom,
-				   'prvMail'			=> $mai,
-				   'prvEstado'			=> $est,
-				   'prvTelefono'		=> $tel
-				);
-
-			switch($act){
-				case 'Add':
-					//Agregar Proveedor
-					if($this->db->insert('proveedores', $data) == false) {
-						return false;
-					}
-					break;
-
-				case 'Edit':
-				 	//Actualizar Proveedor
-				 	if($this->db->update('proveedores', $data, array('prvId'=>$id)) == false) {
-				 		return false;
-				 	}
-				 	break;
-
-				case 'Del':
-				 	//Eliminar Proveedor
-				 	if($this->db->delete('proveedores', array('prvId'=>$id)) == false) {
-				 		return false;
-				 	}
-				 	break;
-			}
-			return true;
-
-		}
-	}
-	*/
 
 }
 ?>

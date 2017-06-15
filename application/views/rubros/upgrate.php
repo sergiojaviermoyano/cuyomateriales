@@ -10,8 +10,8 @@
         <div class="box-body">
           <form class="form-horizontal" action="" method="post">
             <div class="form-group">
-              <label for="rubId" class="control-label col-sm-2">Rubro</label>
-              <div class="col-sm-10">
+              <label for="rubId" class="control-label col-sm-4">Rubro</label>
+              <div class="col-sm-6">
                 <select class="form-control" name="rubId" id="rubId">
                   <option value=""></option>
                   <?php foreach($rubros as $key => $rubro ):?>
@@ -23,8 +23,8 @@
 
 
           <div class="form-group">
-            <label for="subrId" class="control-label col-sm-2">Sub Rubro</label>
-            <div class="col-sm-10">
+            <label for="subrId" class="control-label col-sm-4">Sub Rubro</label>
+            <div class="col-sm-6">
               <select class="form-control" name="subrId" id="subrId">
                 <option value=""></option>
               </select>
@@ -32,8 +32,8 @@
           </div>
 
           <div class="form-group">
-            <label for="subrId" class="control-label col-sm-2">Es Procentaje</label>
-            <div class="col-sm-10">
+            <label for="subrId" class="control-label col-sm-4">Es Procentaje</label>
+            <div class="col-sm-6">
               <label class="radio-inline">
                 <input type="checkbox" name="artMarginIsPorcent" id="artMarginIsPorcent" value="1" >
               </label>
@@ -41,13 +41,13 @@
           </div>
 
           <div class="form-group">
-            <label for="subrId" class="control-label col-sm-2">Importe a Actualizar</label>
-            <div class="col-sm-10">
+            <label for="subrId" class="control-label col-sm-4">Importe a Actualizar</label>
+            <div class="col-sm-6">
               <input type="text" class="form-control" name="incrementValue" id="incrementValue" value="">
             </div>
           </div>
 
-          <button type="submit" name="bt_update" id="bt_update" class="btn btn-success btn-lg pull-right"> Actualizar </button>
+          <button type="submit" name="bt_update" id="bt_update" class="btn btn-success pull-right"> Actualizar </button>
         </form>
 
         </div><!-- /.box-body -->
