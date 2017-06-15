@@ -34,6 +34,32 @@ class order extends CI_Controller {
 		echo json_encode($result);
 	}
 
+	public function listingOrdersSales(){
+		$totalOrdenes=$this->Orders->getTotalOrdersSales($_REQUEST);
+		$orders = $this->Orders->Orders_List_datatable_sales($_REQUEST);
+
+		$result=array(
+			'draw'=>$_REQUEST['draw'],
+			'recordsTotal'=>$totalOrdenes,
+			'recordsFiltered'=>$totalOrdenes,
+			'data'=>$orders,
+		);
+		echo json_encode($result);
+	}
+
+	public function listingOrdersPresu(){
+		$totalOrdenes=$this->Orders->getTotalOrdersPresu($_REQUEST);
+		$orders = $this->Orders->Orders_List_datatable_presu($_REQUEST);
+
+		$result=array(
+			'draw'=>$_REQUEST['draw'],
+			'recordsTotal'=>$totalOrdenes,
+			'recordsFiltered'=>$totalOrdenes,
+			'data'=>$orders,
+		);
+		echo json_encode($result);
+	}
+
 	public function getOrder(){
 
     $data['ListaPrecios']=$this->Lists->List_List();

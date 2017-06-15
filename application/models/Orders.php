@@ -64,6 +64,70 @@ class Orders extends CI_Model
 		}
 	}
 
+	function getTotalOrdersSales($data=null){
+		$this->db->order_by('ocFecha', 'asc');
+
+		if($data['search']['value']!=''){
+			$this->db->like('ocObservacion', $data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);
+		}
+		$query= $this->db->get_where('ordendecompra', array('ocEstado' => 'AC', 'ocEsPresupuesto' => false));
+		return $query->num_rows();
+	}
+
+	function Orders_List_datatable_sales($data=null){
+
+
+		$this->db->order_by('ocFecha', 'asc');
+		$this->db->limit($data['length'],$data['start']);
+		if($data['search']['value']!=''){
+			$this->db->like('ocObservacion', $data['search']['value']);
+		}
+		$query= $this->db->get_where('ordendecompra', array('ocEstado' => 'AC', 'ocEsPresupuesto' => false));
+
+		if ($query->num_rows()!=0)
+		{
+
+			return $query->result_array();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	function getTotalOrdersPresu($data=null){
+		$this->db->order_by('ocFecha', 'asc');
+
+		if($data['search']['value']!=''){
+			$this->db->like('ocObservacion', $data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);
+		}
+		$query= $this->db->get_where('ordendecompra', array('ocEstado' => 'AC', 'ocEsPresupuesto' => true));
+		return $query->num_rows();
+	}
+
+	function Orders_List_datatable_presu($data=null){
+
+
+		$this->db->order_by('ocFecha', 'asc');
+		$this->db->limit($data['length'],$data['start']);
+		if($data['search']['value']!=''){
+			$this->db->like('ocObservacion', $data['search']['value']);
+		}
+		$query= $this->db->get_where('ordendecompra', array('ocEstado' => 'AC', 'ocEsPresupuesto' => true));
+
+		if ($query->num_rows()!=0)
+		{
+
+			return $query->result_array();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	function getOrder($data = null){
 		if($data == null)
 		{
@@ -280,7 +344,7 @@ class Orders extends CI_Model
 						</tr>';
 			$html .= '	<tr><td colspan="2"><hr></td></tr>';
 			$html .= '	<tr><td colspan="2">
-							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].'</b><br>
+							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' / '.$result['order']['ocObservacion'].'</b><br>
 							Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'</b>
 						</td></tr>';
 			$html .= '	<tr><td colspan="2"><hr></td></tr>';
@@ -308,7 +372,10 @@ class Orders extends CI_Model
 				$html .= '<td colspan="4" style="padding-top: 5px"><hr> </td>';
 				$html .= '</tr>';
 			}
-			$html .= '<tr><td><h5>Total</h5></td>';
+			$total += $result['order']['redondeo'];
+			$html .= '<tr><td><h5>Redondeo</h5></td>';
+			$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
+			$html .= '<tr><td><h3>Total</h3></td>';
 			$html .= '<td colspan="3" style="text-align: right"><h3>'.number_format($total, 2, ',', '.').'</h3></td></tr>';
 			$html .= '</table>';
 

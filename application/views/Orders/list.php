@@ -103,7 +103,12 @@
                    td_2+= '<small class="label pull-left bg-navy" style="font-size: 14px; margin-right: 5px;" title="Presupuesto">P</small>  &nbsp; &nbsp; ';
                  }
                  td_2+= item.ocObservacion;//item.ocObservacion;
-              var td_3=item.ocFecha;
+              
+              var date = new Date(item.ocFecha);
+                        
+              var month = date.getMonth() + 1;
+              var td_3=("0"+date.getDate()).slice(-2)+'-'+("0"+ month).slice(-2)+'-'+("0"+date.getFullYear()).slice(-4)+' '+("0"+date.getHours()).slice(-2)+':'+("0"+date.getMinutes()).slice(-2);
+              
               var td_4="";
 
               switch (item.ocEstado) {

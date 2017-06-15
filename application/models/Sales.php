@@ -43,23 +43,12 @@ class Sales extends CI_Model
 						$configuration = $query->result_array();
 						$response['validez'] = $configuration[0];
 					}
-
-					$this->db->select('*');
-					$this->db->from('ordendecompra');
-					$this->db->where(array('ocEstado' => 'AC'));
-					$this->db->order_by('ocFecha', 'asc');
-					$query = $this->db->get();
-					$response['ordenes'] = $query->result_array();
+					$response['ordenes'] = array();
 
 					break;
 				
 				case '2':
-					$this->db->select('*');
-					$this->db->from('ventas');
-					$this->db->where(array('cajaId' => $response['cajaId']));
-					$this->db->order_by('venFecha', 'desc');
-					$query = $this->db->get();
-					$response['ventas'] = $query->result_array();
+					$response['ventas'] = array(); 
 					break;
 
 				case '3':
@@ -87,6 +76,78 @@ class Sales extends CI_Model
 			}
 
 			return $response;
+		}
+	}
+
+	function getTotalVentas($data=null){
+		$response = array();
+		//Siempre preguntar si esta abierta la caja (para las opciones 1 y 2)
+		//para el usuario logueado
+		$userdata = $this->session->userdata('user_data');
+		
+		//verificar si hay cajas abiertas
+		$this->db->select('*');
+		$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
+		$this->db->from('cajas');
+		$query = $this->db->get();
+		$result = $query->result_array();
+		if(count($result) > 0){
+			$result = $query->result_array();
+			$response['cajaId'] = $result[0]['cajaId'];
+			$caja = $result[0];
+		} else {
+			$response['cajaId'] = -1;
+			$response['caja'] = null;
+		}
+
+
+		$this->db->order_by('venFecha', 'desc');
+		$this->db->limit($data['length'],$data['start']);
+		if($data['search']['value']!=''){
+			$this->db->like('venFecha', $data['search']['value']);
+		}
+		$query= $this->db->get_where('ventas', array('cajaId' => $response['cajaId']));
+		return $query->num_rows();
+	}
+
+	function Ventas_List_datatable($data=null){
+
+		$response = array();
+		//Siempre preguntar si esta abierta la caja (para las opciones 1 y 2)
+		//para el usuario logueado
+		$userdata = $this->session->userdata('user_data');
+		
+		//verificar si hay cajas abiertas
+		$this->db->select('*');
+		$this->db->where(array('cajaCierre'=>null, 'usrId' => $userdata[0]['usrId']));
+		$this->db->from('cajas');
+		$query = $this->db->get();
+		$result = $query->result_array();
+		if(count($result) > 0){
+			$result = $query->result_array();
+			$response['cajaId'] = $result[0]['cajaId'];
+			$caja = $result[0];
+		} else {
+			$response['cajaId'] = -1;
+			$response['caja'] = null;
+		}
+
+
+		$this->db->order_by('venFecha', 'desc');
+		$this->db->limit($data['length'],$data['start']);
+		if($data['search']['value']!=''){
+			$this->db->like('venFecha', $data['search']['value']);
+		}
+		$query= $this->db->get_where('ventas', array('cajaId' => $response['cajaId']));
+
+		if ($query->num_rows()!=0)
+		{
+
+			return $query->result_array();
+		}
+		else
+		{
+			return false;
 		}
 	}
 

@@ -38,6 +38,19 @@ class sale extends CI_Controller {
 		}
 	}
 
+	public function listingSales(){
+		$totalVentas=$this->Sales->getTotalVentas($_REQUEST);
+		$ventas = $this->Sales->Ventas_List_datatable($_REQUEST);
+
+		$result=array(
+			'draw'=>$_REQUEST['draw'],
+			'recordsTotal'=>$totalVentas,
+			'recordsFiltered'=>$totalVentas,
+			'data'=>$ventas,
+		);
+		echo json_encode($result);
+	}
+
 	public function getOrden(){
 		$data['data'] = $this->Sales->getOrder($this->input->post());
 		$response['html'] = $this->load->view('sales/order_', $data, true);
