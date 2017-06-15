@@ -300,6 +300,30 @@
         });
   }
 
+/*
+var timer, timeout = 750;
+
+// Just clearing anything the user has in the text field on load.
+$("#type").val("");
+
+// Watch for the user to type in the text field.
+$("#type").keyup(function()
+{
+  // Clear timer if it's set.
+  if (typeof timer != undefined)
+    clearTimeout(timer);
+
+  // Set status to show we're typing.
+  $("#status").html("Typing ...").css("color", "#009900");
+
+  // Set status to show we're done typing on a delay.
+  timer = setTimeout(function()
+  {
+    $("#status").html("Stopped").css("color", "#990000");
+  }, timeout);
+});
+*/
+
 </script>
 
 <!-- Modal -->
@@ -339,9 +363,12 @@
           <div class="col-xs-10 col-xs-offset-1"><center>Producto</center></div>
         </div>
         <div class="row">
-          <div class="col-xs-10 col-xs-offset-1">
-            <input type="text" class="form-control" id="artIdSearch" value="" min="0">
-          </div>
+          <div class="col-xs-10 col-xs-offset-1"><input type="text" class="form-control" id="artIdSearch" value=""></div>
+          <div class="col-xs-1"><img style="display: none" id="loadingIcon" src="<?php  echo base_url();?>assets/images/loading.gif" width="35px"></div>
+            <!--
+            <input type="text" id="type" />
+            <span id="status"></span>
+            -->
         </div><br>
 
         <div class="row">

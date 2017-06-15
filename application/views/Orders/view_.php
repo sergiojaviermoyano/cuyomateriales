@@ -248,7 +248,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                  					//calcular precio de venta
                  					var pVenta = parseFloat(result.pVenta);
                  					if(margin > 0){
-														console.debug(" =>>> %o * ( %o ) / 100: ",pVenta,margin,(pVenta * (margin / 100)));
+														//console.debug(" =>>> %o * ( %o ) / 100: ",pVenta,margin,(pVenta * (margin / 100)));
                  						pVenta += pVenta * (margin / 100);
                  					}
                           WaitingClose();
@@ -298,9 +298,11 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
   function AbrirBuscador(){
     LoadIconAction('modalAction__','Search');
     WaitingClose();
-    $('#modalReception').modal('hide');
+    //$('#modalReception').modal('hide');
     cerro();
     $('#modalSearch').modal({ backdrop: 'static', keyboard: false });
+    $('#artIdSearch').val('');
+    $('#saleDetailSearch > tbody').html('');
     $('#modalSearch').modal('show');
     setTimeout(function () { $('#artIdSearch').focus(); }, 1000);
   }
@@ -326,7 +328,6 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
           url: 'index.php/article/searchByAll',
           success: function(resultList){
                         if(resultList != false){
-                          WaitingClose();
                           $.each(resultList, function(index, result){
                             if(result.artEstado == 'AC'){
                               var row = '<tr>';
@@ -341,17 +342,35 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                           });
                           $('#artIdSearch').focus();
                         }
+                        $("#loadingIcon").hide();
                 },
           error: function(result){
-                WaitingClose();
+                $("#loadingIcon").hide();
                 ProcesarError(result.responseText, 'modalSale');
               },
               dataType: 'json'
       });
   }
 
+  var timer, timeout = 1000;
+
   $('#artIdSearch').keyup(function(){
-    BuscarCompleto();
+    if($('#artIdSearch').val().length >= 3){
+      // Clear timer if it's set.
+      if (typeof timer != undefined)
+        clearTimeout(timer);
+
+      // Set status to show we're typing.
+      //$("#status").html("Typing ...").css("color", "#009900");
+      
+      
+      timer = setTimeout(function()
+      {
+        //$("#status").html("Stopped").css("color", "#990000");
+        $("#loadingIcon").show();
+        BuscarCompleto();
+      }, timeout);
+    }
   });
 
   function agregar(barCode){
