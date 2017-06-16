@@ -4,7 +4,7 @@
         <a href="../../index2.html">Cuyo<b> Materiales</b></a>
       </div><!-- /.login-logo -->
       <div class="login-box-body">
-        <p class="login-box-msg">Ingreso</p>
+        <p class="login-box-msg">Ingreso</p><!--<?php echo Globals::getTitle();?>-->
         <div>
           <div class="row">
             <div class="col-xs-12">

@@ -72,4 +72,88 @@
                 dataType: 'json'
             });
       }
+
+      function editProfile(){
+        WaitingOpen();
+        $.ajax({
+            type: 'POST',
+            //data: null,
+            url: '<?php echo base_url(); ?>index.php/user/editProfile', 
+            success: function(result){
+                          WaitingClose();
+                          $("#modalProfileBody_").html(result.html);
+                          setTimeout("$('#modalProfile').modal('show')", 800);
+                  },
+            error: function(result){
+                  WaitingClose();
+                  ProcesarError(result.responseText, 'modalProfile');
+                },
+                dataType: 'json'
+            });
+      }
+
+      function saveProfile(){
+
+        $('#errorProfile_').fadeOut('slow');
+        var hayError = false;
+
+        if($('#usrName').val() == '')
+        {
+          hayError = true;
+        }
+
+        if($('#usrLastName').val() == '')
+        {
+          hayError = true;
+        }
+
+        if($('#usrPassword').val() != $('#usrPasswordConfirm').val()){
+          hayError = true;
+        }
+
+        if(hayError == true){
+          $('#errorProfile_').fadeIn('slow');
+          return;
+        }
+
+        WaitingOpen('Guardando cambios');
+        $.ajax({
+              type: 'POST',
+              data: { 
+                      name: $('#usrName').val(),
+                      lnam: $('#usrLastName').val(),
+                      pas: $('#usrPassword').val()
+                    },
+          url: 'index.php/user/updateUserProfile', 
+          success: function(result){
+                        WaitingClose();
+                        $('#modalProfile').modal('hide');
+                },
+          error: function(result){
+                WaitingClose();
+                ProcesarError(result.responseText, 'modalUsr');
+              },
+              dataType: 'json'
+          });
+
+      };
       </script>
+
+<!-- Modal -->
+<div class="modal fade" id="modalProfile" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel"><i class="fa fa-fw fa-pencil" style="color: #f39c12"></i> Editar Perfil</h4> 
+      </div>
+      <div class="modal-body" id="modalProfileBody_">
+        
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnProfileSave" onclick="saveProfile()">Guardar</button>
+      </div>
+    </div>
+  </div>
+</div>

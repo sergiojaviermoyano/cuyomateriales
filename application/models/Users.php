@@ -272,6 +272,58 @@ class Users extends CI_Model
 
 		redirect('/');
 	}
+
+	function editProfile(){
+		$userdata = $this->session->userdata('user_data');
+		$id = $userdata[0]['usrId'];
+		$data = array();
+
+		$this->db->select('usrLastName, usrName');
+		$this->db->from('sisusers');
+		$this->db->where(array('usrId' => $id));
+		$query = $this->db->get();
+
+		if ($query->num_rows() != 0)
+		{
+			$u = $query->result_array();
+			$data['user'] = $u[0];
+		}
+
+		return $data;
+	}
+
+	function updateUserProfile($data = null){
+		$userdata = $this->session->userdata('user_data');
+		$id = $userdata[0]['usrId'];
+
+		$name = $data['name'];
+		$lnam = $data['lnam'];
+		$pas = $data['pas'];
+		$data = array();
+
+		if($pas == '') {
+			//No modificar la contraseña
+			$data = array(
+			   'usrName' => $name,
+			   'usrLastName' => $lnam
+			);
+		} else {
+			//Modificar la contraseña
+			$data = array(
+			   'usrName' => $name,
+			   'usrLastName' => $lnam,
+			   'usrPassword' => md5($pas)
+			);
+		}
+
+		//Actualizar usuario
+	 	if($this->db->update('sisusers', $data, array('usrId'=>$id)) == false) {
+	 		return false;
+	 	}
+
+	 	return true;
+		
+	}
 	
 }
 ?>

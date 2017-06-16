@@ -10,6 +10,7 @@ class login extends CI_Controller {
 
 	public function index()
 	{
+		$_ENV["title"]  = 'Mi titulo';
 		$var = array('user_data' => null,'username' => null,'email' => null, 'logged_in' => false);
         $this->session->set_userdata($var);
         $this->session->unset_userdata(null);

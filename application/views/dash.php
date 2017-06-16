@@ -111,6 +111,11 @@
                     </p>
                   </li> -->
                   <!-- Menu Body -->
+                  <li class="user-body">
+                    <div class="col-xs-12 text-center">
+                      <a href="#" onclick="editProfile()" >Perfil</a>
+                    </div>
+                  </li>
                   <!--
                   <li class="user-body">
                     <div class="col-xs-4 text-center">

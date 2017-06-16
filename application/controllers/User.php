@@ -44,6 +44,25 @@ class user extends CI_Controller {
 	public function cerrarSession(){
 		$this->Users->cerrarSession();
 	}
+
+	public function editProfile(){
+		$data['data'] = $this->Users->editProfile();
+		$response['html'] = $this->load->view('users/profile_', $data, true);
+
+		echo json_encode($response);
+	}
+
+	public function updateUserProfile(){
+		$data = $this->Users->updateUserProfile($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode(true);	
+		}
+	}
 	
 	
 }
