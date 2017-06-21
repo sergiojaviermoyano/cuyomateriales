@@ -230,8 +230,13 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
     isOpenWindow = false;
   }
 
+  var timer, timeout = 1000;
+  var row = 0, rows = 0;
+
     function BuscarCompleto(){
     $('#saleDetailSearch > tbody').html('');
+    row = 0;
+    rows = 0;
     if($('#artIdSearch').val().length >= 3){
       $.ajax({
             type: 'POST',
@@ -249,6 +254,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                                 row += '<td width="20%" style="text-align: right"><b> $ '+parseFloat(result.pVenta).toFixed(2)+'</b></td>';
                                 row += '</tr>';
                                 $('#saleDetailSearch > tbody').prepend(row);
+                                rows++;
                               }
                             });
                             $('#artIdSearch').focus();
@@ -264,24 +270,49 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
     }
   }
 
-  var timer, timeout = 1000;
+  $('#artIdSearch').keyup(function(e){
+    var code = e.which;
+    if(code != 40 && code != 38 && code != 13){
+      if($('#artIdSearch').val().length >= 3){
+        // Clear timer if it's set.
+        if (typeof timer != undefined)
+          clearTimeout(timer);
 
-  $('#artIdSearch').keyup(function(){
-    if($('#artIdSearch').val().length >= 3){
-      // Clear timer if it's set.
-      if (typeof timer != undefined)
-        clearTimeout(timer);
+        // Set status to show we're typing.
+        //$("#status").html("Typing ...").css("color", "#009900");
+        
+        
+        timer = setTimeout(function()
+        {
+          //$("#status").html("Stopped").css("color", "#990000");
+          $("#loadingIcon").show();
+          BuscarCompleto();
+          row = 0;
+        }, timeout);
+      }
+    } else {
+      var removeStyle = $("#saleDetailSearch > tbody tr:nth-child("+row+")");
+      if(code == 13){//Seleccionado
+        removeStyle.css('background-color', 'white');
+        agregar($('#saleDetailSearch tbody tr:nth-child('+row+') td:nth-child(3)').text());
+      }
 
-      // Set status to show we're typing.
-      //$("#status").html("Typing ...").css("color", "#009900");
-      
-      
-      timer = setTimeout(function()
-      {
-        //$("#status").html("Stopped").css("color", "#990000");
-        $("#loadingIcon").show();
-        BuscarCompleto();
-      }, timeout);
+      if(code == 40){//abajo
+        if((row + 1) <= rows){
+          row++;
+          removeStyle.css('background-color', 'white');
+        }
+        var rowE = $("#saleDetailSearch > tbody tr:nth-child("+row+")");
+        rowE.css('background-color', '#D8D8D8');
+      } 
+      if(code == 38) {//arriba
+        if(row >= 2){
+          row--;
+          removeStyle.css('background-color', 'white');
+        }
+        var rowE = $("#saleDetailSearch > tbody tr:nth-child("+row+")");
+        rowE.css('background-color', '#D8D8D8');
+      }
     }
   });
 
