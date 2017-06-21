@@ -3,8 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class article extends CI_Controller {
 
-	function __construct()
-        {
+	function __construct(){
 		parent::__construct();
 		$this->load->model('Articles');
 		$this->load->model('Rubros');
@@ -19,7 +18,19 @@ class article extends CI_Controller {
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('articles/list', $data, true));
 	}
+  public function listing(){
 
+		$total=$this->Articles->getTotalArticles($_REQUEST);
+		$result = $this->Articles->Articles_List_datatable($_REQUEST);
+
+		$result=array(
+			'draw'=>$_REQUEST['draw'],
+			'recordsTotal'=>$total,
+			'recordsFiltered'=>$total,
+			'data'=>$result,
+		);
+		echo json_encode($result);
+	}
 	public function getArticle(){
 
 		$rubros=$this->Rubros->SubRubro_List();

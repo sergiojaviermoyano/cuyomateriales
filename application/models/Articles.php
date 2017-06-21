@@ -22,6 +22,33 @@ class Articles extends CI_Model
 		}
 	}
 
+	function getTotalArticles($data){
+		$this->db->order_by('artDescription', 'desc');
+		if($data['search']['value']!=''){
+			$this->db->like('artDescription', $data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);
+		}
+		$query= $this->db->get('articles');
+		return $query->num_rows();
+	}
+	function Articles_List_datatable($data){
+		$this->db->order_by('artDescription', 'desc');
+		$this->db->limit($data['length'],$data['start']);
+		if($data['search']['value']!=''){
+			$this->db->like('artDescription', $data['search']['value']);
+			$this->db->or_like('artBarCode', $data['search']['value']);
+		}
+		$query= $this->db->get('articles');
+
+		if ($query->num_rows()!=0)
+		{
+			return $query->result_array();
+		}
+		else
+		{
+			return false;
+		}
+	}
 
 	function getArticle($data = null){
 		if($data == null)
@@ -260,7 +287,7 @@ class Articles extends CI_Model
 			$this->db->where('subrId',$data['subrId']);
 		}
 
-		if($this->db->update("articles")){			
+		if($this->db->update("articles")){
 			return true;
 		}else{
 			return false;

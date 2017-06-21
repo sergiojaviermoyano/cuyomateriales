@@ -6,7 +6,7 @@
         <div class="box-header">
           <h3 class="box-title">Artículos</h3>
           <?php
-          if (strpos($permission,'Add') !== false) { 
+          if (strpos($permission,'Add') !== false) {
             echo '<button class="btn btn-block btn-success" style="width: 100px; margin-top: 10px;" data-toggle="modal" onclick="LoadArt(0,\'Add\')" id="btnAdd">Agregar</button>';
           }
           ?>
@@ -25,8 +25,9 @@
             </thead>
             <tbody>
               <?php
-                if(isset($list)) { 
-                  if(count($list) > 0)                 
+              /*
+                if(isset($list)) {
+                  if(count($list) > 0)
                 	foreach($list as $a)
       		        {
   	                echo '<tr>';
@@ -46,10 +47,10 @@
                     #echo '<td style="text-align: right">'.$a['artCoste'].'</td>';
                     echo '<td style="text-align: center">'.($a['artEstado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['artEstado'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')).'</td>';
   	                echo '</tr>';
-                    
+
       		        }
-                  
-                }
+
+                }*/
               ?>
             </tbody>
           </table>
@@ -63,12 +64,68 @@
   $(function () {
     //$("#groups").DataTable();
     $('#articles').DataTable({
+      "processing": true,
+      "serverSide": true,
       "paging": true,
       "lengthChange": true,
       "searching": true,
       "ordering": true,
       "info": true,
       "autoWidth": true,
+      'ajax':{
+        "dataType": 'json',
+        //"contentType": "application/json; charset=utf-8",
+        "method": "POST",
+        "url":'index.php/article/listing',
+        "dataSrc": function (json) {
+          //console.debug("==> json: %o",json);
+          var output=[];
+          var permission=$("#permission").val();
+          permission= permission.split('-');
+
+          $.each(json.data,function(key,item){
+            var td_1="";
+
+            if(permission.indexOf("Edit")>0 ){
+              td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.artId+',\'Edit\')"></i>';
+            }
+
+            if(permission.indexOf("Del")>0){
+              td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.artId+',\'Del\')"></i>';
+            }
+
+            if(permission.indexOf("View")>0){
+              td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.artId+',\'View\')"></i>';
+            }
+            var td_2=item.artBarCode;
+            var td_3=item.artDescription;
+            var td_5=item.artEstado;
+            switch (item.artEstado) {
+              case 'AC':{
+                td_5='<small class="label pull-left bg-green">Activa</small>';
+                break;
+              }
+              case 'IN':{
+                td_5='<small class="label pull-left bg-red">Inactiva</small>';
+                break;
+              }
+              case 'FA':{
+                td_5='<small class="label pull-left bg-blue">Facturada</small>';
+                break;
+              }
+              default:{
+                td_5='';
+                break;
+              }
+            }
+            output.push([td_1,td_2,td_3,td_5]);
+          });
+          return output;
+        },
+        error:function(the_error){
+          console.debug(the_error);
+        }
+      },
       "language": {
             "lengthMenu": "Ver _MENU_ filas por página",
             "zeroRecords": "No hay registros",
@@ -86,7 +143,7 @@
 
   var idArt = 0;
   var acArt = '';
-  
+
   function LoadArt(id_, action){
   	idArt = id_;
   	acArt = action;
@@ -95,7 +152,7 @@
       $.ajax({
           	type: 'POST',
           	data: { id : id_, act: action },
-    		url: 'index.php/article/getArticle', 
+    		url: 'index.php/article/getArticle',
     		success: function(result){
 			                WaitingClose();
 			                $("#modalBodyArticle").html(result.html);
@@ -114,7 +171,7 @@
     		});
   }
 
-  
+
   $('#btnSave').click(function(){
 
   	if(acArt == 'View')
@@ -150,7 +207,7 @@
       error_message += " * Por Favor, debe Seleccionar un Sub Rubro. <br> ";
 
     }
-    
+
     if($('#ivaId').val() == ''){
       hayError = true;
       error_message += " * Por Favor, debe Seleccionar una Condición de IVA. <br> ";
@@ -185,9 +242,9 @@
     WaitingOpen('Guardando cambios');
     	$.ajax({
           	type: 'POST',
-          	data: { 
-                    id :      idArt, 
-                    act:      acArt, 
+          	data: {
+                    id :      idArt,
+                    act:      acArt,
                     code:     $('#artBarCode').val(),
                     name:     $('#artDescription').val(),
                     marg:     $('#artMargin').val(),
@@ -203,7 +260,7 @@
                     artMedio:   $("#artMedio").val(),
                     artMaximo:   $("#artMaximo").val(),
                   },
-    		url: 'index.php/article/setArticle', 
+    		url: 'index.php/article/setArticle',
     		success: function(result){
                 			WaitingClose();
                 			$('#modalArticle').modal('hide');
@@ -225,10 +282,10 @@
     <div class="modal-content" >
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Artículo</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Artículo</h4>
       </div>
       <div class="modal-body" id="modalBodyArticle" style="    min-height: 650px;">
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -239,13 +296,13 @@
 </div>
 
 
-<!-- Modal 
+<!-- Modal
 <div class="modal fade" id="modalArticleSearch" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document" style="width: 60%">
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalActionSearch"> </span> Buscador de Artículo</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalActionSearch"> </span> Buscador de Artículo</h4>
       </div>
       <div class="modal-body" id="modalBodyArticleSearch">
         <div class="row">
@@ -271,9 +328,9 @@
                 </tr>
               </thead>
               <tbody>
-                
+
               </tbody>
-            </table> 
+            </table>
           </div>
         </div>
       </div>
@@ -287,7 +344,7 @@
 
 <script>
 /*
-$('#artBuscadorSearch').keyup(function(e){ 
+$('#artBuscadorSearch').keyup(function(e){
     var code = e.which; // recommended to use e.which, it's normalized across browsers
     if(code==13)
       e.preventDefault();
@@ -297,7 +354,7 @@ $('#artBuscadorSearch').keyup(function(e){
         $.ajax({
               type: 'POST',
               data: { str : $(this).val() },
-          url: 'index.php/article/getArticleSingles', 
+          url: 'index.php/article/getArticleSingles',
           success: function(result){
                         $('#articlesSerched > tbody').html('');
                         var rows = '';
@@ -370,7 +427,7 @@ function restar(id){
   var cant = parseInt(cantId.html());
 
   if(cant <= 1){
-      cantId.html('1');    
+      cantId.html('1');
   } else {
     cant--;
     cantId.html(cant);
