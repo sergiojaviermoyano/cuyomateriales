@@ -9,16 +9,8 @@ class Orders extends CI_Model
 	}
 
 	function Orders_List(){
-
-
-
-
 		$this->db->order_by('ocFecha', 'desc');
-
-
-
 		$query= $this->db->get('ordendecompra');
-
 		if ($query->num_rows()!=0)
 		{
 			return $query->result_array();
@@ -30,7 +22,6 @@ class Orders extends CI_Model
 	}
 
 	function getTotalOrders($data=null){
-		//$this->db->order_by('ocFecha', 'desc');
 		$this->db->order_by('ocFecha', 'desc');
 
 		if($data['search']['value']!=''){
@@ -45,17 +36,13 @@ class Orders extends CI_Model
 
 
 		$this->db->order_by('ocFecha', 'desc');
-		//$this->db->limit($data['length'],$data['start']);
 		$this->db->limit($data['length'],$data['start']);
 		if($data['search']['value']!=''){
 			$this->db->like('ocObservacion', $data['search']['value']);
 		}
 		$query= $this->db->get('ordendecompra');
-		//echo ($this->db->last_query()."<br>");
-
 		if ($query->num_rows()!=0)
 		{
-
 			return $query->result_array();
 		}
 		else
@@ -66,7 +53,6 @@ class Orders extends CI_Model
 
 	function getTotalOrdersSales($data=null){
 		$this->db->order_by('ocFecha', 'asc');
-
 		if($data['search']['value']!=''){
 			$this->db->like('ocObservacion', $data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);
@@ -76,18 +62,14 @@ class Orders extends CI_Model
 	}
 
 	function Orders_List_datatable_sales($data=null){
-
-
 		$this->db->order_by('ocFecha', 'asc');
 		$this->db->limit($data['length'],$data['start']);
 		if($data['search']['value']!=''){
 			$this->db->like('ocObservacion', $data['search']['value']);
 		}
 		$query= $this->db->get_where('ordendecompra', array('ocEstado' => 'AC', 'ocEsPresupuesto' => false));
-
 		if ($query->num_rows()!=0)
 		{
-
 			return $query->result_array();
 		}
 		else
@@ -98,7 +80,6 @@ class Orders extends CI_Model
 
 	function getTotalOrdersPresu($data=null){
 		$this->db->order_by('ocFecha', 'asc');
-
 		if($data['search']['value']!=''){
 			$this->db->like('ocObservacion', $data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);
@@ -108,18 +89,14 @@ class Orders extends CI_Model
 	}
 
 	function Orders_List_datatable_presu($data=null){
-
-
 		$this->db->order_by('ocFecha', 'asc');
 		$this->db->limit($data['length'],$data['start']);
 		if($data['search']['value']!=''){
 			$this->db->like('ocObservacion', $data['search']['value']);
 		}
 		$query= $this->db->get_where('ordendecompra', array('ocEstado' => 'AC', 'ocEsPresupuesto' => true));
-
 		if ($query->num_rows()!=0)
 		{
-
 			return $query->result_array();
 		}
 		else
@@ -135,26 +112,21 @@ class Orders extends CI_Model
 		}
 		else
 		{
-
 			$action = $data['act'];
 			$idOrder = $data['id'];
 			$data = array();
 			//Datos del Ordern
 			$query= $this->db->get_where('ordendecompra',array('ocId'=>$idOrder));
-
-
 			if ($query->num_rows() > 0)
 			{
 				$order = $query->result_array();
 				$data['order'] = $order[0];
-
 				$this->db->select("ocd.*, a.artBarCode");
 				$this->db->from('ordendecompradetalle ocd');
 				$this->db->join('articles a','a.artId=ocd.artId');
 				$this->db->where('ocId',$idOrder);
 				$query = $this->db->get();
 				$detalleCompra=($query->num_rows()>0)?$query->result_array():array();
-
 				$data['detalleCompra']=$detalleCompra;
 
 			} else {
@@ -163,7 +135,6 @@ class Orders extends CI_Model
  				$query = $this->db->get('ordendecompra');
  				$id = $query->result_array();
 				$Order['ocId'] = $id[0]['ocId'] + 1;
-
 				$Order['ocObservacion'] = '';
 				$Order['ocFecha'] = '';
 				$Order['ocEstado'] = '';
@@ -188,16 +159,7 @@ class Orders extends CI_Model
 		}
 	}
 
-	function setOrder($data = null){
-		/*
-		id : idOrder,
-        act: acOrder,
-        obser:  $('#ocObservacion').val(),
-        cliId:  $('#cliId').val(),
-        lpId:   $('#lpId').val(),
-        art:    sale
-        */
-
+function setOrder($data = null){
     if($data == null)
 		{
 			return false;
@@ -211,7 +173,6 @@ class Orders extends CI_Model
 			$lpId =		$data['lpId'];
 			$arts = 	$data['art'];
 			$redondeo = 	$data['redondeo'];
-
 
 			//Datos del vendedor
 			$userdata = $this->session->userdata('user_data');
@@ -267,7 +228,6 @@ class Orders extends CI_Model
 							$insert = array(
 								'ocId'	 		=> $idOrder,
 								'artId' 		=> $a['artId'],
-								//'artCode' 		=> '',
 								'artDescripcion'=> $a['artDescription'],
 								'artPCosto'		=> $a['artCoste'],
 								'artPVenta'		=> $a['artFinal'],

@@ -3,7 +3,8 @@
 // Application specific global variables
 class Globals
 {
-    private static $title; // = "mi titulo";
+    private static $title;
+    private static $title2;
 
     private static function initialize()
     {
@@ -11,11 +12,11 @@ class Globals
             return;
         
         $cf = get_instance();
-        $cf->load->model('Configuration');
-        $data = $cf->Configuration->get_();
+        $cf->load->model('Configurations');
+        $data = $cf->Configurations->get_();
 
-        var_dump($data);
-        self::$title = $data['conf']['title'];
+        self::$title = $data['conf']['title1'];
+        self::$title2 = $data['conf']['title2'];
     }
 
     /*
@@ -30,5 +31,11 @@ class Globals
     {
         self::initialize();
         return self::$title;
+    }
+
+    public static function getTitle2()
+    {
+        self::initialize();
+        return self::$title2;
     }
 }

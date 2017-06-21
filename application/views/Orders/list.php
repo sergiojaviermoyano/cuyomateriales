@@ -160,7 +160,8 @@
     		    success: function(result){
 			                WaitingClose();
 			                $("#modalBodyOrder").html(result.html);
-			                setTimeout("$('#modalOrder').modal('show')",800);
+			                setTimeout(function () { $('#modalOrder').modal('show'); }, 1000);
+                      setTimeout(function () { $('#ocObservacion').focus(); }, 1200);
                       $(".select2").select2({
                         allowClear: true
                       });
@@ -305,30 +306,6 @@
         });
   }
 
-/*
-var timer, timeout = 750;
-
-// Just clearing anything the user has in the text field on load.
-$("#type").val("");
-
-// Watch for the user to type in the text field.
-$("#type").keyup(function()
-{
-  // Clear timer if it's set.
-  if (typeof timer != undefined)
-    clearTimeout(timer);
-
-  // Set status to show we're typing.
-  $("#status").html("Typing ...").css("color", "#009900");
-
-  // Set status to show we're done typing on a delay.
-  timer = setTimeout(function()
-  {
-    $("#status").html("Stopped").css("color", "#990000");
-  }, timeout);
-});
-*/
-
 </script>
 
 <!-- Modal -->
@@ -378,19 +355,7 @@ $("#type").keyup(function()
 
         <div class="row">
           <div class="col-xs-10 col-xs-offset-1">
-              <!--
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th width="10%"></th>
-                  <th width="10%">Código</th>
-                  <th width="60%">Descripción</th>
-                  <th width="20%">Precio</th>
-                </tr>
-              </thead>
-            </table>
-            -->
-            <table id="saleDetailSearch" style="max-height:20em; display: table; overflow: auto;" class="table table-bordered" width="100%">
+            <table id="saleDetailSearch" style="max-height:250px; display: table;" class="table table-bordered" width="100%">
               <tbody>
 
               </tbody>

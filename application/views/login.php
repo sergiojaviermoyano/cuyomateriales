@@ -1,10 +1,10 @@
 <body class="login-page">
     <div class="login-box">
       <div class="login-logo">
-        <a href="../../index2.html">Cuyo<b> Materiales</b></a>
+        <a href="../../index2.html"><?php echo Globals::getTitle();?><b><?php echo Globals::getTitle2();?></b></a>
       </div><!-- /.login-logo -->
       <div class="login-box-body">
-        <p class="login-box-msg">Ingreso</p><!--<?php echo Globals::getTitle();?>-->
+        <p class="login-box-msg">Ingreso</p>
         <div>
           <div class="row">
             <div class="col-xs-12">

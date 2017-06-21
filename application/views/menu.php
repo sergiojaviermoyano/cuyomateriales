@@ -46,6 +46,16 @@
                   }
                 }
 
+                //Datos del usuario
+                $userdata = $this->session->userdata('user_data');
+                if($userdata[0]['usrEsAdmin'] == 1){
+                  echo '<li class="treeview">
+                          <a href="#" onClick="cargarView(\'configuration\',\'getConfiguration\', \'Edit\')">
+                            <i class="fa fa-fw  fa-database"></i> <span>Sistema</span>
+                          </a>
+                        </li>';
+                }
+
             ?>
         </ul>
       </section>

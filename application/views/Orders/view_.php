@@ -55,28 +55,12 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
 
 <hr>
 
-<!--
-<div class="form-group">
-	<label class="col-sm-3">Artículo <strong style="color: #dd4b39">*</strong>:   </label>
-  	<div class="col-sm-5 " id="articleField_container">
-    	<input type="text" class="form-control typeahead" placeholder="Articulo" id="articleField" name="articleField"   data-provide="typeahead" data-id="" >
-		<span id="articleField_error" class="help-block hidden">Seleccione un Artículo.</span>
-	</div>
-  	<div class="col-sm-2" id="articleCant_container">
-    	<input type="text" class="form-control" placeholder="Cantidad" id="articleCant" name="articleCant"  >
-		<span id="articleCant_error" class="help-block hidden">Ingrese una Cantidad mayor a 0.</span>
-	</div>
-  	<div class="col-sm-2">
-    	<button id="addItem_bt" type="button" class="btn btn-success btn-sm " name="button"> <i class="fa fa-plus" aria-hidden="true"></i> Agregar</button>
-  	</div>
-</div>
--->
 <div class="row">
   <div class="col-xs-4">
       <label style="margin-top: 7px;">Producto: </label>
     </div>
   <div class="col-xs-5">
-      <input type="number" class="form-control" id="artId" value="" min="0" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+      <input type="text" class="form-control" id="artId" value="" min="0" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
     </div>
   <div class="col-xs-2">
       <input type="number" class="form-control" id="artCant" value="1" min="1" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
@@ -135,104 +119,31 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
 </div>
 
 <script>
-/*
-  $(function(){
-		$('.typeahead').typeahead({
-			hint: true,
-		  highlight: true,
-		  minLength: 1,
-			source: function (query, process) {
-				var strng=$('.typeahead').val();
-				var input = [];
-				input.push(strng);
-				var data_ajax={
-						method: "POST",
-						url: "index.php/article/searchByAll",
-					  data: { code: strng },
-					  success:function(data){
-							objects = [];
-							map = {};
-							$.each(data, function(i, object) {
-								var key= object.artBarCode+" - "+object.artDescription
-								map[key] = object;
-								objects.push(key);
-							});
-							return process(objects);
-					  },
-					  error:function(error_msg){
-					  	alert( "error_msg: " + error_msg );
-					  },
-						dataType: 'json'
-					};
-					$.ajax(data_ajax);
-        },updater: function(item) {
-					var data=map[item];
-					console.debug("===> data: %o",data);
-					$('#articleField').attr('data-artBarCode',data.artBarCode);
-					$('#articleField').attr('data-artDescription',data.artDescription);
-					$('#articleField').attr('data-pVenta',data.pVenta);
-          return data.artDescription;
-        },
-  		autoSelect: false
-		});
-
-
-
-
-		$("#addItem_bt").on('click',function(){
-
-			if($("#articleField").val().length<1){
-				$("#articleField_container").addClass("has-error");
-				$("#articleField_error").removeClass("hidden");
-				return false;
-			}else{
-				$("#articleField_container").removeClass("has-error");
-				$("#articleField_error").addClass("hidden");
-			}
-			if($("#articleCant").val().length<1){
-				$("#articleCant_container").addClass("has-error");
-				$("#articleCant_error").removeClass("hidden");
-				return false;
-			}else{
-				$("#articleCant_container").removeClass("has-error");
-				$("#articleCant_error").addClass("hidden");
-			}
-
-			var articleData=$("#articleField").data();
-			console.debug("===> articleData: %o",articleData);
-			var new_row="";
-			new_row +="<tr>";
-			new_row +="<td>"+articleData.artbarcode+"</td>";
-			new_row +="<td>"+articleData.artdescription+"</td>";
-			new_row +="<td>"+$("#articleCant").val()+"</td>";
-			new_row +="<td> $ "+articleData.pventa+"</td>";
-			new_row +="<td class='text-center'>"+($("#articleCant").val()*articleData.pventa)+"</td>";
-			//new_row +=""
-			new_row +="</tr>";
-			$("#articleField").data(null);
-			console.debug("===> new_row: %o",new_row);
-			console.debug("===> new_row: %o",$("#articleField").data());
-
-			$("#order_detail tbody").append(new_row);
-			$("#articleField").val(null).focus();
-			$("#articleCant").val(null);
-		})
-		/*.on('keypress',function(){
-			console.debug("===> value: %o",$(this).val());
-		});*/
-/*
-  });
-*/
-
 var isOpenWindow = false;
   $('#artId').keyup(function(e){
     var code = e.which;
-    if(code==13)e.preventDefault();
-    if(code==32||code==13||code==188||code==186){
-        //Buscar articulo
-        Buscar();
-      }
+    if(code==13){
+      e.preventDefault();
+      Buscar();
+    }
   });
+
+  $('#ocObservacion').keyup(function(e){
+    var code = e.which;
+    if(code==13){
+      e.preventDefault();
+      $('#artId').focus();
+    }
+  });
+
+  $('#artCant').keyup(function(e){
+    var code = e.which;
+    if(code==13){
+      e.preventDefault();
+      $('#btnAddProd').focus();
+    }
+  });
+
 var idSale = $('#order_detail > tbody').find('tr').length+1;
   function Buscar(){
 
@@ -288,8 +199,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
     Buscar();
   });
 
-    function delete_(id){
-			console.debug("");
+  function delete_(id){			
     $('#'+id).remove();
     Calcular();
     $('#artId').focus();
@@ -301,10 +211,10 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
     //$('#modalReception').modal('hide');
     cerro();
     $('#modalSearch').modal({ backdrop: 'static', keyboard: false });
-    $('#artIdSearch').val('');
+    $('#artIdSearch').val($('#artId').val());
     $('#saleDetailSearch > tbody').html('');
     $('#modalSearch').modal('show');
-    setTimeout(function () { $('#artIdSearch').focus(); }, 1000);
+    setTimeout(function () { $('#artIdSearch').focus(); BuscarCompleto();}, 1000);
   }
 
   function cancelarBusqueda(){
@@ -313,7 +223,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
     isOpenWindow = true;
     $('#artCant').val('1');
     $('#artId').val('');
-    setTimeout(function () { $('#artId').focus(); }, 1000);
+    setTimeout(function () { $('#artId').focus(); }, 8000);
   }
 
   function cerro(){
@@ -322,34 +232,36 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
 
     function BuscarCompleto(){
     $('#saleDetailSearch > tbody').html('');
-    $.ajax({
-          type: 'POST',
-          data: { code: $('#artIdSearch').val() },
-          url: 'index.php/article/searchByAll',
-          success: function(resultList){
-                        if(resultList != false){
-                          $.each(resultList, function(index, result){
-                            if(result.artEstado == 'AC'){
-                              var row = '<tr>';
-                              row += '<td width="10%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
-                              row += 'onClick="agregar(\''+result.artBarCode+'\')"></i></td>';
-                              row += '<td width="20%">('+result.artBarCode+')</td>';
-                              row += '<td>'+result.artDescription+'</td>';
-                              row += '<td width="20%" style="text-align: right"><b> $ '+parseFloat(result.pVenta).toFixed(2)+'</b></td>';
-                              row += '</tr>';
-                              $('#saleDetailSearch > tbody').prepend(row);
-                            }
-                          });
-                          $('#artIdSearch').focus();
-                        }
-                        $("#loadingIcon").hide();
+    if($('#artIdSearch').val().length >= 3){
+      $.ajax({
+            type: 'POST',
+            data: { code: $('#artIdSearch').val() },
+            url: 'index.php/article/searchByAll',
+            success: function(resultList){
+                          if(resultList != false){
+                            $.each(resultList, function(index, result){
+                              if(result.artEstado == 'AC'){
+                                var row = '<tr>';
+                                row += '<td width="10%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
+                                row += 'onClick="agregar(\''+result.artDescription+'\')"></i></td>';
+                                row += '<td width="20%">('+result.artBarCode+')</td>';
+                                row += '<td>'+result.artDescription+'</td>';
+                                row += '<td width="20%" style="text-align: right"><b> $ '+parseFloat(result.pVenta).toFixed(2)+'</b></td>';
+                                row += '</tr>';
+                                $('#saleDetailSearch > tbody').prepend(row);
+                              }
+                            });
+                            $('#artIdSearch').focus();
+                          }
+                          $("#loadingIcon").hide();
+                  },
+            error: function(result){
+                  $("#loadingIcon").hide();
+                  ProcesarError(result.responseText, 'modalSale');
                 },
-          error: function(result){
-                $("#loadingIcon").hide();
-                ProcesarError(result.responseText, 'modalSale');
-              },
-              dataType: 'json'
-      });
+                dataType: 'json'
+        });
+    }
   }
 
   var timer, timeout = 1000;
@@ -379,7 +291,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
     $('#modalSearch').modal('hide');
     $('#modalReception').modal('show');
     isOpenWindow = true;
-    setTimeout(function () { $('#artId').focus(); }, 1000);
+    setTimeout(function () { $('#artCant').focus(); $('#artCant').select(); }, 800);
   }
 
 
