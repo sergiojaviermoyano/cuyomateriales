@@ -16,14 +16,29 @@ class provider extends CI_Controller {
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('provider/list', $data, true));
 	}
-	
+
+	public function listing(){
+
+		$total=$this->Providers->getTotalProviders($_REQUEST);
+		$result = $this->Providers->Providers_List_datatable($_REQUEST);
+
+		$result=array(
+			'draw'=>$_REQUEST['draw'],
+			'recordsTotal'=>$total,
+			'recordsFiltered'=>count($result),
+			'data'=>$result,
+		);
+		echo json_encode($result);
+
+	}
+
 	public function getProvider(){
 		$data['data'] = $this->Providers->getProvider($this->input->post());
 		$response['html'] = $this->load->view('provider/view_', $data, true);
 
 		echo json_encode($response);
 	}
-	
+
 	public function setProvider(){
 		$data = $this->Providers->setProvider($this->input->post());
 		if($data  == false)
@@ -32,7 +47,7 @@ class provider extends CI_Controller {
 		}
 		else
 		{
-			echo json_encode(true);	
+			echo json_encode(true);
 		}
 	}
 }

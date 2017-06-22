@@ -23,12 +23,13 @@
             </thead>
             <tbody>
               <?php
-                if($list) {                  
+              /*
+                if($list) {
                 	foreach($list as $p)
       		        {
   	                echo '<tr>';
   	                echo '<td>';
-                    
+
                     if (strpos($permission,'Edit') !== false) {
   	                	echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadPro('.$p['prvId'].',\'Edit\')"></i>';
                     }
@@ -36,7 +37,7 @@
                     if (strpos($permission,'Del') !== false) {
   	                	echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadPro('.$p['prvId'].',\'Del\')"></i>';
                     }
-                    
+
                     if (strpos($permission,'View') !== false) {
   	                	echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadPro('.$p['prvId'].',\'View\')"></i>';
                     }
@@ -46,10 +47,10 @@
   	                echo '<td style="text-align: right">'.$p['prvTelefono'].'</td>';
                     echo '<td style="text-align: left">'.$p['prvMail'].'</td>';
   	                echo '</tr>';
-                    
+
       		        }
-                  
-                }
+
+                } */
               ?>
             </tbody>
           </table>
@@ -63,12 +64,69 @@
   $(function () {
     //$("#groups").DataTable();
     $('#provid').DataTable({
+      "processing": true,
+      "serverSide": true,
       "paging": true,
       "lengthChange": true,
       "searching": true,
       "ordering": true,
       "info": true,
       "autoWidth": true,
+      'ajax':{
+        "dataType": 'json',
+        "method": "POST",
+        "url":'index.php/provider/listing',
+        "dataSrc": function (json) {
+          var output=[];
+          var permission=$("#permission").val();
+          permission= permission.split('-');
+          console.debug("==> permission: %o",permission);
+            $.each(json.data,function(key,item){
+              console.debug("==> item: %o",item);
+              var td_1="";
+
+                          if(permission.indexOf("Edit")>0 ){
+                            td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.prvId+',\'Edit\')"></i>';
+                          }
+
+                          if(permission.indexOf("Del")>0){
+                            td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.prvId+',\'Del\')"></i>';
+                          }
+
+                          if(permission.indexOf("View")>0){
+                            td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.prvId+',\'View\')"></i>';
+                          }
+              var td_2=item.prvRazonSocial;
+              var td_3=item.prvTelefono;
+              var td_4="";
+              switch (item.artEstado) {
+                case 'AC':{
+                  td_4='<small class="label pull-left bg-green">Activa</small>';
+                  break;
+                }
+                case 'IN':{
+                  td_4='<small class="label pull-left bg-red">Inactiva</small>';
+                  break;
+                }
+                case 'FA':{
+                  td_4='<small class="label pull-left bg-blue">Facturada</small>';
+                  break;
+                }
+                default:{
+                  td_4='';
+                  break;
+                }
+              }
+
+              output.push([td_1,td_2,td_3,td_4]);
+            });
+
+            return output;
+        },
+        error:function(the_error){
+          console.debug(the_error);
+        }
+      },
       "language": {
             "lengthMenu": "Ver _MENU_ filas por página",
             "zeroRecords": "No hay registros",
@@ -86,7 +144,7 @@
 
   var idPro = 0;
   var acPro = '';
-  
+
   function LoadPro(id_, action){
   	idPro = id_;
   	acPro = action;
@@ -95,7 +153,7 @@
       $.ajax({
           	type: 'POST',
           	data: { id : id_, act: action },
-    		    url: 'index.php/provider/getProvider', 
+    		    url: 'index.php/provider/getProvider',
     		    success: function(result){
 			                WaitingClose();
 			                $("#modalBodyProvider").html(result.html);
@@ -112,7 +170,7 @@
     		});
   }
 
-  
+
   $('#btnSave').click(function(){
 
   	if(acPro == 'View')
@@ -141,9 +199,9 @@
     WaitingOpen('Guardando cambios');
     	$.ajax({
           	type: 'POST',
-          	data: { 
-                    id : idPro, 
-                    act: acPro, 
+          	data: {
+                    id : idPro,
+                    act: acPro,
                     nom: $('#prvNombre').val(),
                     ape: $('#prvApellido').val(),
                     rz: $('#prvRazonSocial').val(),
@@ -154,7 +212,7 @@
                     est: $('#prvEstado').val(),
                     tel: $('#prvTelefono').val()
                   },
-    		url: 'index.php/provider/setProvider', 
+    		url: 'index.php/provider/setProvider',
     		success: function(result){
                 			WaitingClose();
                 			$('#modalProvider').modal('hide');
@@ -176,10 +234,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Proveedor</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction"> </span> Proveedor</h4>
       </div>
       <div class="modal-body" id="modalBodyProvider">
-        
+
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>

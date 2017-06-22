@@ -7,23 +7,54 @@ class Providers extends CI_Model
 	{
 		parent::__construct();
 	}
-	
+
 	function Providers_List(){
 
 		$this->db->order_by('prvRazonSocial', 'asc');
-		
+
 		$query= $this->db->get('proveedores');
 
 		if ($query->num_rows()!=0)
 		{
-			return $query->result_array();	
+			return $query->result_array();
 		}
 		else
-		{	
+		{
 			return false;
 		}
 	}
-	
+
+
+	function getTotalProviders($data=null){
+
+		$this->db->order_by('prvRazonSocial', 'desc');
+		if($data['search']['value']!=''){
+			$this->db->like('prvRazonSocial', $data['search']['value']);
+			$this->db->limit($data['length'],$data['start']);
+		}
+		$query= $this->db->get('proveedores');
+		return $query->num_rows();
+
+	}
+
+	function Providers_List_datatable($data=null){
+
+		$this->db->order_by('prvRazonSocial', 'desc');
+		$this->db->limit($data['length'],$data['start']);
+		if($data['search']['value']!=''){
+			$this->db->like('prvRazonSocial', $data['search']['value']);
+		}
+		$query= $this->db->get('proveedores');
+		if ($query->num_rows()!=0)
+		{
+			return $query->result_array();
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	function getProvider($data = null){
 		if($data == null)
 		{
@@ -74,13 +105,13 @@ class Providers extends CI_Model
 			$query= $this->db->get_where('tipos_documentos',array('DP'));
 			if ($query->num_rows() != 0)
 			{
-				$data['docs'] = $query->result_array();	
+				$data['docs'] = $query->result_array();
 			}
 
 			return $data;
 		}
 	}
-	
+
 	function setProvider($data = null){
 		if($data == null)
 		{
@@ -116,19 +147,19 @@ class Providers extends CI_Model
 
 			switch($act){
 				case 'Add':
-					//Agregar Proveedor 
+					//Agregar Proveedor
 					if($this->db->insert('proveedores', $data) == false) {
 						return false;
-					} 
+					}
 					break;
-				
+
 				case 'Edit':
 				 	//Actualizar Proveedor
 				 	if($this->db->update('proveedores', $data, array('prvId'=>$id)) == false) {
 				 		return false;
 				 	}
 				 	break;
-					
+
 				case 'Del':
 				 	//Eliminar Proveedor
 				 	if($this->db->delete('proveedores', array('prvId'=>$id)) == false) {
@@ -140,6 +171,6 @@ class Providers extends CI_Model
 
 		}
 	}
-	
+
 }
 ?>
