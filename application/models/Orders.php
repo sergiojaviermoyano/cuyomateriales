@@ -22,14 +22,15 @@ class Orders extends CI_Model
 	}
 
 	function getTotalOrders($data=null){
-		$this->db->order_by('ocFecha', 'desc');
 
+		$this->db->order_by('ocFecha', 'desc');
 		if($data['search']['value']!=''){
 			$this->db->like('ocObservacion', $data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);
 		}
 		$query= $this->db->get('ordendecompra');
 		return $query->num_rows();
+		
 	}
 
 	function Orders_List_datatable($data=null){

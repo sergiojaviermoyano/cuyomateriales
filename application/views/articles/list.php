@@ -24,34 +24,6 @@
               </tr>
             </thead>
             <tbody>
-              <?php
-              /*
-                if(isset($list)) {
-                  if(count($list) > 0)
-                	foreach($list as $a)
-      		        {
-  	                echo '<tr>';
-  	                echo '<td>';
-                    if (strpos($permission,'Edit') !== false) {
-  	                	echo '<i class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadArt('.$a['artId'].',\'Edit\')"></i>';
-                    }
-                    if (strpos($permission,'Del') !== false) {
-  	                	echo '<i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadArt('.$a['artId'].',\'Del\')"></i>';
-                    }
-                    if (strpos($permission,'View') !== false) {
-  	                	echo '<i class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadArt('.$a['artId'].',\'View\')"></i>';
-                    }
-  	                echo '</td>';
-                    echo '<td style="text-align: center">'.$a['artBarCode'].'</td>';
-  	                echo '<td style="text-align: left">'.$a['artDescription'].'</td>';
-                    #echo '<td style="text-align: right">'.$a['artCoste'].'</td>';
-                    echo '<td style="text-align: center">'.($a['artEstado'] == 'AC' ? '<small class="label pull-left bg-green">Activo</small>' : ($a['artEstado'] == 'IN' ? '<small class="label pull-left bg-red">Inactivo</small>' : '<small class="label pull-left bg-yellow">Suspendido</small>')).'</td>';
-  	                echo '</tr>';
-
-      		        }
-
-                }*/
-              ?>
             </tbody>
           </table>
         </div><!-- /.box-body -->
