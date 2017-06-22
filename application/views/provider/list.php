@@ -80,9 +80,7 @@
           var output=[];
           var permission=$("#permission").val();
           permission= permission.split('-');
-          console.debug("==> permission: %o",permission);
             $.each(json.data,function(key,item){
-              console.debug("==> item: %o",item);
               var td_1="";
 
                           if(permission.indexOf("Edit")>0 ){
