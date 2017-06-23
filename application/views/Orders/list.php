@@ -198,7 +198,7 @@
       hayError = true;
     }
 
-    var items = parseInt($('#saleItems').html());
+    var items = parseFloat($('#saleItems').html());
     var venta = parseFloat($('#saleTotal').html());
     var redondeo =parseFloat($('#redondeo').val());
 
@@ -212,7 +212,7 @@
           artDescription: this.children[2].textContent,
           artCoste:       parseFloat(this.children[8].textContent),
           artFinal:       parseFloat(this.children[4].textContent),
-          venCant:        parseInt(this.children[3].textContent),
+          venCant:        parseFloat(this.children[3].textContent),
           artVenta:       parseFloat(this.children[7].textContent),
         };
 
@@ -353,9 +353,9 @@
             -->
         </div><br>
 
-        <div class="row">
+        <div class="row" style="max-height:350px; overflow-x: auto;" id="tableRow">
           <div class="col-xs-10 col-xs-offset-1">
-            <table id="saleDetailSearch" style="max-height:250px; display: table;" class="table table-bordered" width="100%">
+            <table id="saleDetailSearch" style="max-height:340px; display: table;" class="table table-bordered" width="100%">
               <tbody>
 
               </tbody>

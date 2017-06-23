@@ -90,7 +90,7 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
 						<td width="1%"><i style="color: #dd4b39; cursor: pointer;" class="fa fa-fw fa-times-circle" onClick="delete_(<?php echo $key+1;?>)"></i></td>
 						<td width="10%"><?php echo $value['artBarCode']?></td>
 						<td><?php echo $value['artDescripcion']?></td>
-						<td width="10%" class="td_cant" style="text-align: right"   data-pventa="<?php echo $value['artPVenta']?>" ><?php echo  (int)$value['ocdCantidad']?></td>
+						<td width="10%" class="td_cant" style="text-align: right"   data-pventa="<?php echo $value['artPVenta']?>" ><?php echo  (float)$value['ocdCantidad']?></td>
 						<td width="10%" class="td_pventa"  style="text-align: right" ><?php echo $value['artPVenta']?></td>
 						<td width="10%" class="td_total" style="text-align: right"></td>
 						<td style="display: none"><?php echo $value['artId']?></td>
@@ -163,7 +163,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                  						pVenta += pVenta * (margin / 100);
                  					}
                           WaitingClose();
-                          var cantidad = parseInt($('#artCant').val() == '' ? 1 : $('#artCant').val());
+                          var cantidad = parseFloat($('#artCant').val() == '' ? 1 : $('#artCant').val());
                           var row = '<tr id="'+idSale+'">';
                           row += '<td width="1%"><i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer;" onclick="delete_('+idSale+')"></i></td>';
                           row += '<td width="10%">'+result.artBarCode+'</td>';
@@ -223,7 +223,8 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
     isOpenWindow = true;
     $('#artCant').val('1');
     $('#artId').val('');
-    setTimeout(function () { $('#artId').focus(); }, 8000);
+    //setTimeout(function () { $('#artId').focus(); }, 8000);
+    $('#artId').focus();
   }
 
   function cerro(){
@@ -232,6 +233,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
 
   var timer, timeout = 1000;
   var row = 0, rows = 0;
+  var move = 0;
 
     function BuscarCompleto(){
     $('#saleDetailSearch > tbody').html('');
@@ -300,10 +302,13 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
       if(code == 40){//abajo
         if((row + 1) <= rows){
           row++;
+          if(row > 5){
+          }
           removeStyle.css('background-color', 'white');
         }
         var rowE = $("#saleDetailSearch > tbody tr:nth-child("+row+")");
         rowE.css('background-color', '#D8D8D8');
+        animate();
       } 
       if(code == 38) {//arriba
         if(row >= 2){
@@ -312,9 +317,16 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
         }
         var rowE = $("#saleDetailSearch > tbody tr:nth-child("+row+")");
         rowE.css('background-color', '#D8D8D8');
+        animate();
       }
     }
   });
+
+  function animate() {  
+       //En base a la altura del tr hacer el move (- para cuando hago abajo / + para cuando hago para arriba)
+      //siempre que la cantidad de filas sea mayor a 350px, que es el alto del buscador 
+      //$('#saleDetailSearch').animate({ "margin-top": move + "px" }, 1);
+  }
 
   function agregar(barCode){
     //debugger;
@@ -336,7 +348,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
 			var td_total=$("table").find("td.td_total");
 			var total=0;
 			$.each(td_cant,function(index,item){
-				var cantidad=parseInt($(item).text());
+				var cantidad=parseFloat($(item).text());
 				var pVenta = $(item).data('pventa');
 				pVenta=parseFloat(pVenta);
 				if(margin > 0){

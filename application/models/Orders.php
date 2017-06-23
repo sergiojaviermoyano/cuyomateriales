@@ -333,9 +333,9 @@ function setOrder($data = null){
 				$html .= '<td colspan="4" style="padding-top: 5px"><hr> </td>';
 				$html .= '</tr>';
 			}
-			$total += $result['order']['redondeo'];
-			$html .= '<tr><td><h5>Redondeo</h5></td>';
-			$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
+			//$total += $result['order']['redondeo'];
+			//$html .= '<tr><td><h5>Redondeo</h5></td>';
+			//$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
 			$html .= '<tr><td><h3>Total</h3></td>';
 			$html .= '<td colspan="3" style="text-align: right"><h3>'.number_format($total, 2, ',', '.').'</h3></td></tr>';
 			$html .= '</table>';

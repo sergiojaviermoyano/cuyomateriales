@@ -14,7 +14,7 @@ class article extends CI_Controller {
 
 	public function index($permission)
 	{
-		$data['list'] = $this->Articles->Articles_List();
+		$data['list'] = array();//$this->Articles->Articles_List();
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('articles/list', $data, true));
 	}
