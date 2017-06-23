@@ -84,15 +84,15 @@
               var td_1="";
 
                           if(permission.indexOf("Edit")>0 ){
-                            td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.prvId+',\'Edit\')"></i>';
+                            td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadPro('+item.prvId+',\'Edit\')"></i>';
                           }
 
                           if(permission.indexOf("Del")>0){
-                            td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.prvId+',\'Del\')"></i>';
+                            td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadPro('+item.prvId+',\'Del\')"></i>';
                           }
 
                           if(permission.indexOf("View")>0){
-                            td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.prvId+',\'View\')"></i>';
+                            td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadPro('+item.prvId+',\'View\')"></i>';
                           }
               var td_2=item.prvRazonSocial;
               var td_3=item.prvTelefono;

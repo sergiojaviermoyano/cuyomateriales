@@ -59,15 +59,15 @@
             var td_1="";
 
             if(permission.indexOf("Edit")>0 ){
-              td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.artId+',\'Edit\')"></i>';
+              td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadArt('+item.artId+',\'Edit\')"></i>';
             }
 
             if(permission.indexOf("Del")>0){
-              td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.artId+',\'Del\')"></i>';
+              td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadArt('+item.artId+',\'Del\')"></i>';
             }
 
             if(permission.indexOf("View")>0){
-              td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.artId+',\'View\')"></i>';
+              td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadArt('+item.artId+',\'View\')"></i>';
             }
             var td_2=item.artBarCode;
             var td_3=item.artDescription;
