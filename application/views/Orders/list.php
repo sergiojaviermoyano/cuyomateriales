@@ -268,7 +268,7 @@
     var items = 0;
     var total = 0;
     table.each(function(r) {
-      items += parseInt(this.children[3].textContent);
+      items += parseFloat(this.children[3].textContent);
       total += parseFloat(this.children[5].textContent);
     });
 
