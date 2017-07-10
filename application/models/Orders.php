@@ -286,22 +286,16 @@ function setOrder($data = null){
 				}
 
 			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
-			$html = '<table width="100%">';
+			$html = '<table width="100%" style="font-family:courier; font-size: 12px;">';
 			$html .= '	<tr>
-							<th width="50%">
-								<h1 style="color: #FE642E">CUYO</h1>
-								<h3 style="color: #FE642E">MATERIALES PARA LA CONSTRUCCIÓN</h3>
-								Calle 25 de Mayo 595 - Caucete - San Juan<br>
-								Tel: 154670159<br>
-								E-mail: luisgallardo@hotmail.com
-							</th>
-							<th style="vertical-align: top">
+							<td colspan="2" style="text-align: center">
 								Documento no válido como factura.<br>
-								'.($result['order']['ocEsPresupuesto'] ? '<h3>Presupuesto</h3> <br>' : '') .'
-								<br>Número de Orden: <b>0000-'.$ordId.'</b><br>
+								'.($result['order']['ocEsPresupuesto'] ? '<strong>Presupuesto</strong> <br>' : '') .'
+								Número de Orden: <b>0000-'.$ordId.'</b><br>
 								Vendedor: <b>'.$data['user']['usrName'].' '.$data['user']['usrLastName'].'</b><br>
 								Fecha: <b>'.date("d-m-Y H:i", strtotime($result['order']['ocFecha'])).'</b><br>
-							</th>
+								Tel: 0264 - 154670159
+							</td>
 						</tr>';
 			$html .= '	<tr><td colspan="2"><hr></td></tr>';
 			$html .= '	<tr><td colspan="2">
@@ -312,17 +306,18 @@ function setOrder($data = null){
 			$html .= '	<tr><td colspan="2">';
 
 			$html .= '<table width="100%">';
-			$html .= '<tr>
-						<th>Artículo</th>
+			$html .= '<tr style="background-color: #FAFAFA">
+						<th colspan="2">Artículo</th>
 						<th>Precio</th>
 						<th>Cantidad</th>
 						<th>Total</th>
-					</tr>';
+					</tr><tr><td colspan="5"><hr></td></tr>';
 			$total = 0;
 
 			foreach ($result['detalleCompra'] as $art) {
 				$html .= '<tr>';
-				$html .= '<td>('.$art['artId'].')'.$art['artDescripcion'].'</td>';
+				$html .= '<td>'.$art['artBarCode'].'</td>';
+				$html .= '<td>'.$art['artDescripcion'].'</td>';
 				$html .= '<td style="text-align: right">'.number_format($art['artPVenta'], 2, ',', '.').'</td>';
 				$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';
 				$coste = $art['artPVenta'] * $art['ocdCantidad'];
@@ -330,14 +325,14 @@ function setOrder($data = null){
 				$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
 				$html .= '</tr>';
 				$html .= '<tr>';
-				$html .= '<td colspan="4" style="padding-top: 5px"><hr> </td>';
+				$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
 				$html .= '</tr>';
 			}
 			//$total += $result['order']['redondeo'];
 			//$html .= '<tr><td><h5>Redondeo</h5></td>';
 			//$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
-			$html .= '<tr><td><h3>Total</h3></td>';
-			$html .= '<td colspan="3" style="text-align: right"><h3>'.number_format($total, 2, ',', '.').'</h3></td></tr>';
+			$html .= '<tr>';
+			$html .= '<td colspan="5" style="text-align: right">Total  <strong style="font-size: 17px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
 			$html .= '</table>';
 
 			$html .= '	</td></tr>';
