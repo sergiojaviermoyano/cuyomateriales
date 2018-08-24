@@ -35,4 +35,16 @@ class customer extends CI_Controller {
 			echo json_encode(true);	
 		}
 	}
+
+	public function setCustomer2(){
+		$data = $this->Customers->setCustomer2($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);	
+		}
+	}
 }

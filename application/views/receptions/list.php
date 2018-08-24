@@ -287,31 +287,25 @@ $('#table_search').keyup(function(e) {
   <div class="modal-dialog" role="document" style="width: 50%">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title" id="myModalLabel"><span id="modalAction__"> </span> Artículo</h4> 
+        <h4 class="modal-title" id="myModalLabel"><span id="modalAction__"> </span> Artículo</h4>
       </div>
       <div class="modal-body" id="modalBodySearch">
-        
+
         <div class="row">
           <div class="col-xs-10 col-xs-offset-1"><center>Producto</center></div>
         </div>
         <div class="row">
-          <div class="col-xs-10 col-xs-offset-1">
-            <input type="text" class="form-control" id="artIdSearch" value="" min="0">
-          </div>
+          <div class="col-xs-10 col-xs-offset-1"><input type="text" class="form-control" id="artIdSearch" value=""></div>
+          <div class="col-xs-1"><img style="display: none" id="loadingIcon" src="<?php  echo base_url();?>assets/images/loading.gif" width="35px"></div>
+            <!--
+            <input type="text" id="type" />
+            <span id="status"></span>
+            -->
         </div><br>
 
-        <div class="row">
+        <div class="row" style="max-height:350px; overflow-x: auto;" id="tableRow">
           <div class="col-xs-10 col-xs-offset-1">
-            <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th width="1%"></th>
-                  <th width="10%">Código</th>
-                  <th>Descripción</th>
-                </tr>
-              </thead>
-            </table>
-            <table id="saleDetailSearch" style="height:20em; display:block; overflow: auto;" class="table table-bordered">
+            <table id="saleDetailSearch" style="max-height:340px; display: table;" class="table table-bordered" width="100%">
               <tbody>
 
               </tbody>

@@ -31,5 +31,17 @@ class login extends CI_Controller {
 			echo json_encode(1);	
 		}
 	}
+
+	public function validateAut(){
+		$data = $this->Users->validateAut($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(0);
+		}
+		else
+		{
+			echo json_encode($data);	
+		}
+	}
 	
 }

@@ -144,6 +144,7 @@ class Orders extends CI_Model
 				$Order['lpId'] = '';
 				$Order['cliId'] = '';
 				$Order['redondeo'] = '0';
+				$Order['ocDescuento'] = 0;
 				$data['order'] = $Order;
 				$data['detalleCompra']=array();
 			}
@@ -160,47 +161,101 @@ class Orders extends CI_Model
 		}
 	}
 
-function setOrder($data = null){
-    if($data == null)
-		{
-			return false;
-		}
-		else
-		{
-			$action = 	$data['act'];
-			$id = 		$data['id'];
-			$obser = 	$data['obser'];
-			$cliId = 	$data['cliId'];
-			$lpId =		$data['lpId'];
-			$arts = 	$data['art'];
-			$redondeo = 	$data['redondeo'];
+	function setOrder($data = null){
+	    if($data == null)
+			{
+				return false;
+			}
+			else
+			{
+				$action = 	$data['act'];
+				$id = 		$data['id'];
+				$obser = 	$data['obser'];
+				$cliId = 	$data['cliId'];
+				$lpId =		$data['lpId'];
+				$arts = 	$data['art'];
+				$redondeo = 	$data['redondeo'];
+				$ocEsPresupuesto = $data['dejadeserpresupuesto'];
+				$usr = $data['usrAutDesc'];
+				$desc = $data['descuento'] == '' ? null : $data['descuento'];
 
-			//Datos del vendedor
-			$userdata = $this->session->userdata('user_data');
-			$usrId = $userdata[0]['usrId'];
+				//Datos del vendedor
+				$userdata = $this->session->userdata('user_data');
+				$usrId = $userdata[0]['usrId'];
 
-			$data = array(
-				'ocObservacion'	=>$obser,
-				'usrId'			=>$usrId,
-				'lpId'			=>$lpId,
-				'cliId'			=>$cliId,
-				'redondeo'  =>$redondeo
-				);
+				$data = array(
+					'ocObservacion'	=>$obser,
+					'usrId'			=>$usrId,
+					'lpId'			=>$lpId,
+					'cliId'			=>$cliId,
+					'redondeo'  	=>$redondeo,
+					'ocDescuento'	=>$desc
+					);
 
-			switch ($action) {
-				case 'Add':
-				case 'Pre':
+				if($usr != '' && $usr != null){
+					$data['usrAutDesc'] =$usr;
+				}
 
-					$this->db->trans_start(); // Query will be rolled back
-					$data['ocEsPresupuesto']=($action=='Pre')?1:0;
+				switch ($action) {
+					case 'Add':
+					case 'Pre':
+					case 'Ent':
+						$this->db->trans_start(); // Query will be rolled back
+						if($id <= 0){
+							if($action == 'Ent') $data['ocEstado'] = 'EN';
+							//Es un registro nuevo
+							$data['ocEsPresupuesto']=($action=='Pre')?1:0;
+							if($this->db->insert('ordendecompra', $data) == false) {
+								return false;
+							} else {
+								$idOrder = $this->db->insert_id();
 
-					if($this->db->insert('ordendecompra', $data) == false) {
-						return false;
-					} else {
-						$idOrder = $this->db->insert_id();
+								foreach ($arts as $a) {
+									$insert = array(
+											'ocId'	 		=> $idOrder,
+											'artId' 		=> $a['artId'],
+											'artDescripcion'=> $a['artDescription'],
+											'artPCosto'		=> $a['artCoste'],
+											'artPVenta'		=> $a['artFinal'],
+											'ocdCantidad'	=> $a['venCant']
+										);
 
-						foreach ($arts as $a) {
-							$insert = array(
+									if($this->db->insert('ordendecompradetalle', $insert) == false) {
+										return false;
+									}
+								}
+
+								//Entregar
+								$this->entregarOC($idOrder);
+							}
+						} else {
+							//Es solo entregar una oc y cambiar estado
+							$update = array(
+											'ocEstado' 			=> 'EN',
+											'ocEsPresupuesto' 	=> 0
+											);
+							if($this->db->update('ordendecompra', $update, array('ocId'=>$id)) == false) {
+					 			return false;
+					 		} else {
+					 			//Entregar
+					 			$this->entregarOC($id);
+					 		}
+						}
+						$this->db->trans_complete();
+						break;
+					case 'Edit':{
+						if($ocEsPresupuesto == 'true')
+							$data['ocEsPresupuesto'] = 0;
+						if($this->db->update('ordendecompra', $data, array('ocId'=>$id)) == false) {
+					 		return false;
+					 	}
+						if($this->db->delete('ordendecompradetalle', array('ocId'=>$id)) == false) {
+					 		return false;
+					 	}	else {
+							$idOrder = $id;
+
+							foreach ($arts as $a) {
+								$insert = array(
 									'ocId'	 		=> $idOrder,
 									'artId' 		=> $a['artId'],
 									'artDescripcion'=> $a['artDescription'],
@@ -209,46 +264,24 @@ function setOrder($data = null){
 									'ocdCantidad'	=> $a['venCant']
 								);
 
-							if($this->db->insert('ordendecompradetalle', $insert) == false) {
-								return false;
-							}
-						}
-					}
-					$this->db->trans_complete();
-					break;
-				case 'Edit':{
-					if($this->db->update('ordendecompra', $data, array('ocId'=>$id)) == false) {
-				 		return false;
-				 	}
-					if($this->db->delete('ordendecompradetalle', array('ocId'=>$id)) == false) {
-				 		return false;
-				 	}	else {
-						$idOrder = $id;
-
-						foreach ($arts as $a) {
-							$insert = array(
-								'ocId'	 		=> $idOrder,
-								'artId' 		=> $a['artId'],
-								'artDescripcion'=> $a['artDescription'],
-								'artPCosto'		=> $a['artCoste'],
-								'artPVenta'		=> $a['artFinal'],
-								'ocdCantidad'	=> $a['venCant']
-							);
-
-							if($this->db->insert('ordendecompradetalle', $insert) == false) {
-							 return false;
+								if($this->db->insert('ordendecompradetalle', $insert) == false) {
+								 return false;
+							 }
+						 }
+						 if($ocEsPresupuesto == 'true'){
+						 	//Entregar
+							$this->entregarOC($id);
 						 }
 					 }
-				 }
 
-				break;
-			}
-				default:
-					# code...
 					break;
+				}
+					default:
+						# code...
+						break;
+				}
+				return true;
 			}
-			return true;
-		}
 	}
 
 	function printOrder($data = null){
@@ -294,7 +327,7 @@ function setOrder($data = null){
 								Número de Orden: <b>0000-'.$ordId.'</b><br>
 								Vendedor: <b>'.$data['user']['usrName'].' '.$data['user']['usrLastName'].'</b><br>
 								Fecha: <b>'.date("d-m-Y H:i", strtotime($result['order']['ocFecha'])).'</b><br>
-								Tel: 0264 - 154670159
+								Tel: 0264 - 4961482
 							</td>
 						</tr>';
 			$html .= '	<tr><td colspan="2"><hr></td></tr>';
@@ -359,9 +392,8 @@ function setOrder($data = null){
 			$dir = opendir('assets/reports/');
 			while($f = readdir($dir))
 			{
-
-			if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
-			unlink('assets/reports/'.$f);
+				if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
+				unlink('assets/reports/'.$f);
 			}
 			closedir($dir);
 			//----------------------------------------
@@ -369,5 +401,223 @@ function setOrder($data = null){
 		}
 	}
 
+	function entregarOC($idOc){
+		//Datos del usuario
+		$userdata = $this->session->userdata('user_data');
+		$usrId = $userdata[0]['usrId'];
+
+		//Datos de la caja 
+		$this->db->select('*');
+		$this->db->where(array('cajaCierre'=>null, 'usrId' => $usrId));
+		$this->db->from('cajas');
+		$query = $this->db->get();
+		$result = $query->result_array();
+		if(count($result) > 0){
+			$result = $query->result_array();
+			$cajaId = $result[0]['cajaId'];
+		} else {
+			//Si falla cambiar a estado 'AC'
+			$update = array(
+							'ocEstado' 			=> 'AC'
+							);
+			if($this->db->update('ordendecompra', $update, array('ocId'=>$idOc)) == false) {
+	 			return false;
+	 		}
+		}
+
+		//Datos de la orden
+		$query= $this->db->get_where('ordendecompra',array('ocId'=>$idOc));
+		$data = array();
+		if ($query->num_rows() > 0)
+		{
+			$order = $query->result_array();
+			$data['order'] = $order[0];
+			$this->db->select("ocd.*, a.*");
+			$this->db->from('ordendecompradetalle ocd');
+			$this->db->join('articles a','a.artId=ocd.artId');
+			$this->db->where('ocId',$idOc);
+			$query = $this->db->get();
+			$detalleCompra=($query->num_rows()>0)?$query->result_array():array();
+			$data['detalleCompra']=$detalleCompra;
+
+			//---------------
+			$venta = array(
+				'usrId'			=> $usrId,
+				'cajaId'		=> $cajaId,
+				'cliId'			=> $data['order']['cliId']
+				);
+
+			$this->db->trans_start();
+			if($this->db->insert('ventas', $venta) == false) {
+				return false;
+			} else {
+				$idVenta = $this->db->insert_id();
+				
+				//Actualizar detalle
+				$ventaImporte = 0;
+				foreach ($data['detalleCompra'] as $a) {
+					$insert = array(
+							'venId' 		=> $idVenta,
+							'artId' 		=> $a['artId'],
+							'artCode' 		=> $a['artBarCode'],
+							'artDescription'=> $a['artDescripcion'],
+							'artCoste'		=> $a['artPCosto'],
+							'artFinal'		=> $a['artPVenta'],
+							'venCant'		=> $a['ocdCantidad']
+						);
+
+					if($this->db->insert('ventasdetalle', $insert) == false) {
+						return false;
+					}
+
+					$insert = array(
+							'artId' 		=> $a['artId'],
+							'stkCant'		=> $a['ocdCantidad'] * -1,
+							'stkOrigen'		=> 'VN'
+						);
+
+					if($this->db->insert('stock', $insert) == false) {
+						return false;
+					}
+
+					$ventaImporte += $a['artPVenta'] * $a['ocdCantidad'];
+				}
+
+				//Insertar medio de pago como efectivo
+			 	$insert = array(
+			 			'venId'			=>	$idVenta,
+			 			'medId'			=>	1,
+			 			'rcbImporte'	=>	$ventaImporte,
+			 			'rcbDesc1'		=>	'',
+			 			'rcbDesc2'		=>	'',
+			 			'rcbDesc3'		=>	''
+			 		);
+
+			 	if($this->db->insert('recibos', $insert) == false) {
+			 		return false;
+			 	}
+
+				//Actualizar orden de compra
+				$update = array('venId' => $idVenta);
+				if($this->db->update('ordendecompra', $update, array('ocId'=>$idOc)) == false) {
+				 	return false;
+				}
+			}
+			$this->db->trans_complete();
+			//---------------
+		}
+	}
+
+	function printRemito($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$data['act'] = 'Print';
+			$result = $this->getOrder($data);
+
+			//Datos del Cliente
+			$query= $this->db->get_where('clientes',array('cliId' => $result['order']['cliId']));
+				if ($query->num_rows() != 0)
+				{
+					$user = $query->result_array();
+					$data['cliente'] = $user[0];
+				}
+
+			//Datos del Vendedor
+			$query= $this->db->get_where('sisusers',array('usrId' => $result['order']['usrId']));
+				if ($query->num_rows() != 0)
+				{
+					$user = $query->result_array();
+					$data['user'] = $user[0];
+				}
+
+			//Lista de Precio
+			$query= $this->db->get_where('listadeprecios',array('lpId' => $result['order']['lpId']));
+				if ($query->num_rows() != 0)
+				{
+					$lista = $query->result_array();
+					$data['lista'] = $lista[0];
+				}
+
+			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
+			$html = '<table width="100%" style="font-family:courier; font-size: 12px;">';
+			$html .= '	<tr>
+							<td style="text-align: center; font-family: Impact, Charcoal, sans-serif" width="50%">
+								<strong style="font-size: 40px">Cuyo</strong> <br>
+								<strong>Materiales para la Construcción<br>
+								25 de Mayo 595 -  Caucete - San Juan<br>
+								Tel: 0264 - 4961482
+							</td>
+							<td style="text-align: center" width="50%">
+								Documento no válido como factura.<br>
+								<strong style="font-size: 20px">Remito</strong> <br>
+								Número de Orden: <b>0000-'.$ordId.'</b><br>
+								Fecha: <b>'.date("d-m-Y H:i").'</b>
+							</td>
+						</tr>';
+			$html .= '	<tr><td colspan="2"><hr></td></tr>';
+			$html .= '	<tr><td colspan="2">
+							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' / '.$result['order']['ocObservacion'].'</b>
+							</b>
+						</td></tr>'; //Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'
+			$html .= '	<tr><td colspan="2"><hr></td></tr>';
+			$html .= '	<tr><td colspan="2">';
+
+			$html .= '<table width="100%">';
+			$html .= '<tr style="background-color: #FAFAFA">
+						<th>Cantidad</th>
+						<th>Artículo</th>
+					</tr><tr><td colspan="5"><hr></td></tr>';
+			$total = 0;
+
+			foreach ($result['detalleCompra'] as $art) {
+				$html .= '<tr>';
+				$html .= '<td style="text-align: left">'.$art['ocdCantidad'].'</td>';
+				$html .= '<td>'.$art['artBarCode'].'-'.$art['artDescripcion'].'</td>';				
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
+				$html .= '</tr>';
+			}
+			$html .= '<tr>';
+			$html .= '<td colspan="4" style="text-align: right"><br><br>Firma:.............................................</td></tr>';
+			$html .= '<tr><td colspan="4" style="text-align: right"><br><br>Aclaración:........................................</td></tr>';
+			$html .= '</table>';
+
+			$html .= '	</td></tr>';
+			$html .= '</table>';
+
+			//se incluye la libreria de dompdf
+			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
+			//se crea una nueva instancia al DOMPDF
+			$dompdf = new DOMPDF();
+			//se carga el codigo html
+			$dompdf->load_html(utf8_decode($html));
+			//aumentamos memoria del servidor si es necesario
+			ini_set("memory_limit","300M");
+			//Tamaño de la página y orientación
+			$dompdf->set_paper('a4','portrait');
+			//lanzamos a render
+			$dompdf->render();
+			//guardamos a PDF
+			//$dompdf->stream("TrabajosPedndientes.pdf");
+			$output = $dompdf->output();
+			file_put_contents('assets/reports/'.$ordId.'.pdf', $output);
+
+			//Eliminar archivos viejos ---------------
+			$dir = opendir('assets/reports/');
+			while($f = readdir($dir))
+			{
+				if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
+				unlink('assets/reports/'.$f);
+			}
+			closedir($dir);
+			//----------------------------------------
+			return $ordId.'.pdf';
+		}
+	}
 }
 ?>

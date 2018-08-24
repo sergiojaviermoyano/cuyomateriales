@@ -236,7 +236,7 @@ class Articles extends CI_Model
 
 		$art = array();
 
-		$this->db->select('*');
+		$this->db->select('*, (select sum(stkCant) from stock where stock.artId = articles.artId) as stock');
 		$this->db->from('articles');
 		$this->db->where('artEstado','AC');
 		if($str != ''){
@@ -246,7 +246,8 @@ class Articles extends CI_Model
 		$query = $this->db->get();
 		if ($query->num_rows()!=0)
 		{
-			foreach($query->result_array() as $a){
+			$proccess = $query->result_array();
+			foreach($proccess as $a){
 				$articles = $a;
 
 				//Calcular precios
@@ -261,13 +262,14 @@ class Articles extends CI_Model
 					$articles['pVenta'] = $pUnit + $articles['artMargin'];
 				}
 
+				//$articles['stock'] = $this->stock($articles['artId']);
+
 				$art[] = $articles;
 			}
 		}
 
 		return $art;
 	}
-
 
 	public function update_prices_by_rubro($data){
 
@@ -293,5 +295,11 @@ class Articles extends CI_Model
 			return false;
 		}
 	}
+
+	public function stock($artId)
+    {
+        $query = $this->db->query('CALL stockArt('.$artId.')');
+        return $query->result();
+    }
 }
 ?>

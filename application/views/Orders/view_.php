@@ -35,24 +35,35 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
 	</div><br>
 
 
-<div class="row" style="display:none">
+<div class="row">
   <label class="col-sm-3">Cliente <strong style="color: #dd4b39">*</strong>:  </label>
-  <div class="col-sm-9">
-    <select class="form-control" id="cliId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
+  <div class="col-sm-8">
+    <select class="form-control select2" id="cliId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> style="width: 100%;">
+      <?php if($data['act'] == 'Add'){ ?>
       <?php foreach ($Clientes as $key => $item):?>
         <option value="<?php echo $item['cliId'];?>" <?php echo $item['cliDefault'] == true ?'selected':''?> ><?php echo $item['cliApellido'].' '.$item['cliNombre'];?> </option>
       <?php endforeach;?>
+      <?php } else { ?>
+      <?php foreach ($Clientes as $key => $item):?>
+        <option value="<?php echo $item['cliId'];?>" <?php echo $item['cliId'] == $data['order']['cliId'] ?'selected':''?> ><?php echo $item['cliApellido'].' '.$item['cliNombre'];?> </option>
+      <?php endforeach;?>
+      <?php }?>
     </select>
   </div>
+  <div class="col-sm-1">
+    <button type="button" class="btn btn-success" id="btnAddCustomer" onclick="CargarModalNuevoCliente()"><i class="fa fa-plus"></i></button>
+  </div>
 </div>
+<br>
 
 <div class="row">
   <label class="col-sm-3">Observación <strong style="color: #dd4b39">*</strong>: </label>
   <div class="col-sm-9">
-    <input type="text" class="form-control" id="ocObservacion" value="<?php echo $data['order']['ocObservacion'] ?>"/>
+    <input type="text" class="form-control" id="ocObservacion" value="<?php echo $data['order']['ocObservacion'] ?>" maxlength="250"/>
   </div>
 </div>
 
+<input type="hidden" id="ocEsPresupuesto" value="<?php echo $data['order']['ocEsPresupuesto'] ?>"/>
 <hr>
 
 <div class="row">
@@ -108,13 +119,25 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
 
   <div class="col-xs-2 col-xs-offset-4">
 			<label style="font-size: 15px; margin-top: 10px;">Redondeo:</label>
-			<br>
-      <label style="font-size: 20px; margin-top: 10px;">Total</label>
   </div>
   <div class="col-xs-3 text-right">
       <label style="font-size: 15px; color: red;" id="label_discount">0.00</label><br>
-			<label style="font-size: 30px; color: red;" id="saleTotal">0.00</label>
-			<input type="hidden" name="redondeo" id="redondeo" value="<?php echo $data['order']['redondeo'];?>">
+  </div>
+</div>
+<div class="row">  
+  <div class="col-xs-2">
+      <label style="font-size: 20px; margin-top: 10px;">Descuento:</label>
+  </div>
+  <div class="col-xs-2">
+      <input type="hidden" id="ocDescuentoOrg" value="<?php echo $data['order']['ocDescuento'];?>" >
+      <input type="text" class="form-control" id="ocDescuento" value="<?php echo $data['order']['ocDescuento'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> style="margin-top: 5px;">
+  </div>
+  <div class="col-xs-2 col-xs-offset-2">
+      <label style="font-size: 20px; margin-top: 10px;">Total</label>
+  </div>
+  <div class="col-xs-3 text-right">
+      <label style="font-size: 30px; color: red;" id="saleTotal">0.00</label>
+      <input type="hidden" name="redondeo" id="redondeo" value="<?php echo $data['order']['redondeo'];?>">
   </div>
 </div>
 
@@ -195,6 +218,10 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
     //---------------
   }
 
+  $('#ocDescuento').keyup(function() {
+    Calcular();
+  });
+
   $('#btnAddProd').click(function(){
     Buscar();
   });
@@ -254,6 +281,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                                 row += '<td width="20%">('+result.artBarCode+')</td>';
                                 row += '<td>'+result.artDescription+'</td>';
                                 row += '<td width="20%" style="text-align: right"><b> $ '+parseFloat(result.pVenta).toFixed(2)+'</b></td>';
+                                row += '<td width="10%" style="text-align: right">'+(result.stock == null ? 0 : result.stock)+'</td>';
                                 row += '</tr>';
                                 $('#saleDetailSearch > tbody').prepend(row);
                                 rows++;
@@ -372,4 +400,26 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
 		$("#lpId").trigger("change");
 
 	});
+
+    function CargarModalNuevoCliente(){
+      LoadIconAction('modalActionCli','Add');
+      WaitingOpen('Espere...');
+      $.ajax({
+            type: 'POST',
+            data: {id : -1, act: 'Add'},
+            url: 'index.php/customer/getCustomer',
+            success: function(result){
+                    WaitingClose();
+                    $("#modalBodyCli").html(result.html);
+                    setTimeout("$('#modalCli').modal('show');",800);
+                    setTimeout("$('#cliDocumento').val('"+dni+"');", 1000);
+                    setTimeout("$('#cliNombre').focus();", 2000);
+                  },
+            error: function(result){
+                  WaitingClose();
+                  ProcesarError(result.responseText, 'modalCli');
+                },
+                dataType: 'json'
+        });
+  }
 </script>

@@ -61,22 +61,22 @@
     //$("#groups").DataTable();
     $('#users').DataTable({
             "paging": true,
-      "lengthChange": true,
-      "searching": true,
-      "ordering": true,
-      "info": true,
-      "autoWidth": true,
-      "language": {
-            "lengthMenu": "Ver _MENU_ filas por página",
-            "zeroRecords": "No hay registros",
-            "info": "Mostrando pagina _PAGE_ de _PAGES_",
-            "infoEmpty": "No hay registros disponibles",
-            "infoFiltered": "(filtrando de un total de _MAX_ registros)",
-            "sSearch": "Buscar:  ",
-            "oPaginate": {
-                "sNext": "Sig.",
-                "sPrevious": "Ant."
-              }
+            "lengthChange": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": true,
+            "language": {
+                  "lengthMenu": "Ver _MENU_ filas por página",
+                  "zeroRecords": "No hay registros",
+                  "info": "Mostrando pagina _PAGE_ de _PAGES_",
+                  "infoEmpty": "No hay registros disponibles",
+                  "infoFiltered": "(filtrando de un total de _MAX_ registros)",
+                  "sSearch": "Buscar:  ",
+                  "oPaginate": {
+                      "sNext": "Sig.",
+                      "sPrevious": "Ant."
+                    }
         }
     });
   });
@@ -158,7 +158,8 @@
                     lnam: $('#usrLastName').val(),
                     com: $('#usrComision').val(),
                     pas: $('#usrPassword').val(),
-                    grp: $('#grpId').val()
+                    grp: $('#grpId').val(),
+                    des: $('#usrAutDescuento').prop('checked')
                   },
     		url: 'index.php/user/setUser', 
     		success: function(result){

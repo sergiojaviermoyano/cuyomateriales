@@ -143,5 +143,63 @@ class Customers extends CI_Model
 
 		}
 	}
+
+	function setCustomer2($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$id = $data['id'];
+			$act = $data['act'];
+			$nro = $data['nro'];
+			$name = $data['name'];
+			$lnam = $data['lnam'];
+			$doc = $data['doc'];
+			$dni = $data['dni'];
+			$mail = $data['mail'];
+			$dom = $data['dom'];
+			$tel = $data['tel'];
+			$est = $data['est'];
+
+			$data = array(
+				   'docId' => $doc,
+				   'cliDocumento' => $dni,
+				   'cliNombre' => $name,
+				   'cliApellido' => $lnam,
+				   'cliDomicilio' => $dom,
+				   'cliTelefono' => $tel,
+				   'cliMail' => $mail,
+				   'cliEstado' => $est
+				);
+
+			switch($act){
+				case 'Add':
+					//Agregar Cliente
+					if($this->db->insert('clientes', $data) == false) {
+						return false;
+					}
+					return $this->db->insert_id();; 
+					break;
+
+				 case 'Edit':
+				 	//Actualizar Cliente
+				 	if($this->db->update('clientes', $data, array('cliId'=>$id)) == false) {
+				 		return false;
+				 	}
+				 	break;
+
+				 case 'Del':
+				 	//Eliminar cliente
+				 	if($this->db->delete('clientes', array('cliId'=>$id)) == false) {
+				 		return false;
+				 	}
+				 	break;
+			}
+			return true;
+
+		}
+	}
 }
 ?>

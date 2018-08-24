@@ -89,4 +89,8 @@ class order extends CI_Controller {
 	public function printOrder(){
 		echo json_encode($this->Orders->printOrder($this->input->post()));
 	}
+
+	public function printRemito(){
+		echo json_encode($this->Orders->printRemito($this->input->post()));
+	}
 }

@@ -96,4 +96,11 @@ class article extends CI_Controller {
 		}
 	}
 
+	public function information($permission)
+	{
+		$data['list'] = array();
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('articles/sales', $data, true));
+	}
+
 }

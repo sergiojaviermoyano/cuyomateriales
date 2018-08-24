@@ -84,7 +84,13 @@
             permission= permission.split('-');
             $.each(json.data,function(index,item){
               var td_1="";
-                  td_1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
+                  if(permission.indexOf("Rem")>0){
+                    td_1+='<span class="label label-primary" style="margin-right: 5px; cursor: pointer;" title="Remito" onclick="PrintRemito('+item.ocId+')">R</span>';
+                  }
+                  
+                  if(permission.indexOf("Imprimir")>0){
+                    td_1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
+                  }
 
                   if(permission.indexOf("Edit")>0  && item.ocEstado=='AC'){
                     td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Edit\')"></i>';
@@ -96,6 +102,10 @@
 
                   if(permission.indexOf("View")>0){
                     td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'View\')"></i>';
+                  }
+
+                  if(permission.indexOf("Ent")>0 && item.ocEstado=='AC'){
+                    td_1+='<i  class="fa fa-fw fa-truck" style="color: #bc3c5e; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Ent\')"></i>';
                   }
 
               var td_2="";
@@ -122,6 +132,10 @@
                 }
                 case 'FA':{
                   td_4='<small class="label pull-left bg-blue">Facturada</small>';
+                  break;
+                }
+                case 'EN':{
+                  td_4='<small class="label pull-left bg-red">Entegada</small>';
                   break;
                 }
                 default:{
@@ -165,7 +179,18 @@
                       $(".select2").select2({
                         allowClear: true
                       });
+                      $("#ocDescuento").maskMoney({allowNegative: false, thousands:'', decimal:'.'});
                       Calcular();
+                      if(action != 'Add' ){
+                        $('#btnPre').hide();
+                        if(action == 'Edit' && $('#ocEsPresupuesto').val() == '1')
+                          $('#dejadeserpresupuestolb').show();
+                        else
+                          $('#dejadeserpresupuestolb').hide();
+                      } else {
+                        $('#btnPre').show();
+                        $('#dejadeserpresupuestolb').hide();
+                      }
     					},
     		    error: function(result){
     					WaitingClose();
@@ -201,6 +226,7 @@
     var items = parseFloat($('#saleItems').html());
     var venta = parseFloat($('#saleTotal').html());
     var redondeo =parseFloat($('#redondeo').val());
+    var descuento = parseFloat($('#ocDescuento').val());
 
     var sale = [];
     if(items > 0 && venta > 0){
@@ -238,7 +264,10 @@
                     cliId:  $('#cliId').val(),
                     lpId:   $('#lpId').val(),
                     art:    sale,
-                    redondeo: redondeo
+                    redondeo: redondeo,
+                    dejadeserpresupuesto: $('#dejadeserpresupuesto').is(':checked'),
+                    descuento: $('#ocDescuento').val() == "" ? 0 : parseFloat($('#ocDescuento').val()),
+                    usrAutDesc: usuarioAutorizaDescuento == 0 ? null : parseInt(usuarioAutorizaDescuento)
                   },
         url: 'index.php/Order/setOrder',
         success: function(result){
@@ -257,20 +286,101 @@
   $('#btnPre').click(function(){
     validate(1);
   });
-
+  var usuarioAutorizaDescuento = 0;
   $('#btnSave').click(function(){
-    validate(0);
+    var permission=$("#permission").val();
+    permission= permission.split('-');
+    //Validar si los descuentos son distintos
+    var desc = parseFloat($('#ocDescuento').val() == "" ? 0 : $('#ocDescuento').val());
+    var descOrg = parseFloat($('#ocDescuentoOrg').val() == "" ? 0 : $('#ocDescuentoOrg').val());
+    if(desc != descOrg){
+      //Pedir autorización de descuento
+      $('#modalAutorizacion').modal('show');
+      setTimeout(function () { $('#autUsuario').focus(); }, 1000);
+    } else {
+      if(acOrder == 'Add' && permission.indexOf("Ent") > 0){
+        $('#modalEntrega').modal('show');
+      } else {
+        validate(0);
+      }
+    }
     
+  });
+
+  $('#btnAutorizar').click(function(){
+      var hayError = false;
+      if($('#autUsuario').val() == '')
+      {
+        hayError = true;
+      }
+
+      if($('#autPassword').val() == ''){
+        hayError = true;
+      }
+
+      if(hayError == true){
+        $('#errorAut').fadeIn('slow');
+        setTimeout(function () { $('#errorAut').fadeOut('slow'); }, 5000);
+        return;
+      }
+
+      $('#errorLgn').fadeOut('hide');
+
+      WaitingOpen('Validando datos');
+      $.ajax({
+          type: 'POST',
+          data: { 
+                  usr: $('#autUsuario').val(),
+                  pas: $('#autPassword').val()
+                },
+          url: 'index.php/login/validateAut', 
+          success: function(result){
+                WaitingClose();
+                if(result == 0){
+                  $('#errorAut').fadeIn('slow');
+                  setTimeout(function () { $('#errorAut').fadeOut('slow'); }, 5000);
+                }else{
+                  usuarioAutorizaDescuento = result;
+                  $('#modalAutorizacion').modal('hide');
+                  var permission=$("#permission").val();
+                  permission= permission.split('-');
+                  if(acOrder == 'Add' && permission.indexOf("Ent") > 0){
+                    $('#modalEntrega').modal('show');
+                  } else {
+                    validate(0);
+                  }
+                }
+              },
+          error: function(result){
+              WaitingClose();
+              $('#errorLgn').fadeIn('slow');
+              },
+          dataType: 'json'
+        });
+  });
+
+  $('#btnNo').click(function(){
+    $('#modalEntrega').modal('hide');
+    validate(0);
+  });
+
+  $('#btnSi').click(function(){
+    $('#modalEntrega').modal('hide');
+    acOrder = 'Ent';
+    validate(0);
   });
 
   function Calcular(){
     var table = $('#order_detail > tbody> tr');
     var items = 0;
     var total = 0;
+    var descuento = 0;
     table.each(function(r) {
       items += parseFloat(this.children[3].textContent);
       total += parseFloat(this.children[5].textContent);
     });
+
+    descuento = parseFloat($('#ocDescuento').val());
 
     $('#saleItems').html(items);
     var redondeo=parseFloat(total).toFixed(0)-parseFloat(total).toFixed(2);
@@ -280,7 +390,16 @@
     }else{
       $("#label_discount").text(redondeo.toFixed(2));//parseFloat($("#modalOrder").find("#redondeo").val()).toFixed(2));
     }
-    $('#saleTotal').html(parseFloat(total).toFixed(0)+".00");
+
+    $('#saleTotal').html(parseFloat(total -  descuento).toFixed(0)+".00");
+
+    if(total - descuento > 0){
+      $('#btnPre').prop('disabled', false);
+      $('#btnSave').prop('disabled', false);
+    } else {
+      $('#btnPre').prop('disabled', true);
+      $('#btnSave').prop('disabled', true);
+    }
   }
 
   function Print(id__){
@@ -292,6 +411,29 @@
                     id : id__
                   },
         url: 'index.php/order/printOrder',
+        success: function(result){
+                      WaitingClose();
+                      var url = "./assets/reports/" + result;
+                      $('#printDoc').attr('src', url);
+                      setTimeout("$('#modalPrint').modal('show')",800);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalPrint');
+            },
+            dataType: 'json'
+        });
+  }
+
+  function PrintRemito(id__){
+    WaitingOpen('Generando remito...');
+    LoadIconAction('modalAction__','Print');
+    $.ajax({
+            type: 'POST',
+            data: {
+                    id : id__
+                  },
+        url: 'index.php/order/printRemito',
         success: function(result){
                       WaitingClose();
                       var url = "./assets/reports/" + result;
@@ -325,6 +467,9 @@
             echo '<button type="button" class="btn btn-warning pull-left" id="btnPre">Presupuesto</button>';
           }
         ?>
+        <label class="pull-left" id="dejadeserpresupuestolb">
+          <input type="checkbox" id="dejadeserpresupuesto"> Deja de Ser Presupuesto
+        </label>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
         <button type="button" class="btn btn-primary" id="btnSave">Guardar</button>
       </div>
@@ -390,3 +535,143 @@
     </div>
   </div>
 </div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalEntrega" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel___"><span id="modalAction___"> <i class="fa fa-fw fa-truck" style="color: #bc3c5e;"></i> </span> ¿ Desea Entregar la orden de compra ?</h4>
+      </div>
+      <div class="modal-body" id="modalBodyEntrega">
+        <div>
+            <center>
+                <button class="btn btn-danger" id="btnNo">No</button>
+                <button class="btn-lg btn-success" id="btnSi">Si</button>
+            </center>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Cliente -->
+<div class="modal fade" id="modalCli" tabindex="3004" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabelCli"><span id="modalActionCli"> </span> Cliente</h4>
+      </div>
+      <div class="modal-body" id="modalBodyCli">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnSaveCustomer">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="modalAutorizacion" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document" style="width: 30%">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel_"><span><i class="fa fa-fw fa-lock" style="color: #00a65a;"></i></span> Autorización</h4>
+      </div>
+      <div class="modal-body">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="alert alert-danger alert-dismissable" id="errorAut" style="display: none">
+                    <h4><i class="icon fa fa-ban"></i> Error!</h4>
+                    <p>Los datos ingresados no estan autorizados para hacer un descuento.<br></p>
+                </div>
+            </div>
+          </div>
+          <input class="form-control" id="autUsuario" placeholder="Usuario" type="text"><br>
+          <input class="form-control" id="autPassword" placeholder="Contraseña" type="password">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+        <button type="button" class="btn btn-primary" id="btnAutorizar">Autorizar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+$('#btnSaveCustomer').click(function(){
+    var hayError = false;
+    if($('#cliId').val() == '')
+    {
+      hayError = true;
+    }
+
+    if($('#cliNombre').val() == '')
+    {
+      hayError = true;
+    }
+
+    if($('#cliApellido').val() == '')
+    {
+      hayError = true;
+    }
+
+    if($('#cliDocumento').val() == '')
+    {
+      hayError = true;
+    }
+
+  
+    if(hayError == true){
+      $('#errorCust').fadeIn('slow');
+      setTimeout(function () { $('#errorCust').fadeOut('slow'); }, 5000);
+      return;
+    }
+
+    WaitingOpen('Creando Cliente');
+      $.ajax({
+            type: 'POST',
+            data: { 
+                    id : 0, 
+                    act: 'Add', 
+                    nro: $('#cliId').val(),
+                    name: $('#cliNombre').val(),
+                    lnam: $('#cliApellido').val(),
+                    doc: $('#docId').val(),
+                    dni: $('#cliDocumento').val(),
+                    mail: $('#cliMail').val(),
+                    dom: $('#cliDomicilio').val(),
+                    tel: $('#cliTelefono').val(),
+                    est: $('#cliEstado').val()
+                  },
+        url: 'index.php/customer/setCustomer2', 
+        success: function(result){
+                      WaitingClose();
+                      $('#modalCli').modal('hide');
+                      if(result != false){
+                        var data = {
+                            id: result,
+                            text: $('#cliApellido').val() + ' ' + $('#cliNombre').val()
+                        };
+                        var newOption = new Option(data.text, data.id, false, false);
+                        $('#cliId').append(newOption).trigger('change');
+                      }
+              },
+        error: function(result){
+              WaitingClose();
+              alert("error");
+            },
+            dataType: 'json'
+        });
+  });
+</script>

@@ -47,6 +47,7 @@ class Users extends CI_Model
 				$user['usrLastName'] = '';
 				$user['usrComision'] = '';
 				$user['usrPassword'] = '';
+				$user['usrAutDescuento'] = '';
 				$user['grpId'] = 1;
 
 				$data['user'] = $user;
@@ -85,6 +86,7 @@ class Users extends CI_Model
 			$com = $data['com'];
 			$pas = $data['pas'];
 			$grp = $data['grp'];
+			$des = $data['des'];
 
 			if($act == 'Edit') {
 				if($pas == '') {
@@ -94,7 +96,8 @@ class Users extends CI_Model
 					   'usrName' => $name,
 					   'usrLastName' => $lnam,
 					   'usrComision' => $com,
-					   'grpId' => $grp
+					   'grpId' => $grp,
+					   'usrAutDescuento' => ($des === 'true')
 					);
 				} else {
 					//Modificar la contraseña
@@ -104,7 +107,8 @@ class Users extends CI_Model
 					   'usrLastName' => $lnam,
 					   'usrComision' => $com,
 					   'usrPassword' => md5($pas),
-					   'grpId' => $grp
+					   'grpId' => $grp,
+					   'usrAutDescuento' => ($des === 'true')
 					);
 				}
 			} else {
@@ -114,7 +118,8 @@ class Users extends CI_Model
 					   'usrLastName' => $lnam,
 					   'usrComision' => $com,
 					   'usrPassword' => md5($pas),
-					   'grpId' => $grp
+					   'grpId' => $grp,
+					   'usrAutDescuento' => ($des === 'true')
 					);
 			}
 
@@ -323,6 +328,33 @@ class Users extends CI_Model
 
 	 	return true;
 		
+	}
+
+	function validateAut($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$usr = $data['usr'];
+			$pas = md5($data['pas']);
+
+			$data = array(
+					'usrNick' => $usr,
+					'usrPassword' => $pas,
+					'usrAutDescuento' => 1
+				);
+
+			$query= $this->db->get_where('sisusers',$data);
+			if ($query->num_rows() != 0)
+			{
+				$data = $query->result_array();
+				return $data[0]['usrId'];
+			} else {
+				return false;
+			}
+		}
 	}
 	
 }

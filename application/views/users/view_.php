@@ -55,6 +55,14 @@
     </div>
 </div><br>
 <div class="row">
+  <div class="col-xs-4">
+      <label style="margin-top: 7px;">Autorizado para Descuentos <strong style="color: #dd4b39">*</strong>: </label>
+    </div>
+  <div class="col-xs-5">
+      <input type="checkbox" id="usrAutDescuento" <?php echo($data['read'] == true ? 'disabled="disabled"' : '');?> <?php echo($data['user']['usrAutDescuento'] == '1' ? ' checked' : '');?> style="margin-top: 15px;" >
+    </div>
+</div><br>
+<div class="row">
 	<div class="col-xs-4">
       <label style="margin-top: 7px;">Grupo <strong style="color: #dd4b39">*</strong>: </label>
     </div>

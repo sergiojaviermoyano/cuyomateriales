@@ -77,6 +77,25 @@ class sale extends CI_Controller {
 		}
 	}
 
+	public function getArticles(){
+		$data['data'] = $this->Sales->getArticles($this->input->post());
+		$response['html'] = $this->load->view('articles/salesdetail', $data, true);
+		echo json_encode($response);
+	}
+
+	public function data($permission)
+	{
+		$data['list'] = array();
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('sales/ingresos', $data, true));
+	}
+
+	public function getSales__(){
+		$data['data'] = $this->Sales->getSales__($this->input->post());
+		$response['html'] = $this->load->view('sales/ingresosdetail', $data, true);
+		echo json_encode($response);
+	}
+
 	/*
 	public function delSale(){
 		$data = $this->Sales->delSale($this->input->post());

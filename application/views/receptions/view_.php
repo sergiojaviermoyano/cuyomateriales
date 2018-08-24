@@ -50,7 +50,7 @@
       <label style="margin-top: 7px;">Producto: </label>
     </div>
   <div class="col-xs-5">
-      <input type="number" class="form-control" id="artId" value="" min="0" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+      <input type="text" class="form-control" id="artId" value="" min="0" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
     </div>
   <div class="col-xs-2">
       <input type="number" class="form-control" id="artCant" value="1" min="1" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
@@ -92,19 +92,226 @@
 
 <script>
   var isOpenWindow = false;
-  $('#artId').keyup(function(e){ 
-    var code = e.which; 
-    if(code==13)e.preventDefault();
-    if(code==32||code==13||code==188||code==186){
-        //Buscar articulo
-        Buscar();
-      }
+  $('#artId').keyup(function(e){
+    var code = e.which;
+    if(code==13){
+      e.preventDefault();
+      Buscar();
+    }
   });
+
+  $('#recObservacion').keyup(function(e){
+    var code = e.which;
+    if(code==13){
+      e.preventDefault();
+      $('#artId').focus();
+    }
+  });
+
+  $('#artCant').keyup(function(e){
+    var code = e.which;
+    if(code==13){
+      e.preventDefault();
+      $('#btnAddProd').focus();
+    }
+  });
+
+  var idSale = $('#saleDetail > tbody').find('tr').length+1;
+  function Buscar(){
+
+    WaitingOpen('Buscando');
+    $.ajax({
+          type: 'POST',
+          data: { code: $('#artId').val() },
+          url: 'index.php/article/searchByCode',
+          success: function(result){
+                        if(result != false){
+                          var selected = $('#lpId').find('option:selected');
+                          var margin = parseFloat(selected.data('porcent'));
+                          //calcular precio de venta
+                          var pVenta = parseFloat(result.pVenta);
+                          if(margin > 0){
+                            //console.debug(" =>>> %o * ( %o ) / 100: ",pVenta,margin,(pVenta * (margin / 100)));
+                            pVenta += pVenta * (margin / 100);
+                          }
+                          WaitingClose();
+                          var cantidad = parseFloat($('#artCant').val() == '' ? 1 : $('#artCant').val());
+                          var row = '<tr id="'+idSale+'">';
+                          row += '<td width="1%"><i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer;" onclick="delete_('+idSale+')"></i></td>';
+                          row += '<td width="10%">'+result.artBarCode+'</td>';
+                          row += '<td>'+result.artDescription+'</td>';
+                          row += '<td width="10%" class="td_cant" style="text-align: right"   data-pventa="'+pVenta+'"  >'+cantidad+'</td>';
+                          /*
+                          row += '<td width="10%" class="td_pventa"  style="text-align: right" >'+parseFloat(pVenta).toFixed(2)+'</td>';
+                          row += '<td width="10%" class="td_total" style="text-align: right">'+(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2)+'</td>';
+                          */
+                          row += '<td style="display: none">'+result.artId+'</td>';
+                          row += '<td style="display: none">'+result.pVenta+'</td>';
+                          row += '<td style="display: none">'+result.artCoste+'</td>';
+                          row += '</tr>';
+                          $('#saleDetail > tbody').prepend(row);
+                          idSale++;
+
+                          $('#artCant').val('1');
+                          $('#artId').val('');
+                          Calcular();
+                          $('#artId').focus();
+                        } else {
+                          AbrirBuscador();
+                        }
+                },
+          error: function(result){
+                WaitingClose();
+                ProcesarError(result.responseText, 'modalReception');
+              },
+              dataType: 'json'
+      });
+    //---------------
+  }
 
   $('#btnAddProd').click(function(){
     Buscar();
   });
 
+  function delete_(id){
+    $('#'+id).remove();
+    //Calcular();
+    $('#artId').focus();
+  }
+
+  function AbrirBuscador(){
+    LoadIconAction('modalAction__','Search');
+    WaitingClose();
+    //$('#modalReception').modal('hide');
+    cerro();
+    $('#modalSearch').modal({ backdrop: 'static', keyboard: false });
+    $('#artIdSearch').val($('#artId').val());
+    $('#saleDetailSearch > tbody').html('');
+    $('#modalSearch').modal('show');
+    setTimeout(function () { $('#artIdSearch').focus(); BuscarCompleto();}, 1000);
+  }
+
+  function cancelarBusqueda(){
+    $('#modalSearch').modal('hide');
+    //$('#modalReception').modal('show');
+    isOpenWindow = true;
+    $('#artCant').val('1');
+    $('#artId').val('');
+    //setTimeout(function () { $('#artId').focus(); }, 8000);
+    $('#artId').focus();
+  }
+
+  function cerro(){
+    isOpenWindow = false;
+  }
+
+  var timer, timeout = 1000;
+  var row = 0, rows = 0;
+  var move = 0;
+
+    function BuscarCompleto(){
+    $('#saleDetailSearch > tbody').html('');
+    row = 0;
+    rows = 0;
+    if($('#artIdSearch').val().length >= 3){
+      $.ajax({
+            type: 'POST',
+            data: { code: $('#artIdSearch').val() },
+            url: 'index.php/article/searchByAll',
+            success: function(resultList){
+                          if(resultList != false){
+                            $.each(resultList, function(index, result){
+                              if(result.artEstado == 'AC'){
+                                var row = '<tr>';
+                                row += '<td width="10%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
+                                row += 'onClick="agregar(\''+result.artDescription+'\')"></i></td>';
+                                row += '<td width="20%">('+result.artBarCode+')</td>';
+                                row += '<td>'+result.artDescription+'</td>';
+                                row += '<td width="20%" style="text-align: right"><b> $ '+parseFloat(result.pVenta).toFixed(2)+'</b></td>';
+                                row += '<td width="10%" style="text-align: right">'+(result.stock == null ? 0 : result.stock)+'</td>';
+                                row += '</tr>';
+                                $('#saleDetailSearch > tbody').prepend(row);
+                                rows++;
+                              }
+                            });
+                            $('#artIdSearch').focus();
+                          }
+                          $("#loadingIcon").hide();
+                  },
+            error: function(result){
+                  $("#loadingIcon").hide();
+                  ProcesarError(result.responseText, 'modalReception');
+                },
+                dataType: 'json'
+        });
+    }
+  }
+
+  $('#artIdSearch').keyup(function(e){
+      var code = e.which;
+      if(code != 40 && code != 38 && code != 13){
+        if($('#artIdSearch').val().length >= 3){
+          // Clear timer if it's set.
+          if (typeof timer != undefined)
+            clearTimeout(timer);
+
+          // Set status to show we're typing.
+          //$("#status").html("Typing ...").css("color", "#009900");
+          
+          
+          timer = setTimeout(function()
+          {
+            //$("#status").html("Stopped").css("color", "#990000");
+            $("#loadingIcon").show();
+            BuscarCompleto();
+            row = 0;
+          }, timeout);
+        }
+      } else {
+        var removeStyle = $("#saleDetailSearch > tbody tr:nth-child("+row+")");
+        if(code == 13){//Seleccionado
+          removeStyle.css('background-color', 'white');
+          agregar($('#saleDetailSearch tbody tr:nth-child('+row+') td:nth-child(3)').text());
+        }
+
+        if(code == 40){//abajo
+          if((row + 1) <= rows){
+            row++;
+            if(row > 5){
+            }
+            removeStyle.css('background-color', 'white');
+          }
+          var rowE = $("#saleDetailSearch > tbody tr:nth-child("+row+")");
+          rowE.css('background-color', '#D8D8D8');
+          animate();
+        } 
+        if(code == 38) {//arriba
+          if(row >= 2){
+            row--;
+            removeStyle.css('background-color', 'white');
+          }
+          var rowE = $("#saleDetailSearch > tbody tr:nth-child("+row+")");
+          rowE.css('background-color', '#D8D8D8');
+          animate();
+        }
+      }
+    });
+
+  function animate() {  
+       //En base a la altura del tr hacer el move (- para cuando hago abajo / + para cuando hago para arriba)
+      //siempre que la cantidad de filas sea mayor a 350px, que es el alto del buscador 
+      //$('#saleDetailSearch').animate({ "margin-top": move + "px" }, 1);
+  }
+
+  function agregar(barCode){
+    //debugger;
+    $('#artId').val(barCode);
+    $('#modalSearch').modal('hide');
+    //$('#modalReception').modal('show');
+    isOpenWindow = true;
+    setTimeout(function () { $('#artCant').focus(); $('#artCant').select(); }, 800);
+  }
+/*
   $('#btnSave').click(function(){
     
     if(acMachine == 'View')
@@ -164,8 +371,10 @@
             dataType: 'json'
         });
   });
+*/
 
-  var idSale = 0 ;
+  //var idSale = 0 ;
+  /*
   function Buscar(){
     WaitingOpen('Buscando');
     $.ajax({
@@ -202,23 +411,8 @@
       });
     //---------------
   }
-
-  function delete_(id){
-    $('#'+id).remove();
-    //Calcular();
-    $('#artId').focus();
-  }
-
-  function AbrirBuscador(){
-    LoadIconAction('modalAction__','Search');
-    WaitingClose();
-    $('#modalReception').modal('hide');
-    cerro();
-    $('#modalSearch').modal({ backdrop: 'static', keyboard: false });
-    $('#modalSearch').modal('show');
-    setTimeout(function () { $('#artIdSearch').focus(); }, 1000);
-  }
-
+  */
+  /*
   function cancelarBusqueda(){
     $('#modalSearch').modal('hide');
     $('#modalReception').modal('show');
@@ -231,7 +425,8 @@
   function cerro(){
     isOpenWindow = false;
   }
-
+  */
+/*
     function BuscarCompleto(){
     $('#saleDetailSearch > tbody').html('');
     $.ajax({
@@ -274,4 +469,5 @@
     isOpenWindow = true;
     setTimeout(function () { $('#artId').focus(); }, 1000);
   }
+  */
 </script>

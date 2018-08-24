@@ -340,5 +340,50 @@ class Sales extends CI_Model
 
 		return true;
 	}
+
+	function getArticles($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$date = $data['day'];
+			$date = explode('-', $date);
+			$date = $date[2].'-'.$date[1].'-'.$date[0];
+
+			$query = $this->db->query(" select d.artCode, d.artDescription, sum(d.venCant) as ventas from ventas as v
+										join ventasdetalle as d on d.venId = v.venId 
+										where DATE(venFecha) = '".$date."'  
+										GROUP BY d.artCode");
+
+			//echo $this->db->last_query();
+			return $query->result_array();
+		}
+	}
+
+	function getSales__($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$date = $data['day'];
+			$date = explode('-', $date);
+			$date = $date[2].'-'.$date[1].'-'.$date[0];
+
+			$query = $this->db->query(" select v.venId, v.usrId, v.cliId, (select (sum( d.venCant * d.artFinal) + o.redondeo) from ventasdetalle as d where d.venId = v.venId) as importe , o.ocId, o.ocObservacion, u.usrNick, l.lpDescripcion
+										from ventas as v
+										join ordendecompra as o on o.venId = v.venId
+										join sisusers as u on u.usrId = v.usrId
+										join listadeprecios as l on l.lpId = o.lpId 
+										where DATE(venFecha) = '".$date."' and v.venEstado = 'AC' and o.ocEsPresupuesto = 0 
+										GROUP BY v.venId
+										Order by l.lpId ");
+			return $query->result_array();
+		}
+	}
+	
 }
 ?>

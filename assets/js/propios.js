@@ -64,6 +64,10 @@ function LoadIconAction(idTag, action){
 			icon = '<i class="fa fa-fw fa-print" style="color: #A4A4A4"></i>';
 			actt = 'Imprimir ';
 			break;
+		case 	'Ent':
+			icon = '<i class="fa fa-fw fa-truck" style="color: #bc3c5e;"></i>';
+			actt = 'Entregar ';
+			break;
 	}
 
 	$('#'+idTag).html(icon + actt);
