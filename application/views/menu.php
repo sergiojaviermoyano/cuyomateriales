@@ -1,8 +1,14 @@
       <aside class="main-sidebar">
         <section class="sidebar">
           <ul class="sidebar-menu">
+            <!--
             <li class="treeview active">
-              <a href="#"> <!-- onClick="cargarView('dash', 'calendar', '')"-->
+              <a href="#">
+                <i class="fa fa-dashboard"></i> <span>Escritorio</span>
+              </a>
+            </li>-->
+            <li class="treeview active">
+              <a href="#" onClick="cargarView('dash', 'accesosdirectos', '')"> <!-- onClick="cargarView('dash', 'calendar', '')"-->
                 <i class="fa fa-dashboard"></i> <span>Escritorio</span>
               </a>
             </li>

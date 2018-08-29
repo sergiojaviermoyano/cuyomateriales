@@ -114,15 +114,17 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
 
 <div class="row">
   <div class="col-xs-1 col-xs-offset-1">
-      <label style="font-size: 20px; margin-top: 10px;" id="saleItems"><?php echo $cant_total;?></label>
+      <label style="font-size: 20px;" id="saleItems"><?php echo $cant_total;?></label>
   </div>
 
-  <div class="col-xs-2 col-xs-offset-4">
-			<label style="font-size: 15px; margin-top: 10px;">Redondeo:</label>
+<div class="col-xs-2 col-xs-offset-4" style="text-align: right;">
+      <label style="font-size: 15px;">Sub Total:</label>
   </div>
   <div class="col-xs-3 text-right">
-      <label style="font-size: 15px; color: red;" id="label_discount">0.00</label><br>
+      <label style="font-size: 15px; color: blue;" id="saleTotal">0.00</label>
+      <input type="hidden" name="redondeo" id="redondeo" value="<?php echo $data['order']['redondeo'];?>">
   </div>
+
 </div>
 <div class="row">  
   <div class="col-xs-2">
@@ -130,15 +132,32 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
   </div>
   <div class="col-xs-2">
       <input type="hidden" id="ocDescuentoOrg" value="<?php echo $data['order']['ocDescuento'];?>" >
-      <input type="text" class="form-control" id="ocDescuento" value="<?php echo $data['order']['ocDescuento'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> style="margin-top: 5px;">
+      <input type="text" class="form-control" id="ocDescuento" value="<?php echo $data['order']['ocDescuento'];?>" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> style="margin-top: 5px; width: 100px;">
   </div>
-  <div class="col-xs-2 col-xs-offset-2">
-      <label style="font-size: 20px; margin-top: 10px;">Total</label>
+  <div class="col-xs-1" style="margin-top: 10px;">
+    <input type="checkbox" id="ocDescuentoIsPorcent" onclick="Calcular()"> Es %
+  </div>
+  <div class="col-xs-2">
+    <label style="margin-top: 10px;" id="ocDescuentoPorcentImport">(0.00)</label>
+  </div>
+
+  <div class="col-xs-2">
+      <label style="font-size: 15px;">Redondeo:</label>
+  </div>
+  <div class="col-xs-2 text-right">
+      <label style="font-size: 15px; color: blue;" id="label_discount">0.00</label><br>
+  </div>
+  
+</div>
+
+<div class="row">
+<div class="col-xs-2 col-xs-offset-6" style="text-align: right;">
+      <label style="font-size: 20px;">Total:</label>
   </div>
   <div class="col-xs-3 text-right">
-      <label style="font-size: 30px; color: red;" id="saleTotal">0.00</label>
-      <input type="hidden" name="redondeo" id="redondeo" value="<?php echo $data['order']['redondeo'];?>">
+      <label style="font-size: 20px; color: red;" id="saleTotalFinal">0.00</label>
   </div>
+
 </div>
 
 <script>

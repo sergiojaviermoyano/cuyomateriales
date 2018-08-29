@@ -364,8 +364,13 @@ class Orders extends CI_Model
 			//$total += $result['order']['redondeo'];
 			//$html .= '<tr><td><h5>Redondeo</h5></td>';
 			//$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
-			$html .= '<tr>';
-			$html .= '<td colspan="5" style="text-align: right">Total  <strong style="font-size: 17px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+			if($result['order']['ocDescuento'] <= 0){
+				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 17px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+			}else{
+				$html .= '<tr><td colspan="5" style="text-align: right">Sub Total  <strong style="font-size: 10px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+				$html .= '<tr><td colspan="5" style="text-align: right">Descuento  <strong style="font-size: 10px">$ '.number_format($result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 10px">$ '.number_format($total - $result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+			}
 			$html .= '</table>';
 
 			$html .= '	</td></tr>';

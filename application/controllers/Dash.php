@@ -23,4 +23,9 @@ class dash extends CI_Controller {
 		$this->load->view('footer');
 	}
 
+		public function accesosdirectos(){
+		//$data['isOpenBox'] = $this->Boxs->isOpenBox();
+		echo json_encode($this->load->view('dash/accesosdirectos', null, true));
+	}
+
 }

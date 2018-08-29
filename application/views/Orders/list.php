@@ -226,7 +226,6 @@
     var items = parseFloat($('#saleItems').html());
     var venta = parseFloat($('#saleTotal').html());
     var redondeo =parseFloat($('#redondeo').val());
-    var descuento = parseFloat($('#ocDescuento').val());
 
     var sale = [];
     if(items > 0 && venta > 0){
@@ -248,6 +247,14 @@
       hayError = true;
     }
 
+    var descuento = 0;
+    descuento = $('#ocDescuento').val() == "" ? 0 : parseFloat($('#ocDescuento').val());
+    if($('#ocDescuentoIsPorcent').prop("checked")){
+      if(descuento > 0){
+        descuento = (descuento * venta) / 100;
+      }
+    }
+
     if(hayError == true){
       $('#error').fadeIn('slow');
       return;
@@ -266,7 +273,7 @@
                     art:    sale,
                     redondeo: redondeo,
                     dejadeserpresupuesto: $('#dejadeserpresupuesto').is(':checked'),
-                    descuento: $('#ocDescuento').val() == "" ? 0 : parseFloat($('#ocDescuento').val()),
+                    descuento: descuento,
                     usrAutDesc: usuarioAutorizaDescuento == 0 ? null : parseInt(usuarioAutorizaDescuento)
                   },
         url: 'index.php/Order/setOrder',
@@ -380,10 +387,24 @@
       total += parseFloat(this.children[5].textContent);
     });
 
-    descuento = parseFloat($('#ocDescuento').val());
+    debugger;
+    if($('#ocDescuentoIsPorcent').prop("checked")){
+      descuento = $('#ocDescuento').val() == "" ? 0 : parseFloat($('#ocDescuento').val());
+      if(descuento > 0){
+        descuento = parseFloat((parseFloat(descuento) * total) / 100).toFixed(2);
+        $('#ocDescuentoPorcentImport').html('('+parseFloat(descuento).toFixed(2)+')');
+      }else {
+        $('#ocDescuentoPorcentImport').html('0.00');
+      }
+    }else{
+      descuento = $('#ocDescuento').val() == "" ? 0 : parseFloat($('#ocDescuento').val());
+      $('#ocDescuentoPorcentImport').html('0.00');
+    }
+    //SubTotal 
+    $('#saleTotal').html(parseFloat(total).toFixed(2));
 
     $('#saleItems').html(items);
-    var redondeo=parseFloat(total).toFixed(0)-parseFloat(total).toFixed(2);
+    var redondeo=parseFloat(total - descuento).toFixed(0)-parseFloat(total - descuento).toFixed(2);
     $("#modalOrder").find("#redondeo").val(redondeo.toFixed(2));
     if(redondeo>=0){
       $("#label_discount").text("+"+redondeo.toFixed(2));//parseFloat($("#modalOrder").find("#redondeo").val()).toFixed(2));
@@ -391,9 +412,9 @@
       $("#label_discount").text(redondeo.toFixed(2));//parseFloat($("#modalOrder").find("#redondeo").val()).toFixed(2));
     }
 
-    $('#saleTotal').html(parseFloat(total -  descuento).toFixed(0)+".00");
+    $('#saleTotalFinal').html(parseFloat(total - descuento + redondeo).toFixed(0)+".00");
 
-    if(total - descuento > 0){
+    if(total - descuento + redondeo> 0){
       $('#btnPre').prop('disabled', false);
       $('#btnSave').prop('disabled', false);
     } else {
