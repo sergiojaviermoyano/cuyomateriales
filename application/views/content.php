@@ -4,3 +4,5 @@
 
 
       </div><!-- /.content-wrapper -->
+
+      <?php $this->load->view('buscadores/clientes'); ?>

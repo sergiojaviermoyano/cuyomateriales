@@ -61,14 +61,12 @@ class order extends CI_Controller {
 	}
 
 	public function getOrder(){
-
-    $data['ListaPrecios']=$this->Lists->List_List();
-    $data['Clientes']=$this->Customers->Customers_List();
-
-		$data['data'] = $this->Orders->getOrder($this->input->post());
-
+	    $data['ListaPrecios']=$this->Lists->List_List();
+	    $data['data'] = $this->Orders->getOrder($this->input->post());
+	    $data['cliente']=$this->Customers->getCustomer(array('id' => $data['data']['order']['cliId'], 'act' => 'View'));
+	    //$data['Clientes']=$this->Customers->Customers_List();
+		
 		$response['html'] = $this->load->view('orders/view_', $data, true);
-
 		echo json_encode($response);
 	}
 

@@ -9,60 +9,115 @@
 	</div>
 </div>
 
-	<div class="row">
-	 <label class="col-sm-3">Lista de Precios <strong style="color: #dd4b39">*</strong>:  </label>
-	  <div class="col-sm-9">
-<?php
-if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
-	    <select class="form-control" id="lpId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
-	      <option value="-1" data-porcent="0">Lista de Precios</option>
-	      <?php foreach ($ListaPrecios as $key => $item):?>
-	        <option value="<?php echo $item['lpId'];?>" data-porcent="<?php echo $item['lpMargen'];?>" <?php echo $item['lpDefault'] == true ?'selected':''?> ><?php echo $item['lpDescripcion'];?> </option>
-	      <?php endforeach;?>
-	    </select>
-<?php
-} else { ?>
-		<select class="form-control" id="lpId"<?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
-	      <option value="-1" data-porcent="0">Lista de Precios</option>
-	      <?php foreach ($ListaPrecios as $key => $item):?>
-	        <option value="<?php echo $item['lpId'];?>" data-porcent="<?php echo $item['lpMargen'];?>" <?php echo $item['lpId'] == $data['order']['lpId'] ?'selected':''?> ><?php echo $item['lpDescripcion'];?> </option>
-	      <?php endforeach;?>
-	    </select>
-<?php
-}
-?>
-	   </div>
-	</div><br>
-
-
 <div class="row">
-  <label class="col-sm-3">Cliente <strong style="color: #dd4b39">*</strong>:  </label>
-  <div class="col-sm-8">
-    <select class="form-control select2" id="cliId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> style="width: 100%;">
-      <?php if($data['act'] == 'Add'){ ?>
-      <?php foreach ($Clientes as $key => $item):?>
-        <option value="<?php echo $item['cliId'];?>" <?php echo $item['cliDefault'] == true ?'selected':''?> ><?php echo $item['cliApellido'].' '.$item['cliNombre'];?> </option>
-      <?php endforeach;?>
-      <?php } else { ?>
-      <?php foreach ($Clientes as $key => $item):?>
-        <option value="<?php echo $item['cliId'];?>" <?php echo $item['cliId'] == $data['order']['cliId'] ?'selected':''?> ><?php echo $item['cliApellido'].' '.$item['cliNombre'];?> </option>
-      <?php endforeach;?>
-      <?php }?>
-    </select>
+  <!-- Lista de precios y Observación -->
+  <div class="col-sm-5">
+      <!---->
+      <div class="row">
+          <div class="col-sm-5" style="text-align: right; margin-top: 7px;">
+            <label>Lista de Precios <strong style="color: #dd4b39">*</strong>:  </label>
+          </div>
+          <div class="col-sm-7">
+            <?php
+            if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
+                  <select class="form-control" id="lpId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
+                    <option value="-1" data-porcent="0">Lista de Precios</option>
+                    <?php foreach ($ListaPrecios as $key => $item):?>
+                      <option value="<?php echo $item['lpId'];?>" data-porcent="<?php echo $item['lpMargen'];?>" <?php echo $item['lpDefault'] == true ?'selected':''?> ><?php echo $item['lpDescripcion'];?> </option>
+                    <?php endforeach;?>
+                  </select>
+            <?php
+            } else { ?>
+                <select class="form-control" id="lpId"<?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
+                    <option value="-1" data-porcent="0">Lista de Precios</option>
+                    <?php foreach ($ListaPrecios as $key => $item):?>
+                      <option value="<?php echo $item['lpId'];?>" data-porcent="<?php echo $item['lpMargen'];?>" <?php echo $item['lpId'] == $data['order']['lpId'] ?'selected':''?> ><?php echo $item['lpDescripcion'];?> </option>
+                    <?php endforeach;?>
+                  </select>
+            <?php
+            }
+            ?>
+          </div>
+      </div>
+      <br>
+      <div class="row">
+        <div class="col-sm-5" style="text-align: right; margin-top: 7px;">
+          <label>Observación <strong style="color: #dd4b39">*</strong>: </label>
+        </div>
+        <div class="col-sm-7">
+          <textarea class="form-control" id="ocObservacion" maxlength="250" rows="4"><?php echo $data['order']['ocObservacion'] ?></textarea> 
+        </div>
+      </div>
+      <!---->
   </div>
-  <div class="col-sm-1">
-    <button type="button" class="btn btn-success" id="btnAddCustomer" onclick="CargarModalNuevoCliente()"><i class="fa fa-plus"></i></button>
+
+  <!-- Cliente -->
+  <div class="col-sm-5">
+    <div class="row">
+      <div class="col-sm-3" style="text-align: right; margin-top: 7px;">
+        <label>Cliente <strong style="color: #dd4b39">*</strong>:  </label>
+      </div>
+      <div class="col-xs-6">
+        <input type="number" id="cliSearch" class="form-control" >
+      </div>
+      <div class="col-xs-1">
+        <i class="fa fa-fw fa-search text-teal" style="margin-top: 12px; cursor: pointer;" id="buscador"></i>
+      </div>
+      <!--
+      <div class="col-sm-8">
+        <select class="form-control select2" id="cliId" <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> style="width: 100%;">
+          <?php if($data['act'] == 'Add'){ ?>
+          <?php foreach ($Clientes as $key => $item):?>
+            <option value="<?php echo $item['cliId'];?>" <?php echo $item['cliDefault'] == true ?'selected':''?> ><?php echo $item['cliApellido'].' '.$item['cliNombre'];?> </option>
+          <?php endforeach;?>
+          <?php } else { ?>
+          <?php foreach ($Clientes as $key => $item):?>
+            <option value="<?php echo $item['cliId'];?>" <?php echo $item['cliId'] == $data['order']['cliId'] ?'selected':''?> ><?php echo $item['cliApellido'].' '.$item['cliNombre'];?> </option>
+          <?php endforeach;?>
+          <?php }?>
+        </select>
+      </div>
+      -->
+      <!--
+      <div class="col-sm-1">
+        <button type="button" class="btn btn-success" id="btnAddCustomer" onclick="CargarModalNuevoCliente()"><i class="fa fa-plus"></i></button>
+      </div>-->
+    </div>
+    <input type="hidden" id="cliId" value="<?php echo $data['order']['cliId'];?>">
+    <div class="row">
+      <div class="col-sm-3" style="text-align: right; margin-top: 7px;">
+        <label><i>Nombre</i>:  </label>
+      </div>
+      <div class="col-sm-7" style="text-align: left; margin-top: 7px;">
+        <strong style="color: #dd4b39" id="lblNombre"><?php echo $cliente['customer']['cliApellido'].' '.$cliente['customer']['cliNombre'];?></strong>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3" style="text-align: right; margin-top: 7px;">
+        <label><i>DNI</i>:  </label>
+      </div>
+      <div class="col-sm-7" style="text-align: left; margin-top: 7px;">
+        <strong style="color: #dd4b39" id="lblDocumento"><?php echo $cliente['customer']['cliDocumento'];?></strong>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3" style="text-align: right; margin-top: 7px;">
+        <label><i>Domicilio</i>:  </label>
+      </div>
+      <div class="col-sm-7" style="text-align: left; margin-top: 7px;">
+        <strong style="color: #dd4b39" id="lblDomicilio"><?php echo $cliente['customer']['cliDomicilio'];?></strong>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3" style="text-align: right; margin-top: 7px;">
+        <label><i>Teléfono</i>:  </label>
+      </div>
+      <div class="col-sm-7" style="text-align: left; margin-top: 7px;">
+        <strong style="color: #dd4b39" id="lblTelefono"><?php echo $cliente['customer']['cliTelefono'];?></strong>
+      </div>
+    </div>
   </div>
 </div>
-<br>
-
-<div class="row">
-  <label class="col-sm-3">Observación <strong style="color: #dd4b39">*</strong>: </label>
-  <div class="col-sm-9">
-    <input type="text" class="form-control" id="ocObservacion" value="<?php echo $data['order']['ocObservacion'] ?>" maxlength="250"/>
-  </div>
-</div>
-
 <input type="hidden" id="ocEsPresupuesto" value="<?php echo $data['order']['ocEsPresupuesto'] ?>"/>
 <hr>
 
@@ -162,7 +217,7 @@ if($data['act'] == 'Add' || $data['act'] == 'Pre' ){ ?>
 
 <script>
 var isOpenWindow = false;
-  $('#artId').keyup(function(e){
+  $('#artId').keypress(function(e){
     var code = e.which;
     if(code==13){
       e.preventDefault();
@@ -170,7 +225,7 @@ var isOpenWindow = false;
     }
   });
 
-  $('#ocObservacion').keyup(function(e){
+  $('#ocObservacion').keypress(function(e){
     var code = e.which;
     if(code==13){
       e.preventDefault();
@@ -178,7 +233,7 @@ var isOpenWindow = false;
     }
   });
 
-  $('#artCant').keyup(function(e){
+  $('#artCant').keypress(function(e){
     var code = e.which;
     if(code==13){
       e.preventDefault();
@@ -431,7 +486,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                     WaitingClose();
                     $("#modalBodyCli").html(result.html);
                     setTimeout("$('#modalCli').modal('show');",800);
-                    setTimeout("$('#cliDocumento').val('"+dni+"');", 1000);
+                    setTimeout("$('#cliDocumento').val('"+$('#cliSearch').val()+"');", 1000);
                     setTimeout("$('#cliNombre').focus();", 2000);
                   },
             error: function(result){
@@ -441,4 +496,57 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                 dataType: 'json'
         });
   }
+
+$('#cliSearch').keyup(function(e){
+var code = e.which;
+  if(code==13){
+    if($('#cliSearch').val() == ''){
+      $('#ocObservacion').focus();
+    } else {
+      BuscarCliente();
+    }
+  }
+});
+
+  //Buscador de cliente
+  function BuscarCliente(){
+    if($('#cliSearch').val()) {
+      //Buscar datos por dni
+      WaitingOpen('Buscando Cliente');
+      $.ajax({
+            type: 'POST',
+            data: { dni : $('#cliSearch').val() },
+        url: 'index.php/customer/findCustomer',
+        success: function(result){
+                      WaitingClose();
+                      if(!result){
+                        $('#cliId').val(-1);
+                        $('#lblNombre').html('');
+                        $('#lblDocumento').html('');
+                        $('#lblDomicilio').html('');
+                        $('#lblTelefono').html('');
+                        CargarModalNuevoCliente();
+                      } else {
+                        $('#cliId').val(result.cliente.cliId);
+                        $('#lblNombre').html(result.cliente.cliApellido +  ' ' + result.cliente.cliNombre);
+                        $('#lblDocumento').html(result.cliente.cliDocumento);
+                        $('#lblDomicilio').html(result.cliente.cliDomicilio);
+                        $('#lblTelefono').html(result.cliente.cliTelefono);
+                        $('#cliSearch').val('');
+                        setTimeout("$('#ocObservacion').focus();",800);
+                      }
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalCli');
+            },
+            dataType: 'json'
+        });
+    }
+  }
+
+  $('#buscador').click(function(){
+    buscadorClientes($('#lblNombre'),$('#lblDocumento'), $('#lblDomicilio'), $('#lblTelefono'), $('#cliId'));
+  });
+
 </script>

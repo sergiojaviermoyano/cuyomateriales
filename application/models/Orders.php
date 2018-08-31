@@ -22,13 +22,16 @@ class Orders extends CI_Model
 	}
 
 	function getTotalOrders($data=null){
-
+		$this->db->select('ordendecompra.*');
 		$this->db->order_by('ocFecha', 'desc');
 		if($data['search']['value']!=''){
 			$this->db->like('ocObservacion', $data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 			$this->db->limit($data['length'],$data['start']);
 		}
-		$query= $this->db->get('ordendecompra');
+		$this->db->from('ordendecompra');
+		$this->db->join('clientes', 'clientes.cliId = ordendecompra.cliId');
+		$query= $this->db->get();
 		return $query->num_rows();
 		
 	}
@@ -36,12 +39,17 @@ class Orders extends CI_Model
 	function Orders_List_datatable($data=null){
 
 
+		$this->db->select('ordendecompra.*, clientes.cliNombre, clientes.cliApellido');
 		$this->db->order_by('ocFecha', 'desc');
 		$this->db->limit($data['length'],$data['start']);
 		if($data['search']['value']!=''){
 			$this->db->like('ocObservacion', $data['search']['value']);
+			$this->db->or_like('Concat(cliApellido, \' \', cliNombre)', $data['search']['value']);
 		}
-		$query= $this->db->get('ordendecompra');
+		
+		$this->db->from('ordendecompra');
+		$this->db->join('clientes', 'clientes.cliId = ordendecompra.cliId');
+		$query= $this->db->get();
 		if ($query->num_rows()!=0)
 		{
 			return $query->result_array();
@@ -142,7 +150,7 @@ class Orders extends CI_Model
 				$Order['ocEsPresupuesto'] = '';
 				$Order['usrId'] = '';
 				$Order['lpId'] = '';
-				$Order['cliId'] = '';
+				$Order['cliId'] = '1';
 				$Order['redondeo'] = '0';
 				$Order['ocDescuento'] = 0;
 				$data['order'] = $Order;
@@ -171,7 +179,7 @@ class Orders extends CI_Model
 				$action = 	$data['act'];
 				$id = 		$data['id'];
 				$obser = 	$data['obser'];
-				$cliId = 	$data['cliId'];
+				$cliId = 	$data['cliId_'];
 				$lpId =		$data['lpId'];
 				$arts = 	$data['art'];
 				$redondeo = 	$data['redondeo'];
@@ -189,7 +197,8 @@ class Orders extends CI_Model
 					'lpId'			=>$lpId,
 					'cliId'			=>$cliId,
 					'redondeo'  	=>$redondeo,
-					'ocDescuento'	=>$desc
+					'ocDescuento'	=>$desc,
+					'cliId'			=>$cliId
 					);
 
 				if($usr != '' && $usr != null){
@@ -332,9 +341,13 @@ class Orders extends CI_Model
 						</tr>';
 			$html .= '	<tr><td colspan="2"><hr></td></tr>';
 			$html .= '	<tr><td colspan="2">
-							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' / '.$result['order']['ocObservacion'].'</b><br>
-							Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'</b>
-						</td></tr>';
+							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
+							Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b><br>
+							Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'</b>';
+						if($result['order']['ocObservacion'] != ''){
+							$html .= '<br><br><b style="font-size: 20px"><i>'.$result['order']['ocObservacion'].' </i></b>';
+						}
+			$html .= '		</td></tr>';
 			$html .= '	<tr><td colspan="2"><hr></td></tr>';
 			$html .= '	<tr><td colspan="2">';
 
@@ -565,9 +578,12 @@ class Orders extends CI_Model
 						</tr>';
 			$html .= '	<tr><td colspan="2"><hr></td></tr>';
 			$html .= '	<tr><td colspan="2">
-							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' / '.$result['order']['ocObservacion'].'</b>
-							</b>
-						</td></tr>'; //Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'
+							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
+							Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b>';
+						if($result['order']['ocObservacion'] != ''){
+							$html .= '<br><br><b style="font-size: 20px"><i>'.$result['order']['ocObservacion'].' </i></b>';
+						}
+			$html .= '		</td></tr>';
 			$html .= '	<tr><td colspan="2"><hr></td></tr>';
 			$html .= '	<tr><td colspan="2">';
 

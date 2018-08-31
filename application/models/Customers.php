@@ -201,5 +201,54 @@ class Customers extends CI_Model
 
 		}
 	}
+
+	function findCustomer($data = null){
+	if($data == null)
+	{
+		return false;
+	}
+	else
+	{
+			$dni = str_replace(' ', '', $data['dni']);
+
+			$this->db->select('clientes.cliNombre, clientes.cliApellido, clientes.cliDocumento, clientes.cliId, clientes.cliDomicilio, clientes.cliTelefono');
+			$this->db->from('clientes');
+			$this->db->where(array('clientes.cliDocumento'=>$dni));
+			$query= $this->db->get();
+			if ($query->num_rows() != 0)
+			{
+				$c = $query->result_array();
+
+				$data['cliente'] = $c[0];
+				return $data;
+			} else {
+				return false;
+			}
+		}
+	}
+
+	function buscadorClientes($data = null){
+		$str = '';
+		if($data != null){
+			$str = $data['str'];
+		}
+
+		$clientes = array();
+
+		$this->db->select('cliId, cliNombre, cliApellido, cliDocumento, cliTelefono, cliDomicilio');
+		$this->db->from('clientes');
+		$this->db->like('cliNombre', $str, 'both');
+		$this->db->or_like('cliApellido', $str, 'both');
+		$this->db->or_like('cliDocumento', $str, 'both');
+		$this->db->where(array('cliEstado'=>'AC', 'cliDocumento !=' =>''));
+		$query = $this->db->get();
+		if ($query->num_rows()!=0)
+		{
+			$clientes = $query->result_array();
+			return $clientes;
+		}
+
+		return array();
+	}
 }
 ?>

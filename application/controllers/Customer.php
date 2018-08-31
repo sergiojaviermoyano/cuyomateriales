@@ -47,4 +47,21 @@ class customer extends CI_Controller {
 			echo json_encode($data);	
 		}
 	}
+
+	public function findCustomer(){
+		$data = $this->Customers->findCustomer($this->input->post());
+		echo json_encode($data);
+	}
+
+	public function buscadorClientes() {
+		$data = $this->Customers->buscadorClientes($this->input->post());
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);
+		}
+	}
 }

@@ -18,9 +18,11 @@
           <table id="order_table" class="table table-bordered table-hover">
             <thead>
               <tr>
-                <th width="20%">Acciones</th>
+                <th width="170px">Acciones</th>
+                <th width="1px"></th>
+                <th>Cliente</th>
                 <th>Observación</th>
-                <th>Fecha</th>
+                <th width="170px">Fecha</th>
                 <th>Estado</th>
               </tr>
             </thead>
@@ -107,11 +109,15 @@
                   if(permission.indexOf("Ent")>0 && item.ocEstado=='AC'){
                     td_1+='<i  class="fa fa-fw fa-truck" style="color: #bc3c5e; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Ent\')"></i>';
                   }
+              var td_1_2 = "";
+                  if(item.ocEsPresupuesto==1){
+                   td_1_2+= '<small class="label pull-left bg-navy" style="font-size: 14px;" title="Presupuesto">P</small>';
+                  }
+
+              var td_1_3="";
+                 td_1_3+= item.cliApellido + ' ' + item.cliNombre;
 
               var td_2="";
-                 if(item.ocEsPresupuesto==1){
-                   td_2+= '<small class="label pull-left bg-navy" style="font-size: 14px; margin-right: 5px;" title="Presupuesto">P</small>  &nbsp; &nbsp; ';
-                 }
                  td_2+= item.ocObservacion;//item.ocObservacion;
               
               var date = new Date(item.ocFecha);
@@ -144,7 +150,7 @@
                 }
               }
               //for(i=0;i<=100000;i++){
-                output.push([td_1,td_2,td_3,td_4]);
+                output.push([td_1,td_1_2,td_1_3,td_2,td_3,td_4]);
 
               //}
 
@@ -175,7 +181,7 @@
 			                WaitingClose();
 			                $("#modalBodyOrder").html(result.html);
 			                setTimeout(function () { $('#modalOrder').modal('show'); }, 1000);
-                      setTimeout(function () { $('#ocObservacion').focus(); }, 1200);
+                      setTimeout(function () { $('#cliSearch').focus(); }, 1200);
                       $(".select2").select2({
                         allowClear: true
                       });
@@ -218,7 +224,7 @@
       hayError = true;
     }
 
-    if($('#ocObservacion').val() == "")
+    if($('#cliId').val() == "" || $('#cliId').val() == -1)
     {
       hayError = true;
     }
@@ -226,7 +232,6 @@
     var items = parseFloat($('#saleItems').html());
     var venta = parseFloat($('#saleTotal').html());
     var redondeo =parseFloat($('#redondeo').val());
-
     var sale = [];
     if(items > 0 && venta > 0){
       var table = $('#order_detail > tbody> tr');
@@ -268,7 +273,7 @@
                     id : idOrder,
                     act: acOrder,
                     obser:  $('#ocObservacion').val(),
-                    cliId:  $('#cliId').val(),
+                    cliId_:  $('#cliId').val(),
                     lpId:   $('#lpId').val(),
                     art:    sale,
                     redondeo: redondeo,
@@ -387,7 +392,6 @@
       total += parseFloat(this.children[5].textContent);
     });
 
-    debugger;
     if($('#ocDescuentoIsPorcent').prop("checked")){
       descuento = $('#ocDescuento').val() == "" ? 0 : parseFloat($('#ocDescuento').val());
       if(descuento > 0){
@@ -630,6 +634,7 @@
 </div>
 
 <script>
+
 $('#btnSaveCustomer').click(function(){
     var hayError = false;
     if($('#cliId').val() == '')
@@ -693,6 +698,6 @@ $('#btnSaveCustomer').click(function(){
               alert("error");
             },
             dataType: 'json'
-        });
+        }); 
   });
 </script>
