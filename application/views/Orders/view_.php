@@ -442,7 +442,6 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
 
 	$(function(){
 		$('#lpId').on('change',function(){
-      //debugger;
 			var selected = $('#lpId').find('option:selected');
 			var margin = parseFloat(selected.data('porcent'));
 			var td_cant=$("table").find("td.td_cant");
@@ -461,13 +460,11 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
           margin  *= -1;
           pVenta -= pVenta * (margin / 100);
         }
-				console.debug(")))> pVenta: %o",pVenta);
 				var sub_total=(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2);
 				$(td_pventa[index]).text(pVenta.toFixed(2));
         $(td_total[index]).text(sub_total);
-				total =total+parseFloat(sub_total);
+        Calcular();
 			});
-			$("#saleTotal").text(total.toFixed(2));
 		});
 
 

@@ -40,5 +40,9 @@ class box extends CI_Controller {
 			echo json_encode(true);	
 		}
 	}
+
+	public function isOpenBox(){
+		echo json_encode(1);
+	}
 	
 }

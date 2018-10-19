@@ -96,22 +96,11 @@ class sale extends CI_Controller {
 		echo json_encode($response);
 	}
 
-	/*
-	public function delSale(){
-		$data = $this->Sales->delSale($this->input->post());
-		if($data  == false)
-		{
-			echo json_encode(false);
-		}
-		else
-		{
-			echo json_encode(true);	
-		}
+	public function caja(){
+		echo json_encode($this->load->view('sales/caja', null, true));
 	}
 
-	public function printSale(){
-		//var_dump($this->Sales->printSale($this->input->post()));
-		echo json_encode($this->Sales->printSale($this->input->post()));
+	public function printBox(){
+		echo json_encode($this->Sales->printBox($this->input->post()));
 	}
-	*/
 }

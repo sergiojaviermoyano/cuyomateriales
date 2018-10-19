@@ -86,11 +86,11 @@
             permission= permission.split('-');
             $.each(json.data,function(index,item){
               var td_1="";
-                  if(permission.indexOf("Rem")>0){
+                  if(permission.indexOf("Rem")>0 && item.ocEstado=='AC'){
                     td_1+='<span class="label label-primary" style="margin-right: 5px; cursor: pointer;" title="Remito" onclick="PrintRemito('+item.ocId+')">R</span>';
                   }
                   
-                  if(permission.indexOf("Imprimir")>0){
+                  if(permission.indexOf("Imprimir")>0 && item.ocEstado=='AC'){
                     td_1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
                   }
 
@@ -98,7 +98,7 @@
                     td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Edit\')"></i>';
                   }
 
-                  if(permission.indexOf("Del")>0){
+                  if(permission.indexOf("Del")>0 && item.ocEstado=='AC'){
                     td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Del\')"></i>';
                   }
 
