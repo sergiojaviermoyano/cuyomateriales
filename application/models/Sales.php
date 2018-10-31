@@ -442,6 +442,16 @@ function printBox($data = null){
 				');
 			$data['ventas'] = $query->result_array();
 
+			#Cobranzas de cuenta corriente 
+			$query = $this->db->query('
+										Select ct.*, cli.cliNombre, cli.cliApellido, u.usrNick 
+										from cuentacorrientecliente as ct
+										join clientes as cli on cli.cliId = ct.cliId 
+										join sisusers as u on u.usrId = ct.usrId 
+										where DATE(cctepFecha)  = \''.$fecha[2].'-'.$fecha[1].'-'.$fecha[0].'\' and cctepHaber > 0
+									');
+			$data['cobranza'] = $query->result_array();
+
 			#Datos del usuario
 			$userdata = $this->session->userdata('user_data');
 			$data['user'] = $userdata[0];
@@ -512,45 +522,31 @@ function printBox($data = null){
                 //$total += $item['importe'];
         	}
 			$html .= '</table>';
-			//$html .= '</td></tr>';
-			/*
-			$html .= '<tr style="background-color: #FAFAFA">
-						<th colspan="2">Artículo</th>
-						<th>Precio</th>
-						<th>Cantidad</th>
-						<th>Total</th>
-					</tr><tr><td colspan="5"><hr></td></tr>';
-			$total = 0;
 
-			foreach ($result['detalleCompra'] as $art) {
-				$html .= '<tr>';
-				$html .= '<td>'.$art['artBarCode'].'</td>';
-				$html .= '<td>'.$art['artDescripcion'].'</td>';
-				$html .= '<td style="text-align: right">'.number_format($art['artPVenta'], 2, ',', '.').'</td>';
-				$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';
-				$coste = $art['artPVenta'] * $art['ocdCantidad'];
-				$total += $coste;
-				$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
-				$html .= '</tr>';
-				$html .= '<tr>';
-				$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
-				$html .= '</tr>';
-			}
-			//$total += $result['order']['redondeo'];
-			//$html .= '<tr><td><h5>Redondeo</h5></td>';
-			//$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
-			if($result['order']['ocDescuento'] <= 0){
-				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 17px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
-			}else{
-				$html .= '<tr><td colspan="5" style="text-align: right">Sub Total  <strong style="font-size: 10px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
-				$html .= '<tr><td colspan="5" style="text-align: right">Descuento  <strong style="font-size: 10px">$ '.number_format($result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
-				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 10px">$ '.number_format($total - $result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
-			}
-			$html .= '</table>';
-			*/
+			#region cobranzas cuenta corriente 
+			if(count($data['cobranza']) > 0){
+				$html .= '<table width="100%" style="font-family:courier; font-size: 12px;">';
+				$html .= '<tr><th><br><br><hr></th><th colspan="2" style="text-align:center"><br><br>Cobranza de Cuenta Corriente</th> <th><br><br><hr></th></tr>';
+				$html .= '<tr>
+							<th>Recibo N°</th>
+							<th>Concepto</th>
+							<th>Importe</th>
+							<th>Usuario</th>
+						</tr>';	
+					
+				foreach ($data['cobranza'] as $item) {
+					#var_dump($item);
+	        		$html .=  '<tr>';
+	                $html .=  '<td style="text-align: center">'.str_pad($item['cctepId'], 6, "0", STR_PAD_LEFT).'</td>';
+	        		$html .=  '<td>'.$item['cliApellido'].' '.$item['cliNombre'].' '.$item['cliApellido'].'</td>';
+	        		$html .=  '<td style="text-align: right">'.number_format($item['cctepHaber'], 2, ',', '.').'</td>';
+	        		$html .=  '<td style="text-align: right">'.$item['usrNick'].'</td>';
+	        		$html .=  '</tr>';
 
-			//$html .= '	</td></tr>';
-			//$html .= '</table>';
+                //$total += $item['importe'];
+        		}
+				$html .= '</table>';
+			}
 
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");

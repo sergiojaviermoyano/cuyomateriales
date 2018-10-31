@@ -535,37 +535,52 @@ class Orders extends CI_Model
 			'id'	=> $idOc
 		);
 		$order = $this->getOrder($data);
-		if($order['order']['ocEsPresupuesto'] == 0){
-			//Calcular importe 
-			$total = 0;
-			foreach ($order['detalleCompra'] as $item) {
-				$total += $item['artPVenta'] * $item['ocdCantidad'];
-			}
-			$total = $total + $order['order']['redondeo'] - $order['order']['ocDescuento'];
-			$query = $this->db->get_where('cuentacorrientecliente', array('cctepRef' => $idOc, 'cctepTipo' => 'VN'));
-			if ($query->num_rows() > 0){
-				//Actualizar movimiento porque se edito la orden 
-				$update = array(
-					'cctepDebe'		=> $total
-				);
-				if($this->db->update('cuentacorrientecliente', $update, array('cctepRef' => $idOc, 'cctepTipo' => 'VN')) == false) {
-			 		return false;
-			 	}
-			} else {
-				//Insertar movimiento porque se inserto la orden
-				$insert = array(
-					'cctepConcepto' => 'Venta Orden N° '.$idOc,
-					'cctepRef'		=> $idOc,
-					'cctepTipo'		=> 'VN',
-					'cctepDebe'		=> $total,
-					'cliId'			=> $order['order']['cliId'],
-					'usrId'			=> $order['order']['usrId']
-				);
 
-				if($this->db->insert('cuentacorrientecliente', $insert) == false) {
-					return false;
+		#Datos del rubro
+		$query= $this->db->get_where('listadeprecios',array('lpId'=>$order['order']['lpId']));
+		if ($query->num_rows() != 0)
+		{
+			$c = $query->result_array();
+			$data['lista'] = $c[0];
+
+			if($data['lista']['lpDescripcion'] == 'Cuenta Corriente'){
+				if($order['order']['ocEsPresupuesto'] == 0){
+					//Calcular importe 
+					$total = 0;
+					foreach ($order['detalleCompra'] as $item) {
+						$total += $item['artPVenta'] * $item['ocdCantidad'];
+					}
+					$total = $total + $order['order']['redondeo'] - $order['order']['ocDescuento'];
+					$query = $this->db->get_where('cuentacorrientecliente', array('cctepRef' => $idOc, 'cctepTipo' => 'VN'));
+					if ($query->num_rows() > 0){
+						//Actualizar movimiento porque se edito la orden 
+						$update = array(
+							'cctepDebe'		=> $total
+						);
+						if($this->db->update('cuentacorrientecliente', $update, array('cctepRef' => $idOc, 'cctepTipo' => 'VN')) == false) {
+					 		return false;
+					 	}
+					} else {
+						//Insertar movimiento porque se inserto la orden
+						$insert = array(
+							'cctepConcepto' => 'Venta Orden N° '.$idOc,
+							'cctepRef'		=> $idOc,
+							'cctepTipo'		=> 'VN',
+							'cctepDebe'		=> $total,
+							'cliId'			=> $order['order']['cliId'],
+							'usrId'			=> $order['order']['usrId']
+						);
+
+						if($this->db->insert('cuentacorrientecliente', $insert) == false) {
+							return false;
+						}
+					}
 				}
+			} else {
+				return; 
 			}
+		} else {
+			return;
 		}
 	}
 
