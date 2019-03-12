@@ -86,11 +86,15 @@ class Cuentacorrientes extends CI_Model
 			$cliId = $data['cliId'];
 			$result= array();
 
-			$this->db->select('cuentacorrientecliente.*, sisusers.usrNick');
-			$this->db->from('cuentacorrientecliente');
-			$this->db->join('sisusers', 'sisusers.usrId = cuentacorrientecliente.usrId');
+			$this->db->select('cl.*, sisusers.usrNick, 
+				(SELECT SUM(c.cctepDebe ) - SUM(IFNULL(c.cctepHaber,\'0\')) 
+				FROM cuentacorrientecliente AS c
+				WHERE c.cctepFecha <= cl.cctepFecha
+				AND c.cliId = cl.cliId) as saldo');
+			$this->db->from('cuentacorrientecliente as cl');
+			$this->db->join('sisusers', 'sisusers.usrId = cl.usrId');
 			$this->db->where(array('cliId' => $cliId));
-			$this->db->order_by('cuentacorrientecliente.cctepfecha', 'desc');
+			$this->db->order_by('cl.cctepfecha', 'desc');
 			$query = $this->db->get();
 
 			$result['data'] = $query->result_array();	
@@ -310,34 +314,40 @@ class Cuentacorrientes extends CI_Model
 		{
 			$c = $query->result_array();
 			$customer = $c[0];
-			$html .= '<table  width="100%" style="font-family:courier; font-size: 14px;">
-			        <thead>
-			          <tr style="font-family: Open Sans; font-size: 25px; text-align: center;">
-							<td style="text-align: left; width:50%;">
-								<b>CUYO MATERIALES</b><br>
-								<span style="font-size: 20px">Extracto Cuenta Corriente</span>
+
+			$html = '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
+			$html .= '	<tr>
+							<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
+							<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
+								25 De Mayo 595 - Caucete - San Juan<br>
+								IVA Responsable Inscripto<br>
+								Tel: 0264 - 4961482
 							</td>
-							<td style="font-family:courier; font-size: 14px; text-align: left;">
+							<td style="border-bottom: 2px solid #3c3c3c !important; border-left: 2px solid #3c3c3c !important; padding-left: 10px;">
+								<center>Documento no válido como factura</center><br>
+								<b>EXTRACTO CUENTA CORRIENTE</b><br>
 								Cliente: <strong>'.$customer['cliApellido'].' '.$customer['cliNombre'].'</strong><br>
 								Domicilio: <strong>'.$customer['cliDomicilio'].'</strong><br>
 								Número: <strong>'.$customer['cliDocumento'].'</strong><br>
-								Teléfono: <strong>'.$customer['cliTelefono'].'</strong><br>
+								Teléfono: <strong>'.$customer['cliTelefono'].'</strong>
 							</td>
 						</tr>
-			        </thead>
-			        </table><hr>';
+					</table>';
+
+			////////////////
 		}
 
 		$data = $this->getCtaCteC($data);
 
-		$html .= '<table  width="100%" style="font-family:courier; font-size: 14px;">
+		$html .= '<table  width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">
 			        <thead>
 			          <tr>
-			          	<th>Fecha</th>
-			            <th>Concepto</th>
-			            <th>Debe</th>
-			            <th>Haber</th>
-			            <th>Usuario</th>
+			          	<th style="background-color: #D1CECD;">Fecha</th>
+			            <th style="background-color: #D1CECD;">Concepto</th>
+			            <th style="background-color: #D1CECD;">Debe</th>
+						<th style="background-color: #D1CECD;">Haber</th>
+						<th style="background-color: #D1CECD;">Saldo</th>
+			            <th style="background-color: #D1CECD;">Usuario</th>
 			          </tr>
 			        </thead>
 			        <tbody>';
@@ -348,7 +358,8 @@ class Cuentacorrientes extends CI_Model
 	      	$html .= '<td style="text-align:center">'.date_format(date_create($m['cctepFecha']), 'd-m-Y').'</td>';
 	      	$html .= '<td >'.$m['cctepConcepto'].'</td>';
 	      	$html .= '<td style="text-align:right">'.number_format ( $m['cctepDebe'] , 2 , "," , "." ).'</td>';
-	      	$html .= '<td style="text-align:right">'.number_format ( $m['cctepHaber'] , 2 , "," , "." ).'</td>';
+			$html .= '<td style="text-align:right">'.number_format ( $m['cctepHaber'] , 2 , "," , "." ).'</td>';
+			$html .= '<td style="text-align:right">'.number_format ( $m['saldo'] , 2 , "," , "." ).'</td>';
           	$html .= '<td style="text-align:center">'.$m['usrNick'].'</td>';
  
          	$html .= '</tr>';	
@@ -712,6 +723,87 @@ class Cuentacorrientes extends CI_Model
     			break;
     	}
     }
-    //*******
+	//*******
+	
+	function saldos(){
+		$this->db->select('(SUM( IFNULL( cctepDebe, \'0\' ) ) - SUM( IFNULL( cctepHaber, \'0\' ) )) AS saldo, MAX( cctepFecha ) AS ultimo, cliNombre, cliApellido');
+		$this->db->from('cuentacorrientecliente as cl');
+		$this->db->join('clientes as c', 'c.cliId = cl.cliId');
+		$this->db->group_by('cl.cliId');
+		$this->db->order_by('cliApellido, cliNombre');
+		$query = $this->db->get();
+
+		return $query->result_array();
+	}
+
+	function printSaldo(){
+		$data = $this->saldos();
+
+		$html = '';
+		$html = '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
+		$html .= '	<tr>
+						<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
+						<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
+							25 De Mayo 595 - Caucete - San Juan<br>
+							IVA Responsable Inscripto<br>
+							Tel: 0264 - 4961482
+						</td>
+						<td style="border-bottom: 2px solid #3c3c3c !important; border-left: 2px solid #3c3c3c !important; padding-left: 10px;">
+							<center>Documento no válido como factura</center><br>
+							<b>SALDOS CUENTA CORRIENTE</b>
+						</td>
+					</tr>
+					</table>
+					<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">
+						<tr style="background-color: #A4A4A4">
+							<th style="text-align:center">Cliente</th>
+							<th style="text-align:center">Saldo</th>
+							<th style="text-align:center">Último Movimiento</th>
+						</tr>
+			        <tbody>';
+	      $debe = 0;
+	      $haber = 0;
+	      foreach ($data as $s) {
+			if($s['saldo'] > 0){
+				$html .= '<tr>';
+				//echo '<td style="text-align:center">'.date_format(date_create($m['cctepFecha']), 'd-m-Y').'</td>';
+				$html .= '<td>'.$s['cliApellido'].' '.$s['cliNombre'].'</td>';
+				$html .= '<td style="text-align:right">'.number_format ( $s['saldo'] , 2 , "," , "." ).'</td>';
+				$html .= '<td style="text-align:center">'.date_format(date_create($s['ultimo']), 'd-m-Y H:i').'</td>';
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td colspan="3" style="padding-top: 2px"><hr style="border: 1px solid #D8D8D8;"> </td>';
+				$html .= '</tr>'; 
+			}
+	      }
+
+	    //se incluye la libreria de dompdf
+		require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
+		//se crea una nueva instancia al DOMPDF
+		$dompdf = new DOMPDF();
+		//se carga el codigo html
+		$dompdf->load_html(utf8_decode($html));
+		//aumentamos memoria del servidor si es necesario
+		ini_set("memory_limit","300M");
+		//Tamaño de la página y orientación
+		$dompdf->set_paper('a4','portrait');
+		//lanzamos a render
+		$dompdf->render();
+		//guardamos a PDF
+		//$dompdf->stream("TrabajosPedndientes.pdf");
+		$output = $dompdf->output();
+		file_put_contents('assets/reports/saldos.pdf', $output);
+
+		//Eliminar archivos viejos ---------------
+		$dir = opendir('assets/reports/');
+		while($f = readdir($dir))
+		{
+			if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
+			unlink('assets/reports/'.$f);
+		}
+		closedir($dir);
+		//----------------------------------------
+		return 'saldos.pdf';
+	}
 }
 ?>

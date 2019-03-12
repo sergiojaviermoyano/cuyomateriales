@@ -156,12 +156,13 @@
 						<td width="1%"><i style="color: #dd4b39; cursor: pointer;" class="fa fa-fw fa-times-circle" onClick="delete_(<?php echo $key+1;?>)"></i></td>
 						<td width="10%"><?php echo $value['artBarCode']?></td>
 						<td><?php echo $value['artDescripcion']?></td>
-						<td width="10%" class="td_cant" style="text-align: right"   data-pventa="<?php echo $value['artPVenta']?>" ><?php echo  (float)$value['ocdCantidad']?></td>
+						<td width="10%" class="td_cant" style="text-align: right"   data-pventa="<?php echo $value['artPVenta']?>" data-pventao="<?php echo $value['artPVentaOriginal']?>"><?php echo  (float)$value['ocdCantidad']?></td>
 						<td width="10%" class="td_pventa"  style="text-align: right" ><?php echo $value['artPVenta']?></td>
 						<td width="10%" class="td_total" style="text-align: right"></td>
 						<td style="display: none"><?php echo $value['artId']?></td>
 						<td style="display: none"><?php echo $value['artPVenta']?></td>
 						<td style="display: none"><?php echo $value['artPCosto']?></td>
+            <td style="display: none" class="td_pventaoriginal"><?php echo $value['artPVentaOriginal']?></td>
 					</tr>
 				<?php endforeach;?>
       </tbody>
@@ -265,12 +266,13 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                           row += '<td width="1%"><i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer;" onclick="delete_('+idSale+')"></i></td>';
                           row += '<td width="10%">'+result.artBarCode+'</td>';
                           row += '<td>'+result.artDescription+'</td>';
-                          row += '<td width="10%" class="td_cant" style="text-align: right"   data-pventa="'+pVenta+'"  >'+cantidad+'</td>';
+                          row += '<td width="10%" class="td_cant" style="text-align: right"   data-pventa="'+pVenta+'"  data-pventao="'+pVenta+'" >'+cantidad+'</td>';
                           row += '<td width="10%" class="td_pventa"  style="text-align: right" >'+parseFloat(pVenta).toFixed(2)+'</td>';
                           row += '<td width="10%" class="td_total" style="text-align: right">'+(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2)+'</td>';
                           row += '<td style="display: none">'+result.artId+'</td>';
                           row += '<td style="display: none">'+result.pVenta+'</td>';
                           row += '<td style="display: none">'+result.artCoste+'</td>';
+                          row += '<td style="display: none" class="td_pventaoriginal" >'+result.pVenta+'</td>';
                           row += '</tr>';
                           $('#order_detail > tbody').prepend(row);
                           idSale++;
@@ -431,7 +433,6 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
   }
 
   function agregar(barCode){
-    //debugger;
     $('#artId').val(barCode);
     $('#modalSearch').modal('hide');
     $('#modalReception').modal('show');
@@ -440,31 +441,48 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
   }
 
 
+  var primerIngreso = true;
 	$(function(){
 		$('#lpId').on('change',function(){
-			var selected = $('#lpId').find('option:selected');
-			var margin = parseFloat(selected.data('porcent'));
-			var td_cant=$("table").find("td.td_cant");
-			var td_pventa=$("table").find("td.td_pventa");
-			var td_total=$("table").find("td.td_total");
-			var total=0;
-			$.each(td_cant,function(index,item){
-				var cantidad=parseFloat($(item).text());
-				var pVenta = $(item).data('pventa');
-				pVenta=parseFloat(pVenta);
-				if(margin > 0){
-					pVenta += pVenta * (margin / 100);
-				}
+        var selected = $('#lpId').find('option:selected');
+        var margin = parseFloat(selected.data('porcent'));
+        var td_cant=$("table").find("td.td_cant");
+        var td_pventa=$("table").find("td.td_pventa");
+        var td_pventao=$("table").find("td.td_pventaoriginal");
+        var td_total=$("table").find("td.td_total");
+        var total=0;        
+        if(!primerIngreso){
+          $.each(td_cant,function(index,item){
+            var cantidad=parseFloat($(item).text());
+            var pVenta = $(item).data('pventao');
+            pVenta=parseFloat(pVenta);
+            if(margin > 0){
+              pVenta += pVenta * (margin / 100);
+            }
 
-        if(margin <0){
-          margin  *= -1;
-          pVenta -= pVenta * (margin / 100);
+            if(margin <0){
+              margin  *= -1;
+              pVenta -= pVenta * (margin / 100);
+            }
+            var sub_total=(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2);
+            $(td_pventa[index]).text(pVenta.toFixed(2));
+            $(td_total[index]).text(sub_total);
+          });
+        } else {
+          $.each(td_cant,function(index,item){
+            var cantidad=parseFloat($(item).text());
+            var pVenta = $(item).data('pventa');
+            pVenta=parseFloat(pVenta);
+            
+            var sub_total=(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2);
+            $(td_pventa[index]).text(pVenta.toFixed(2));
+            $(td_total[index]).text(sub_total);
+          });
+          primerIngreso = false;
         }
-				var sub_total=(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2);
-				$(td_pventa[index]).text(pVenta.toFixed(2));
-        $(td_total[index]).text(sub_total);
-        Calcular();
-			});
+      Calcular();
+
+
 		});
 
 

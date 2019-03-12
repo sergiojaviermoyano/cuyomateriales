@@ -226,7 +226,8 @@ class Orders extends CI_Model
 											'artDescripcion'=> $a['artDescription'],
 											'artPCosto'		=> $a['artCoste'],
 											'artPVenta'		=> $a['artFinal'],
-											'ocdCantidad'	=> $a['venCant']
+											'ocdCantidad'	=> $a['venCant'],
+											'artPVentaOriginal'=> $a['artOriginal']
 										);
 
 									if($this->db->insert('ordendecompradetalle', $insert) == false) {
@@ -272,7 +273,8 @@ class Orders extends CI_Model
 									'artDescripcion'=> $a['artDescription'],
 									'artPCosto'		=> $a['artCoste'],
 									'artPVenta'		=> $a['artFinal'],
-									'ocdCantidad'	=> $a['venCant']
+									'ocdCantidad'	=> $a['venCant'],
+									'artPVentaOriginal'=> $a['artOriginal']
 								);
 
 								if($this->db->insert('ordendecompradetalle', $insert) == false) {
@@ -331,18 +333,26 @@ class Orders extends CI_Model
 				}
 
 			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
-			$html = '<table width="100%" style="font-family:courier; font-size: 12px;">';
+			
+			$html = '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
 			$html .= '	<tr>
-							<td colspan="2" style="text-align: center">
-								Documento no válido como factura.<br>
-								'.($result['order']['ocEsPresupuesto'] ? '<strong>Presupuesto</strong> <br>' : '') .'
-								Número de Orden: <b>0000-'.$ordId.'</b><br>
-								Vendedor: <b>'.$data['user']['usrName'].' '.$data['user']['usrLastName'].'</b><br>
-								Fecha: <b>'.date("d-m-Y H:i", strtotime($result['order']['ocFecha'])).'</b><br>
-								Tel: 0264 - 4961482
-							</td>
-						</tr>';
-			$html .= '	<tr><td colspan="2"><hr></td></tr>';
+										<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
+										<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
+											25 De Mayo 595 - Caucete - San Juan<br>
+											IVA Responsable Inscripto<br>
+											Tel: 0264 - 4961482
+										</td>
+										<td style="border-bottom: 2px solid #3c3c3c !important; border-left: 2px solid #3c3c3c !important; padding-left: 10px;">
+											<center>Documento no válido como factura</center><br>
+											'.($result['order']['ocEsPresupuesto'] ? '<strong>PRESUPUESTO</strong> <br>' : '') .'
+											Número de Orden: <b>0000-'.$ordId.'</b><br>
+											Vendedor: <b>'.$data['user']['usrName'].' '.$data['user']['usrLastName'].'</b><br>
+											Fecha: <b>'.date("d-m-Y H:i", strtotime($result['order']['ocFecha'])).'</b><br><br>
+											CUIT: <b>20349167736</b><br>
+											Ingresos Brutos: <b>000-118245-5</b><br>
+											Inicio Actividades: <b>14/06/2011</b>
+										</td>
+									</tr>';
 			$html .= '	<tr><td colspan="2">
 							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
 							Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b><br>
@@ -350,17 +360,17 @@ class Orders extends CI_Model
 						if($result['order']['ocObservacion'] != ''){
 							$html .= '<br><br><b style="font-size: 20px"><i>'.$result['order']['ocObservacion'].' </i></b>';
 						}
-			$html .= '		</td></tr>';
-			$html .= '	<tr><td colspan="2"><hr></td></tr>';
-			$html .= '	<tr><td colspan="2">';
+			$html .= '		</td></tr></table>';
+			//$html .= '<table width="100%" style="font-family:courier; font-size: 12px;">'
+			//$html .= '	<tr><td colspan="2">';
 
-			$html .= '<table width="100%">';
-			$html .= '<tr style="background-color: #FAFAFA">
-						<th colspan="2">Artículo</th>
-						<th>Precio</th>
-						<th>Cantidad</th>
-						<th>Total</th>
-					</tr><tr><td colspan="5"><hr></td></tr>';
+			$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important;">';
+			$html .= '<tr style="background-color: #FAFAFA; border-bottom: 2px solid #3c3c3c !important;">
+									<th colspan="2" style="background-color: #D1CECD;">Artículo</th>
+									<th style="background-color: #D1CECD;">Precio</th>
+									<th style="background-color: #D1CECD;">Cantidad</th>
+									<th style="background-color: #D1CECD;">Total</th>
+								</tr>';
 			$total = 0;
 
 			foreach ($result['detalleCompra'] as $art) {
@@ -381,16 +391,16 @@ class Orders extends CI_Model
 			//$html .= '<tr><td><h5>Redondeo</h5></td>';
 			//$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
 			if($result['order']['ocDescuento'] <= 0){
-				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 17px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
 			}else{
-				$html .= '<tr><td colspan="5" style="text-align: right">Sub Total  <strong style="font-size: 10px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
-				$html .= '<tr><td colspan="5" style="text-align: right">Descuento  <strong style="font-size: 10px">$ '.number_format($result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
-				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 10px">$ '.number_format($total - $result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+				$html .= '<tr><td colspan="5" style="text-align: right">Sub Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+				$html .= '<tr><td colspan="5" style="text-align: right">Descuento  <strong style="font-size: 20px">$ '.number_format($result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total - $result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
 			}
 			$html .= '</table>';
 
-			$html .= '	</td></tr>';
-			$html .= '</table>';
+			//$html .= '	</td></tr>';
+			//$html .= '</table>';
 
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
@@ -543,7 +553,7 @@ class Orders extends CI_Model
 			$c = $query->result_array();
 			$data['lista'] = $c[0];
 
-			if($data['lista']['lpDescripcion'] == 'Cuenta Corriente'){
+			if($data['lista']['lpDescripcion'] == 'Cuenta Corriente' || $data['lista']['lpDescripcion'] == 'Cuenta Corriente Esp.'){
 				if($order['order']['ocEsPresupuesto'] == 0){
 					//Calcular importe 
 					$total = 0;
@@ -594,6 +604,10 @@ class Orders extends CI_Model
 			$data['act'] = 'Print';
 			$result = $this->getOrder($data);
 
+			if($this->db->update('ordendecompra', array('ocImpresiones' => 1), array('ocId' => $data['id'])) == false) {
+				return false;
+			}
+
 			//Datos del Cliente
 			$query= $this->db->get_where('clientes',array('cliId' => $result['order']['cliId']));
 				if ($query->num_rows() != 0)
@@ -619,55 +633,60 @@ class Orders extends CI_Model
 				}
 
 			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
-			$html = '<table width="100%" style="font-family:courier; font-size: 12px;">';
+			$html = '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
 			$html .= '	<tr>
-							<td style="text-align: center; font-family: Impact, Charcoal, sans-serif" width="50%">
-								<strong style="font-size: 40px">Cuyo</strong> <br>
-								<strong>Materiales para la Construcción<br>
-								25 de Mayo 595 -  Caucete - San Juan<br>
-								Tel: 0264 - 4961482
-							</td>
-							<td style="text-align: center" width="50%">
-								Documento no válido como factura.<br>
-								<strong style="font-size: 20px">Remito</strong> <br>
-								Número de Orden: <b>0000-'.$ordId.'</b><br>
-								Fecha: <b>'.date("d-m-Y H:i").'</b>
-							</td>
-						</tr>';
-			$html .= '	<tr><td colspan="2"><hr></td></tr>';
+										<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
+										<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
+											25 De Mayo 595 - Caucete - San Juan<br>
+											IVA Responsable Inscripto<br>
+											Tel: 0264 - 4961482
+										</td>
+										<td style="border-bottom: 2px solid #3c3c3c !important; border-left: 2px solid #3c3c3c !important; padding-left: 10px;">
+											<center>Documento no válido como factura</center><br>
+											<b>REMITO</b><br>
+											Número de Orden: <b>0000-'.$ordId.'</b><br>
+											Vendedor: <b>'.$data['user']['usrName'].' '.$data['user']['usrLastName'].'</b><br>
+											Fecha: <b>'.date("d-m-Y H:i", strtotime($result['order']['ocFecha'])).'</b><br><br>
+											CUIT: <b>20349167736</b><br>
+											Ingresos Brutos: <b>000-118245-5</b><br>
+											Inicio Actividades: <b>14/06/2011</b>
+										</td>
+									</tr>';
 			$html .= '	<tr><td colspan="2">
 							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
-							Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b>';
+							Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b><br>
+							';
 						if($result['order']['ocObservacion'] != ''){
 							$html .= '<br><br><b style="font-size: 20px"><i>'.$result['order']['ocObservacion'].' </i></b>';
 						}
-			$html .= '		</td></tr>';
-			$html .= '	<tr><td colspan="2"><hr></td></tr>';
-			$html .= '	<tr><td colspan="2">';
+			$html .= '		</td></tr></table>';
+			//$html .= '<table width="100%" style="font-family:courier; font-size: 12px;">'
+			//$html .= '	<tr><td colspan="2">';
 
-			$html .= '<table width="100%">';
-			$html .= '<tr style="background-color: #FAFAFA">
-						<th>Cantidad</th>
-						<th>Artículo</th>
-					</tr><tr><td colspan="5"><hr></td></tr>';
-			$total = 0;
+			$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important;">';
+			$html .= '<tr style="background-color: #FAFAFA; border-bottom: 2px solid #3c3c3c !important;">
+									<th colspan="2" style="background-color: #D1CECD;">Artículo</th>
+									<th style="background-color: #D1CECD;">Cantidad</th>
+								</tr>';
 
 			foreach ($result['detalleCompra'] as $art) {
 				$html .= '<tr>';
-				$html .= '<td style="text-align: left">'.$art['ocdCantidad'].'</td>';
-				$html .= '<td>'.$art['artBarCode'].'-'.$art['artDescripcion'].'</td>';				
+				$html .= '<td>'.$art['artBarCode'].'</td>';
+				$html .= '<td>'.$art['artDescripcion'].'</td>';
+				$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';				
 				$html .= '</tr>';
 				$html .= '<tr>';
 				$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
 				$html .= '</tr>';
 			}
-			$html .= '<tr>';
-			$html .= '<td colspan="4" style="text-align: right"><br><br>Firma:.............................................</td></tr>';
-			$html .= '<tr><td colspan="4" style="text-align: right"><br><br>Aclaración:........................................</td></tr>';
+
 			$html .= '</table>';
 
-			$html .= '	</td></tr>';
-			$html .= '</table>';
+			$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
+			$html .= '<tr>';
+			$html .= '<td style="text-align: right"><br><br>Firma:.............................................</td></tr>';
+			$html .= '<tr><td  style="text-align: right"><br><br>Aclaración:........................................</td></tr>';
+			$html .= '</table>';	
 
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");

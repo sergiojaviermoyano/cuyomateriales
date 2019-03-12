@@ -99,7 +99,7 @@
               <li class="dropdown user user-menu">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                   <!-- <img src="" class="user-image" alt="User Image"> -->
-                  <span class="hidden-xs"><?php echo $userName;?></span>
+                  <span class="hidden-xs" id="userNamePF"><?php echo $userName;?></span>
                 </a>
                 <ul class="dropdown-menu">
                   <!-- User image -->

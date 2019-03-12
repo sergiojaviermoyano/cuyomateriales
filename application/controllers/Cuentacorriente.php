@@ -72,4 +72,14 @@ class cuentacorriente extends CI_Controller {
 	public function printExtracto(){
 		echo json_encode($this->Cuentacorrientes->printExtracto($this->input->post()));	
 	}
+
+	public function saldos($permission){
+		$data['list'] = $this->Cuentacorrientes->saldos();
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('cuentacorrientes/saldos', $data, true));
+	}
+
+	public function printSaldo(){
+		echo json_encode($this->Cuentacorrientes->printSaldo());
+	}
 }

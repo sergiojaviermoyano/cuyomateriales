@@ -87,7 +87,8 @@
             $.each(json.data,function(index,item){
               var td_1="";
                   if(permission.indexOf("Rem")>0 && item.ocEstado=='AC'){
-                    td_1+='<span class="label label-primary" style="margin-right: 5px; cursor: pointer;" title="Remito" onclick="PrintRemito('+item.ocId+')">R</span>';
+                    if((item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis') && item.ocEsPresupuesto == 0)
+                      td_1+='<span class="label label-primary" style="margin-right: 5px; cursor: pointer;" title="Remito" onclick="PrintRemito('+item.ocId+')">R</span>';
                   }
                   
                   if(permission.indexOf("Imprimir")>0 && item.ocEstado=='AC'){
@@ -244,6 +245,7 @@
           artFinal:       parseFloat(this.children[4].textContent),
           venCant:        parseFloat(this.children[3].textContent),
           artVenta:       parseFloat(this.children[7].textContent),
+          artOriginal:    parseFloat(this.children[9].textContent),
         };
 
         sale.push(object);
@@ -472,6 +474,10 @@
             dataType: 'json'
         });
   }
+
+  $("#modalPrint").on('hide.bs.modal', function(){
+    setTimeout("cargarView('Order', 'index', '"+$('#permission').val()+"');",300);
+  });
 
 </script>
 

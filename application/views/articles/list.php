@@ -18,7 +18,7 @@
                 <th width="20%">Acciones</th>
                 <th width="5%">Código</th>
                 <th>Descripción</th>
-                <!--<th>P.Costo</th>-_>
+                <!--<th>P.Costo</th>-->
                 <!--<th>P.Venta</th>-->
                 <th width="5%">Estado</th>
               </tr>
