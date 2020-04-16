@@ -85,30 +85,39 @@
             var permission=$("#permission").val();
             permission= permission.split('-');
             $.each(json.data,function(index,item){
-              var td_1="";
-                  if(permission.indexOf("Rem")>0 && item.ocEstado=='AC'){
-                    if((item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis') && item.ocEsPresupuesto == 0)
-                      td_1+='<span class="label label-primary" style="margin-right: 5px; cursor: pointer;" title="Remito" onclick="PrintRemito('+item.ocId+')">R</span>';
-                  }
-                  
-                  if(permission.indexOf("Imprimir")>0 && item.ocEstado=='AC'){
-                    td_1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
-                  }
+                  var date = new Date(item.ocFecha);
+                  var limite = new Date('2019-09-13');
+                  var td_1="";
+                  if(date > limite || $('#userNamePF').html() == 'luis'){
 
-                  if(permission.indexOf("Edit")>0  && item.ocEstado=='AC'){
-                    td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Edit\')"></i>';
-                  }
+                    if(permission.indexOf("Rem")>0 && item.ocEstado=='AC'){
+                      if((item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis') && item.ocEsPresupuesto == 0 )
+                        td_1+='<span class="label label-primary" style="margin-right: 5px; cursor: pointer;" title="Remito" onclick="PrintRemito('+item.ocId+')">R</span>';
+                    }
+                    
+                    if(permission.indexOf("Imprimir")>0 && item.ocEstado=='AC'){
+                      if(item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis')
+                        td_1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
+                    }
 
-                  if(permission.indexOf("Del")>0 && item.ocEstado=='AC'){
-                    td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Del\')"></i>';
-                  }
+                    if(permission.indexOf("Edit")>0  && item.ocEstado=='AC'){
+                      if(item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis')
+                        td_1+='<i  class="fa fa-fw fa-pencil" style="color: #f39c12; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Edit\')"></i>';
+                    }
 
-                  if(permission.indexOf("View")>0){
-                    td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'View\')"></i>';
-                  }
+                    if(permission.indexOf("Del")>0 && item.ocEstado=='AC'){
+                      if(item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis')
+                        td_1+='<i  class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Del\')"></i>';
+                    }
 
-                  if(permission.indexOf("Ent")>0 && item.ocEstado=='AC'){
-                    td_1+='<i  class="fa fa-fw fa-truck" style="color: #bc3c5e; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Ent\')"></i>';
+                    if(permission.indexOf("View")>0){
+                      td_1+='<i  class="fa fa-fw fa-search" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'View\')"></i>';
+                    }
+
+                    if(permission.indexOf("Ent")>0 && item.ocEstado=='AC'){
+                      if(item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis')
+                        td_1+='<i  class="fa fa-fw fa-truck" style="color: #bc3c5e; cursor: pointer; margin-left: 15px;" onclick="LoadOrder('+item.ocId+',\'Ent\')"></i>';
+                    }
                   }
               var td_1_2 = "";
                   if(item.ocEsPresupuesto==1){
@@ -116,12 +125,12 @@
                   }
 
               var td_1_3="";
-                 td_1_3+= item.cliApellido + ' ' + item.cliNombre;
+                 td_1_3+= "("+item.ocId+") - " +item.cliApellido + ' ' + item.cliNombre;
 
               var td_2="";
                  td_2+= item.ocObservacion;//item.ocObservacion;
               
-              var date = new Date(item.ocFecha);
+              
                         
               var month = date.getMonth() + 1;
               var td_3=("0"+date.getDate()).slice(-2)+'-'+("0"+ month).slice(-2)+'-'+("0"+date.getFullYear()).slice(-4)+' '+("0"+date.getHours()).slice(-2)+':'+("0"+date.getMinutes()).slice(-2);

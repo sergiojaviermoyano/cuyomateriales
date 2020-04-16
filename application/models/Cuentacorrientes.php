@@ -762,20 +762,27 @@ class Cuentacorrientes extends CI_Model
 						</tr>
 			        <tbody>';
 	      $debe = 0;
-	      $haber = 0;
+		  $haber = 0;
+		  $total = 0;
 	      foreach ($data as $s) {
 			if($s['saldo'] > 0){
 				$html .= '<tr>';
 				//echo '<td style="text-align:center">'.date_format(date_create($m['cctepFecha']), 'd-m-Y').'</td>';
 				$html .= '<td>'.$s['cliApellido'].' '.$s['cliNombre'].'</td>';
 				$html .= '<td style="text-align:right">'.number_format ( $s['saldo'] , 2 , "," , "." ).'</td>';
+				$total += $s['saldo'];
 				$html .= '<td style="text-align:center">'.date_format(date_create($s['ultimo']), 'd-m-Y H:i').'</td>';
 				$html .= '</tr>';
 				$html .= '<tr>';
 				$html .= '<td colspan="3" style="padding-top: 2px"><hr style="border: 1px solid #D8D8D8;"> </td>';
 				$html .= '</tr>'; 
 			}
-	      }
+		  }
+		  $html .= '<tr>';
+		  $html .= '<td style="text-align:right; font-size: 25px;">Total: </td>';
+		  $html .= '<td style="text-align:right; font-size: 25px;">'.number_format ( $total , 2 , "," , "." ).'</td>';
+		  $html .= '<td style="text-align:center"></td>';
+	      $html .= '</tr>';
 
 	    //se incluye la libreria de dompdf
 		require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");

@@ -21,6 +21,7 @@
                         <?php 
                         $debe = 0;
                         $haber = 0;
+                        $total = 0;
                         if(count($list) > 0) {  
                                 foreach ($list as $s) {
                                     if($s['saldo'] > 0){
@@ -28,10 +29,16 @@
                                         //echo '<td style="text-align:center">'.date_format(date_create($m['cctepFecha']), 'd-m-Y').'</td>';
                                         echo '<td>'.$s['cliApellido'].' '.$s['cliNombre'].'</td>';
                                         echo '<td style="text-align:right">'.number_format ( $s['saldo'] , 2 , "," , "." ).'</td>';
+                                        $total += $s['saldo'];
                                         echo '<td style="text-align:center">'.date_format(date_create($s['ultimo']), 'd-m-Y H:i').'</td>';
                                         echo '</tr>'; 
                                     }
                                 }
+                                echo '<tr>';
+                                echo '<td style="text-align:right; font-size: 25px;">Total : </td>';
+                                echo '<td style="text-align:right; font-size: 25px;">'.number_format ( $total, 2 , "," , "." ).'</td>';
+                                echo '<td style="text-align:center"></td>';
+                                echo '</tr>';  
                             }
                         ?>
                         </tbody>
