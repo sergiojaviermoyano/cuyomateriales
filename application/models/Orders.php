@@ -820,5 +820,230 @@ class Orders extends CI_Model
 			return $ordId.'.pdf';
 		}
 	}
+
+	function printRemitoSinFecha($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			//Orden
+			$data['act'] = 'Print';
+			$result = $this->getOrder($data);
+
+			if($this->db->update('ordendecompra', array('ocImpresiones' => 1), array('ocId' => $data['id'])) == false) {
+				return false;
+			}
+
+			//Datos del Cliente
+			$query= $this->db->get_where('clientes',array('cliId' => $result['order']['cliId']));
+				if ($query->num_rows() != 0)
+				{
+					$user = $query->result_array();
+					$data['cliente'] = $user[0];
+				}
+
+			//Datos del Vendedor
+			$query= $this->db->get_where('sisusers',array('usrId' => $result['order']['usrId']));
+				if ($query->num_rows() != 0)
+				{
+					$user = $query->result_array();
+					$data['user'] = $user[0];
+				}
+
+			//Lista de Precio
+			$query= $this->db->get_where('listadeprecios',array('lpId' => $result['order']['lpId']));
+				if ($query->num_rows() != 0)
+				{
+					$lista = $query->result_array();
+					$data['lista'] = $lista[0];
+				}
+
+			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
+			$html = '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
+			$html .= '	<tr>
+										<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
+										<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
+											25 De Mayo 595 - Caucete - San Juan<br>
+											IVA Responsable Inscripto<br>
+											Tel: 0264 - 4961482
+										</td>
+										<td style="border-bottom: 2px solid #3c3c3c !important; border-left: 2px solid #3c3c3c !important; padding-left: 10px;">
+											<center>Documento no válido como factura</center><br>
+											<b>REMITO</b><br>
+											Número de Orden: <b>0000-'.$ordId.'</b><br>
+											Vendedor: <b>'.$data['user']['usrName'].' '.$data['user']['usrLastName'].'</b><br>
+											Fecha: <b>________________________</b><br><br>
+											CUIT: <b>20349167736</b><br>
+											Ingresos Brutos: <b>000-118245-5</b><br>
+											Inicio Actividades: <b>14/06/2011</b>
+										</td>
+									</tr>';
+			$html .= '	<tr><td colspan="2">
+							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
+							Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b><br>
+							';
+						if($result['order']['ocObservacion'] != ''){
+							$html .= '<br><br><b style="font-size: 20px"><i>'.$result['order']['ocObservacion'].' </i></b>';
+						}
+			$html .= '		</td></tr></table>';
+			//$html .= '<table width="100%" style="font-family:courier; font-size: 12px;">'
+			//$html .= '	<tr><td colspan="2">';
+
+			$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important;">';
+			$html .= '<tr style="background-color: #FAFAFA; border-bottom: 2px solid #3c3c3c !important;">
+									<th colspan="2" style="background-color: #D1CECD;">Artículo</th>
+									<th style="background-color: #D1CECD;">Cantidad</th>
+								</tr>';
+
+			foreach ($result['detalleCompra'] as $art) {
+				$html .= '<tr>';
+				$html .= '<td>'.$art['artBarCode'].'</td>';
+				$html .= '<td>'.$art['artDescripcion'].'</td>';
+				$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';				
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
+				$html .= '</tr>';
+			}
+
+			$html .= '</table>';
+
+			$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
+			$html .= '<tr>';
+			$html .= '<td style="text-align: right"><br><br>Firma:.............................................</td></tr>';
+			$html .= '<tr><td  style="text-align: right"><br><br>Aclaración:........................................</td></tr>';
+			$html .= '</table>';
+			
+			
+			//Orden 
+			$html .= '<style> .page_break { page-break-before: always; } </style>';
+			$html .= '<div class="page_break">';
+			//$data['act'] = 'Print';
+			/*
+			$result = $this->getOrder($data);
+
+			//Datos del Cliente
+			$query= $this->db->get_where('clientes',array('cliId' => $result['order']['cliId']));
+				if ($query->num_rows() != 0)
+				{
+					$user = $query->result_array();
+					$data['cliente'] = $user[0];
+				}
+
+			//Datos del Vendedor
+			$query= $this->db->get_where('sisusers',array('usrId' => $result['order']['usrId']));
+				if ($query->num_rows() != 0)
+				{
+					$user = $query->result_array();
+					$data['user'] = $user[0];
+				}
+
+			//Lista de Precio
+			$query= $this->db->get_where('listadeprecios',array('lpId' => $result['order']['lpId']));
+				if ($query->num_rows() != 0)
+				{
+					$lista = $query->result_array();
+					$data['lista'] = $lista[0];
+				}
+			*/
+			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
+			
+			$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
+			$html .= '	<tr>
+										<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
+										<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
+											25 De Mayo 595 - Caucete - San Juan<br>
+											IVA Responsable Inscripto<br>
+											Tel: 0264 - 4961482
+										</td>
+										<td style="border-bottom: 2px solid #3c3c3c !important; border-left: 2px solid #3c3c3c !important; padding-left: 10px;">
+											<center>Documento no válido como factura</center><br>
+											'.($result['order']['ocEsPresupuesto'] ? '<strong>PRESUPUESTO</strong> <br>' : '') .'
+											Número de Orden: <b>0000-'.$ordId.'</b><br>
+											Vendedor: <b>'.$data['user']['usrName'].' '.$data['user']['usrLastName'].'</b><br>
+											Fecha: <b>_______________________</b><br><br>
+											CUIT: <b>20349167736</b><br>
+											Ingresos Brutos: <b>000-118245-5</b><br>
+											Inicio Actividades: <b>14/06/2011</b>
+										</td>
+									</tr>';
+			$html .= '	<tr><td colspan="2">
+							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
+							Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b><br>
+							Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'</b>';
+						if($result['order']['ocObservacion'] != ''){
+							$html .= '<br><br><b style="font-size: 20px"><i>'.$result['order']['ocObservacion'].' </i></b>';
+						}
+			$html .= '		</td></tr></table>';
+			//$html .= '<table width="100%" style="font-family:courier; font-size: 12px;">'
+			//$html .= '	<tr><td colspan="2">';
+
+			$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important;">';
+			$html .= '<tr style="background-color: #FAFAFA; border-bottom: 2px solid #3c3c3c !important;">
+									<th colspan="2" style="background-color: #D1CECD;">Artículo</th>
+									<th style="background-color: #D1CECD;">Precio</th>
+									<th style="background-color: #D1CECD;">Cantidad</th>
+									<th style="background-color: #D1CECD;">Total</th>
+								</tr>';
+			$total = 0;
+
+			foreach ($result['detalleCompra'] as $art) {
+				$html .= '<tr>';
+				$html .= '<td>'.$art['artBarCode'].'</td>';
+				$html .= '<td>'.$art['artDescripcion'].'</td>';
+				$html .= '<td style="text-align: right">'.number_format($art['artPVenta'], 2, ',', '.').'</td>';
+				$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';
+				$coste = $art['artPVenta'] * $art['ocdCantidad'];
+				$total += $coste;
+				$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
+				$html .= '</tr>';
+				$html .= '<tr>';
+				$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
+				$html .= '</tr>';
+			}
+			//$total += $result['order']['redondeo'];
+			//$html .= '<tr><td><h5>Redondeo</h5></td>';
+			//$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
+			if($result['order']['ocDescuento'] <= 0){
+				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+			}else{
+				$html .= '<tr><td colspan="5" style="text-align: right">Sub Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+				$html .= '<tr><td colspan="5" style="text-align: right">Descuento  <strong style="font-size: 20px">$ '.number_format($result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total - $result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+			}
+			$html .= '</table>';
+			$html .= '</div>';
+
+			//se incluye la libreria de dompdf
+			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
+			//se crea una nueva instancia al DOMPDF
+			$dompdf = new DOMPDF();
+			//se carga el codigo html
+			$dompdf->load_html(utf8_decode($html));
+			//aumentamos memoria del servidor si es necesario
+			ini_set("memory_limit","300M");
+			//Tamaño de la página y orientación
+			$dompdf->set_paper('a4','portrait');
+			//lanzamos a render
+			$dompdf->render();
+			//guardamos a PDF
+			//$dompdf->stream("TrabajosPedndientes.pdf");
+			$output = $dompdf->output();
+			file_put_contents('assets/reports/'.$ordId.'.pdf', $output);
+
+			//Eliminar archivos viejos ---------------
+			$dir = opendir('assets/reports/');
+			while($f = readdir($dir))
+			{
+				if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
+				unlink('assets/reports/'.$f);
+			}
+			closedir($dir);
+			//----------------------------------------
+			return $ordId.'.pdf';
+		}
+	}
 }
 ?>

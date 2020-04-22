@@ -91,4 +91,8 @@ class order extends CI_Controller {
 	public function printRemito(){
 		echo json_encode($this->Orders->printRemito($this->input->post()));
 	}
+
+	public function printRemitoSinFecha(){
+		echo json_encode($this->Orders->printRemitoSinFecha($this->input->post()));
+	}
 }

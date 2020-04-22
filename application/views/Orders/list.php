@@ -96,8 +96,13 @@
                     }
                     
                     if(permission.indexOf("Imprimir")>0 && item.ocEstado=='AC'){
-                      if(item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis')
+                      if(item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis' )
                         td_1+='<i class="fa fa-fw fa-print" style="color: #A4A4A4; cursor: pointer; margin-left: 15px;" onclick="Print('+item.ocId+')"></i>';
+                    }
+
+                    if(permission.indexOf("Imprimir")>0 && item.ocEstado=='AC'){
+                      if($('#userNamePF').html() == 'luis')
+                        td_1+='<i class="fa fa-fw fa-print" style="color: red; cursor: pointer; margin-left: 15px;" onclick="PrintSinFecha('+item.ocId+')" title="Imprimir Sin Fecha"></i>';
                     }
 
                     if(permission.indexOf("Edit")>0  && item.ocEstado=='AC'){
@@ -447,6 +452,29 @@
                     id : id__
                   },
         url: 'index.php/order/printOrder',
+        success: function(result){
+                      WaitingClose();
+                      var url = "./assets/reports/" + result;
+                      $('#printDoc').attr('src', url);
+                      setTimeout("$('#modalPrint').modal('show')",800);
+              },
+        error: function(result){
+              WaitingClose();
+              ProcesarError(result.responseText, 'modalPrint');
+            },
+            dataType: 'json'
+        });
+  }
+
+  function PrintSinFecha(id__){
+    WaitingOpen('Generando comprobante...');
+    LoadIconAction('modalAction__','Print');
+    $.ajax({
+            type: 'POST',
+            data: {
+                    id : id__
+                  },
+        url: 'index.php/order/printRemitoSinFecha',
         success: function(result){
                       WaitingClose();
                       var url = "./assets/reports/" + result;
