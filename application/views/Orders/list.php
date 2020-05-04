@@ -91,7 +91,7 @@
                   if(date > limite || $('#userNamePF').html() == 'luis'){
 
                     if(permission.indexOf("Rem")>0 && item.ocEstado=='AC'){
-                      if((item.ocImpresiones == 0 || $('#userNamePF').html() == 'luis') && item.ocEsPresupuesto == 0 )
+                      if((item.ocImpresiones == 0 && $('#userNamePF').html() != 'luis' && item.ocEsPresupuesto==0)|| $('#userNamePF').html() == 'luis')
                         td_1+='<span class="label label-primary" style="margin-right: 5px; cursor: pointer;" title="Remito" onclick="PrintRemito('+item.ocId+')">R</span>';
                     }
                     
