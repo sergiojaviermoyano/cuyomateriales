@@ -14,7 +14,7 @@ class order extends CI_Controller {
 	}
 
 	public function index($permission){
-		$data['orders'] = $this->Orders->Orders_List();
+		$data['orders'] = array();//$this->Orders->Orders_List();
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('orders/list', $data, true));
 	}
