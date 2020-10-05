@@ -230,6 +230,7 @@
                     artMinimo:   $("#artMinimo").val(),
                     artMedio:   $("#artMedio").val(),
                     artMaximo:   $("#artMaximo").val(),
+                    modifica:    $('#artModificaPrecio').prop('checked')
                   },
     		url: 'index.php/article/setArticle',
     		success: function(result){

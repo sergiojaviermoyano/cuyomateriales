@@ -180,6 +180,8 @@
     });
   });
 
+  $('input[type="search"]').attr('autocomplete', 'off');
+  
   var idOrder = 0;
   var acOrder = '';
 

@@ -82,8 +82,12 @@
 
     <div class="form-group">
       <label class="col-sm-4"> Fraccionado </label>
-      <div class="col-sm-8">
+      <div class="col-sm-2">
         <input type="checkbox" class="checkbox" value="1" name="artSeFracciona" id='artSeFracciona'<?php echo($data['article']['artSeFracciona'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
+      </div>
+      <label class="col-sm-4"> No Cambiar Precio </label>
+      <div class="col-sm-2">
+        <input type="checkbox" class="checkbox" value="1" name="artModificaPrecio" id='artModificaPrecio'<?php echo($data['article']['artModificaPrecio'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?>>
       </div>
     </div>
 

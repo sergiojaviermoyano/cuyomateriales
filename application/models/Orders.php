@@ -692,37 +692,11 @@ class Orders extends CI_Model
 			$html .= '</table>';
 			
 			
-			//Orden 
+			//Orden -------------------------------------------------------------------------------------------------------------
 			$html .= '<style> .page_break { page-break-before: always; } </style>';
 			$html .= '<div class="page_break">';
-			//$data['act'] = 'Print';
-			/*
-			$result = $this->getOrder($data);
 
-			//Datos del Cliente
-			$query= $this->db->get_where('clientes',array('cliId' => $result['order']['cliId']));
-				if ($query->num_rows() != 0)
-				{
-					$user = $query->result_array();
-					$data['cliente'] = $user[0];
-				}
 
-			//Datos del Vendedor
-			$query= $this->db->get_where('sisusers',array('usrId' => $result['order']['usrId']));
-				if ($query->num_rows() != 0)
-				{
-					$user = $query->result_array();
-					$data['user'] = $user[0];
-				}
-
-			//Lista de Precio
-			$query= $this->db->get_where('listadeprecios',array('lpId' => $result['order']['lpId']));
-				if ($query->num_rows() != 0)
-				{
-					$lista = $query->result_array();
-					$data['lista'] = $lista[0];
-				}
-			*/
 			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
 			
 			$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
@@ -790,6 +764,13 @@ class Orders extends CI_Model
 			}
 			$html .= '</table>';
 			$html .= '</div>';
+
+			//Si la lista de precios es cuenta corriente imprimir acuse de pago 
+			$html .= '<style> .page_break { page-break-before: always; } </style>';
+			$html .= '<div class="page_break">';
+
+			$html .= '</div>';
+			//-------------------------------------------------------------------
 
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");

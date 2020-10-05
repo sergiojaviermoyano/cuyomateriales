@@ -81,12 +81,13 @@ class Articles extends CI_Model
 				$art['artIsByBox'] = '';
 				$art['artCantBox'] = '';
 				$art['artEstado'] = 'AC';
-			  $art['subrId']= '';
-        $art['ivaId']= '';
-        $art['artMinimo']= '';
-        $art['artMedio']= '';
-        $art['artMaximo']= '';
-        $art['artSeFracciona']= '';
+				$art['subrId']= '';
+				$art['ivaId']= '';
+				$art['artMinimo']= '';
+				$art['artMedio']= '';
+				$art['artMaximo']= '';
+				$art['artSeFracciona']= '';
+				$art['artModificaPrecio'] = '';
 
 				$data['article'] = $art;
 			}
@@ -126,7 +127,8 @@ class Articles extends CI_Model
             $artMinimo 	=	$data['artMinimo'];
             $artMedio 	=	$data['artMedio'];
             $artMaximo 	=	$data['artMaximo'];
-            $fraction 	= 	$data['fraction'];
+			$fraction 	= 	$data['fraction'];
+			$modifica   = 	$data['modifica'];
 
 
 			$data = array(
@@ -138,12 +140,13 @@ class Articles extends CI_Model
 				   'artEstado' 						=> $status,
 				   'artIsByBox'			 			=> ($box === 'true'),
 				   'artCantBox'						=> (int)$boxCant,
-				   'subrId'						=> $subrId,
-				   'ivaId'						=> $ivaId,
+				   'subrId'							=> $subrId,
+				   'ivaId'							=> $ivaId,
 				   'artMinimo'						=> $artMinimo,
 				   'artMedio'						=> $artMedio,
 				   'artMaximo'						=> $artMaximo,
-				   'artSeFracciona'					=> ($fraction === 'true')
+				   'artSeFracciona'					=> ($fraction === 'true'),
+				   'artModificaPrecio'				=> ($modifica === 'true')
 
 				);
 

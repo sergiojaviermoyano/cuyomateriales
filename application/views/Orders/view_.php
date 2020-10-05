@@ -244,7 +244,6 @@ var isOpenWindow = false;
 
 var idSale = $('#order_detail > tbody').find('tr').length+1;
   function Buscar(){
-
     WaitingOpen('Buscando');
     $.ajax({
           type: 'POST',
@@ -266,17 +265,17 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                           row += '<td width="1%"><i class="fa fa-fw fa-times-circle" style="color: #dd4b39; cursor: pointer;" onclick="delete_('+idSale+')"></i></td>';
                           row += '<td width="10%">'+result.artBarCode+'</td>';
                           row += '<td>'+result.artDescription+'</td>';
-                          row += '<td width="10%" class="td_cant" style="text-align: right"   data-pventa="'+pVenta+'"  data-pventao="'+pVenta+'" >'+cantidad+'</td>';
+                          row += '<td width="10%" class="td_cant" style="text-align: right"   data-pventa="'+pVenta+'"  data-pventao="'+pVenta+'" data-cambiaprecio="'+result.artModificaPrecio+'" >'+cantidad+'</td>';
                           row += '<td width="10%" class="td_pventa"  style="text-align: right" >'+parseFloat(pVenta).toFixed(2)+'</td>';
                           row += '<td width="10%" class="td_total" style="text-align: right">'+(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2)+'</td>';
                           row += '<td style="display: none">'+result.artId+'</td>';
                           row += '<td style="display: none">'+result.pVenta+'</td>';
                           row += '<td style="display: none">'+result.artCoste+'</td>';
                           row += '<td style="display: none" class="td_pventaoriginal" >'+result.pVenta+'</td>';
+                          row += '<td style="display: none" class="td_cambiaprecio">'+result.artModificaPrecio+'</td>';
                           row += '</tr>';
                           $('#order_detail > tbody').prepend(row);
                           idSale++;
-
                           $('#artCant').val('1');
                           $('#artId').val('');
                           Calcular();
@@ -450,14 +449,26 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
         var td_pventa=$("table").find("td.td_pventa");
         var td_pventao=$("table").find("td.td_pventaoriginal");
         var td_total=$("table").find("td.td_total");
+        var td_cambiaprecio=$("table").find("td.td_cambiaprecio");
         var total=0;        
         if(!primerIngreso){
           $.each(td_cant,function(index,item){
             var cantidad=parseFloat($(item).text());
             var pVenta = $(item).data('pventao');
+            var cambiaPrecio = parseInt($(item).data('cambiaprecio'));
             pVenta=parseFloat(pVenta);
             if(margin > 0){
-              pVenta += pVenta * (margin / 100);
+              //Si las listas no son la seleccionada
+              debugger;
+              if($("#lpId option:selected" ).text().trim() != "Visa debito" && $("#lpId option:selected" ).text().trim() != "Banco nación debito"){
+                pVenta += pVenta * (margin / 100);
+              } else {
+                //si las listas son las indicadas no cambiar el precio
+                //No cambiar el precio
+                if(cambiaPrecio == 0){
+                  pVenta += pVenta * (margin / 100);
+                }
+              }
             }
 
             if(margin <0){
