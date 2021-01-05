@@ -335,9 +335,49 @@ class Orders extends CI_Model
 				}
 
 			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
-			
-			$html = '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
-			$html .= '	<tr>
+			$html = '
+					<html>
+						<head>
+							<style>
+								/** Define the margins of your page **/
+								@page {
+									margin: 260px 25px 60px 25px;
+								}
+
+								header {
+									position: fixed;
+									top: -230px;
+									left: 0px;
+									right: 0px;
+									height: 350px;
+									text-align: center;
+								}
+
+								footer {
+									position: fixed; 
+									bottom: -50px; 
+									left: 0px; 
+									right: 0px;
+									height: 50px; 
+
+									/** Extra personal styles **/
+									background-color: #db5354;
+									color: black;
+									text-align: center;
+									line-height: 35px;
+									font-family: Source Sans Pro ,sans-serif; font-size: 12px;
+									box-shadow: 2px 2px 5px #999;
+								}
+
+								main {
+									
+								}
+							</style>
+						</head>
+						<body>
+							<header>
+								<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">
+									<tr>
 										<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
 										<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
 											25 De Mayo 595 - Caucete - San Juan<br>
@@ -354,56 +394,110 @@ class Orders extends CI_Model
 											Ingresos Brutos: <b>000-118245-5</b><br>
 											Inicio Actividades: <b>14/06/2011</b>
 										</td>
-									</tr>';
-			$html .= '	<tr><td colspan="2">
-							Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
-							Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b><br>
-							Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'</b>';
-						if($result['order']['ocObservacion'] != ''){
-							$html .= '<br><br><b style="font-size: 20px"><i>'.$result['order']['ocObservacion'].' </i></b>';
-						}
-			$html .= '		</td></tr></table>';
-			//$html .= '<table width="100%" style="font-family:courier; font-size: 12px;">'
-			//$html .= '	<tr><td colspan="2">';
+									</tr>
+									<tr><td colspan="2">
+											Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
+											Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b><br>
+											Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'</b>';
+					if($result['order']['ocObservacion'] != ''){
+						$html .= '<br><b style="font-size: 20px"><i>'.$result['order']['ocObservacion'].' </i></b>';
+					}
+			$html .= '					</td>
+									</tr>
+								</table>
+							</header>
+					
+							<footer>
+								<i style="font-size:20px"><b>MUCHAS GRACIAS POR SU COMPRA!!!!</b>
+								Envíos al <b>2644039996</b></i>
+							</footer>
+					';
+			$html .= '<main>';
+			if(count($result['detalleCompra']) > 17){
+				$html .= '<p >';
+				$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important; page-break-after: always;">';
+			}
+			else{
+				$html .= '<p style="page-break-after: never;">';
+				$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important;">';
+			}
 
-			$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important;">';
-			$html .= '<tr style="background-color: #FAFAFA; border-bottom: 2px solid #3c3c3c !important;">
-									<th colspan="2" style="background-color: #D1CECD;">Artículo</th>
-									<th style="background-color: #D1CECD;">Precio</th>
-									<th style="background-color: #D1CECD;">Cantidad</th>
-									<th style="background-color: #D1CECD;">Total</th>
-								</tr>';
+				$html .= '	<tr style="background-color: #FAFAFA; border-bottom: 2px solid #3c3c3c !important;">
+										<th colspan="2" style="background-color: #D1CECD;">Artículo</th>
+										<th style="background-color: #D1CECD;">Precio</th>
+										<th style="background-color: #D1CECD;">Cantidad</th>
+										<th style="background-color: #D1CECD;">Total </th>
+									</tr>';	
+			
 			$total = 0;
-
-			foreach ($result['detalleCompra'] as $art) {
-				$html .= '<tr>';
-				$html .= '<td>'.$art['artBarCode'].'</td>';
-				$html .= '<td>'.$art['artDescripcion'].'</td>';
-				$html .= '<td style="text-align: right">'.number_format($art['artPVenta'], 2, ',', '.').'</td>';
-				$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';
-				$coste = $art['artPVenta'] * $art['ocdCantidad'];
-				$total += $coste;
-				$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
-				$html .= '</tr>';
-				$html .= '<tr>';
-				$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
-				$html .= '</tr>';
+			for ($i=0; $i<17 ;$i++){
+				if(isset($result['detalleCompra'][$i])){
+					$art = $result['detalleCompra'][$i];
+					$html .= '<tr>';
+					$html .= '<td>'.$art['artBarCode'].'</td>';
+					$html .= '<td>'.$art['artDescripcion'].'</td>';
+					$html .= '<td style="text-align: right">'.number_format($art['artPVenta'], 2, ',', '.').'</td>';
+					$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';
+					$coste = $art['artPVenta'] * $art['ocdCantidad'];
+					$total += $coste;
+					$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
+					$html .= '</tr>';
+					$html .= '<tr>';
+					$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
+					$html .= '</tr>';
+				}
 			}
-			//$total += $result['order']['redondeo'];
-			//$html .= '<tr><td><h5>Redondeo</h5></td>';
-			//$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
-			if($result['order']['ocDescuento'] <= 0){
-				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
-			}else{
-				$html .= '<tr><td colspan="5" style="text-align: right">Sub Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
-				$html .= '<tr><td colspan="5" style="text-align: right">Descuento  <strong style="font-size: 20px">$ '.number_format($result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
-				$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total - $result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
-			}
+			
+			if(count($result['detalleCompra']) <= 17){
+					if($result['order']['ocDescuento'] <= 0){
+						$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+					}else{
+						$html .= '<tr><td colspan="5" style="text-align: right">Sub Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+						$html .= '<tr><td colspan="5" style="text-align: right">Descuento  <strong style="font-size: 20px">$ '.number_format($result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+						$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total - $result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+					}
+			} 
 			$html .= '</table>';
+			$html .='</p>';
 
-			//$html .= '	</td></tr>';
-			//$html .= '</table>';
-
+			if(count($result['detalleCompra']) > 17){
+			 	$html .= '<p style="page-break-after: never;">';
+			 	$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important; page-break-after: never;">';
+				$html .= '	<tr style="background-color: #FAFAFA; border-bottom: 2px solid #3c3c3c !important;">
+								<th colspan="2" style="background-color: #D1CECD;">Artículo</th>
+								<th style="background-color: #D1CECD;">Precio</th>
+								<th style="background-color: #D1CECD;">Cantidad</th>
+								<th style="background-color: #D1CECD;">Total </th>
+							</tr>';	
+				for ($i=17; $i<34 ; $i++){
+					if(isset($result['detalleCompra'][$i])){
+					$art = $result['detalleCompra'][$i];
+					$html .= '<tr>';
+					$html .= '<td>'.$art['artBarCode'].'</td>';
+					$html .= '<td>'.$art['artDescripcion'].'</td>';
+					$html .= '<td style="text-align: right">'.number_format($art['artPVenta'], 2, ',', '.').'</td>';
+					$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';
+					$coste = $art['artPVenta'] * $art['ocdCantidad'];
+					$total += $coste;
+					$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
+					$html .= '</tr>';
+					$html .= '<tr>';
+					$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
+					$html .= '</tr>';
+					}
+				}
+				
+				if($result['order']['ocDescuento'] <= 0){
+					$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+				}else{
+					$html .= '<tr><td colspan="5" style="text-align: right">Sub Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
+					$html .= '<tr><td colspan="5" style="text-align: right">Descuento  <strong style="font-size: 20px">$ '.number_format($result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+					$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total - $result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
+				}
+			 	$html .= '</table>';
+			 	$html .= '</p>';
+			}
+			
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
 			//se crea una nueva instancia al DOMPDF
@@ -766,10 +860,10 @@ class Orders extends CI_Model
 			$html .= '</div>';
 
 			//Si la lista de precios es cuenta corriente imprimir acuse de pago 
-			$html .= '<style> .page_break { page-break-before: always; } </style>';
-			$html .= '<div class="page_break">';
+			// $html .= '<style> .page_break { page-break-before: always; } </style>';
+			// $html .= '<div class="page_break">';
 
-			$html .= '</div>';
+			// $html .= '</div>';
 			//-------------------------------------------------------------------
 
 			//se incluye la libreria de dompdf

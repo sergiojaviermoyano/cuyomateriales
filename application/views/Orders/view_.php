@@ -15,7 +15,7 @@
       <!---->
       <div class="row">
           <div class="col-sm-5" style="text-align: right; margin-top: 7px;">
-            <label>Lista de Precios <strong style="color: #dd4b39">*</strong>:  </label>
+            <label id="llllp">Lista de Precios <strong style="color: #dd4b39">*</strong>:  </label>
           </div>
           <div class="col-sm-7">
             <?php
@@ -55,7 +55,7 @@
   <div class="col-sm-5">
     <div class="row">
       <div class="col-sm-3" style="text-align: right; margin-top: 7px;">
-        <label>Cliente <strong style="color: #dd4b39">*</strong>:  </label>
+        <label id="lllcli">Cliente <strong style="color: #dd4b39">*</strong>:  </label>
       </div>
       <div class="col-xs-6">
         <input type="number" id="cliSearch" class="form-control" >

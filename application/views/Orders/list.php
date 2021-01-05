@@ -246,6 +246,27 @@
       hayError = true;
     }
 
+    if($('#lblNombre').html() == ' Consumidor Final' && $('#lpId option:selected').text() == 'Cuenta Corriente '){
+      hayError = true;
+      $('#lllcli').css('color', 'red');
+      setTimeout("$('#lllcli').css('color', 'black');",500);
+      setTimeout("$('#lllcli').css('color', 'red');",1000);
+      setTimeout("$('#lllcli').css('color', 'black');",1500);
+      setTimeout("$('#lllcli').css('color', 'red');",2000);
+      setTimeout("$('#lllcli').css('color', 'black');",2500);
+      setTimeout("$('#lllcli').css('color', 'red');",3000);
+      setTimeout("$('#lllcli').css('color', 'black');",3500);
+
+      $('#llllp').css('color', 'red');
+      setTimeout("$('#llllp').css('color', 'black');",500);
+      setTimeout("$('#llllp').css('color', 'red');",1000);
+      setTimeout("$('#llllp').css('color', 'black');",1500);
+      setTimeout("$('#llllp').css('color', 'red');",2000);
+      setTimeout("$('#llllp').css('color', 'black');",2500);
+      setTimeout("$('#llllp').css('color', 'red');",3000);
+      setTimeout("$('#llllp').css('color', 'black');",3500);
+    }    
+
     var items = parseFloat($('#saleItems').html());
     var venta = parseFloat($('#saleTotal').html());
     var redondeo =parseFloat($('#redondeo').val());
