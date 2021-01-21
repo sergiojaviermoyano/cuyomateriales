@@ -8,6 +8,7 @@ class article extends CI_Controller {
 		$this->load->model('Articles');
 		$this->load->model('Rubros');
 		$this->load->model('IvaAliCuotas');
+		$this->load->model('Lists');
 
 		$this->Users->updateSession(true);
 	}
@@ -18,6 +19,14 @@ class article extends CI_Controller {
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('articles/list', $data, true));
 	}
+
+	public function price($permission)
+	{
+		$data['list'] = $this->Lists->getListasPV();
+		$data['permission'] = $permission;
+		echo json_encode($this->load->view('articles/price', $data, true));
+	}
+
   public function listing(){
 
 		$total=$this->Articles->getTotalArticles($_REQUEST);
@@ -101,6 +110,19 @@ class article extends CI_Controller {
 		$data['list'] = array();
 		$data['permission'] = $permission;
 		echo json_encode($this->load->view('articles/sales', $data, true));
+	}
+
+	public function exportar(){
+		$data = $this->Articles->exportar($this->input->post());
+
+		if($data  == false)
+		{
+			echo json_encode(false);
+		}
+		else
+		{
+			echo json_encode($data);
+		}
 	}
 
 }

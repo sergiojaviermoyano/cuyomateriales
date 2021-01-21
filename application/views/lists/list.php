@@ -19,6 +19,7 @@
                 <th>Descripción</th>
                 <th>Margen</th>
                 <th>Lista Principal</th>
+                <th>P/Preventista</th>
                 <th>Estado</th>
               </tr>
             </thead>
@@ -44,6 +45,10 @@
                     echo '<td style="text-align: center">';
                       if($l['lpDefault'])
                         echo '<i class="fa fa-fw fa-circle" style="color: #00a65a; cursor: pointer; margin-left: 15px;"></i>';
+                    echo'</td>';
+                    echo '<td style="text-align: center">';
+                      if($l['lpPreventista'])
+                        echo '<i class="fa fa-fw fa-circle" style="color: #3c8dbc; cursor: pointer; margin-left: 15px;"></i>';
                     echo'</td>';
                     echo '<td style="text-align: center">';
                     switch($l['lpEstado']){
@@ -148,7 +153,8 @@
                     name:     $('#lpDescripcion').val(), 
                     margin:   $('#lpMargen').val(),
                     def:      $('#lpDefault').prop('checked'),
-                    status:   $('#lpEstado').val()
+                    status:   $('#lpEstado').val(),
+                    lpv:      $('#lpPreventista').prop('checked')
                   },
         url: 'index.php/lista/setLista', 
         success: function(result){

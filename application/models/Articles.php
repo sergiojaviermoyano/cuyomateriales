@@ -303,6 +303,141 @@ class Articles extends CI_Model
     {
         $query = $this->db->query('CALL stockArt('.$artId.')');
         return $query->result();
-    }
+	}
+	
+	public function exportar($data){
+		$margin = $data['marg'];
+		$this->db->from('rubros');
+		$this->db->order_by('rubDescripcion', 'asc');
+		$query = $this->db->get(); 
+		
+		if ($query->num_rows()!=0)
+		{
+			$data = $query->result_array();
+			$rubros = array();
+			foreach($data as $rub){
+				$this->db->select('*')->where('rubId',$rub['rubId'])->from('subrubros')->order_by('subrDescripcion', 'asc');
+				$query = $this->db->get(); 
+				$aux = array();
+				$aux['rubro'] = $rub;
+				$aux['subrubros'] = array();
+				$subr = $query->result_array();
+				$subrubros = array();
+				foreach($subr as $sub){
+					$this->db->select('*')->where(array('subrId'=>$sub['subrId'], 'artEstado'=>'AC'))->from('articles')->order_by('artDescription', 'asc');
+					$query = $this->db->get(); 
+					$aux2 = array();
+					$aux2['subrubro'] = $sub;
+					$aux2['articles'] = $query->result_array();
+					$aux['subrubros'][] = $aux2;
+				}
+
+				$rubros[] = $aux;
+			}
+
+			$html = '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
+			$html .= '	<tr>
+										<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
+										<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
+											25 De Mayo 595 - Caucete - San Juan<br>
+											IVA Responsable Inscripto<br>
+											Tel: 0264 - 4961482
+										</td>
+										<td style="border-bottom: 2px solid #3c3c3c !important; border-left: 2px solid #3c3c3c !important; padding-left: 10px;">
+											CUIT: <b>20349167736</b><br>
+											Ingresos Brutos: <b>000-118245-5</b><br>
+											Inicio Actividades: <b>14/06/2011</b>
+										</td>
+						</tr>';
+			$html .= '</table>';
+
+			foreach($rubros as $r){
+				$escribirRubro = false;
+				$yaEscribioRubro = false;
+				$escribirSubrubro = false;
+				$escribirArticle = false;
+
+				if(count($r['subrubros']) > 0){
+					$escribirRubro = true;
+					$htmlRubro = '<br><b>'.$r['rubro']['rubDescripcion'].'</b><br>';				
+
+					foreach ($r['subrubros'] as $sr) {
+						if(count($sr['articles']) > 0){
+							$escribirSubrubro = true;
+						}
+
+						if($escribirSubrubro == true && $yaEscribioRubro == false){
+							$html .= $htmlRubro;
+							$yaEscribioRubro = true;
+						}
+
+						if(count($sr['articles']) > 0){
+							$html .= '=== '.$sr['subrubro']['subrDescripcion'].'=== <br>';
+							//$html .= '------->'.count($sr['articles']).'<br>';
+						}
+
+						 $html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important;">';
+						 foreach ($sr['articles'] as $ar) {
+						 	$html .= '<tr>';
+						 	$html .= '<td>'.$ar['artBarCode'].'</td>';
+							$html .= '<td>'.$ar['artDescription'].'</td>';
+							$pUnit = $ar['artCoste'];
+							if($ar['artIsByBox'] == 1){
+								$pUnit = $ar['artCoste'] / $ar['artCantBox'];
+							}
+
+							if($ar['artMarginIsPorcent'] == 1){
+								$pUnit = $pUnit + ($pUnit * ($ar['artMargin'] / 100));
+							} else {
+								$pUnit = $pUnit + $ar['artMargin'];
+							}
+							$pUnit = $pUnit + ($pUnit * ($margin / 100));
+						 	$html .= '<td style="text-align: right">$'.number_format ( $pUnit , 2 , '.', ',' ).'</td>';				
+						 	$html .= '</tr>';
+						 }
+						 $html .= '</table>';
+
+						$escribirSubrubro = false;
+					}
+				}
+				
+
+			}
+
+			//se incluye la libreria de dompdf
+			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
+			//se crea una nueva instancia al DOMPDF
+			$dompdf = new DOMPDF();
+			//se carga el codigo html
+			$dompdf->load_html(utf8_decode($html));
+			//aumentamos memoria del servidor si es necesario
+			ini_set("memory_limit","3000M");
+			//Tamaño de la página y orientación
+			$dompdf->set_paper('a4','portrait');
+			//lanzamos a render
+			$dompdf->render();
+			//guardamos a PDF
+			//$dompdf->stream("TrabajosPedndientes.pdf");
+			$output = $dompdf->output();
+			file_put_contents('assets/reports/listado.pdf', $output);
+
+			//Eliminar archivos viejos ---------------
+			$dir = opendir('assets/reports/');
+			while($f = readdir($dir))
+			{
+				if((time()-filemtime('assets/reports/'.$f) > 3600*24*1) and !(is_dir('assets/reports/'.$f)))
+				unlink('assets/reports/'.$f);
+			}
+			closedir($dir);
+			//----------------------------------------
+
+			return $rubros;
+			
+		}
+		else
+		{
+			return false;
+		}
+	}
 }
 ?>

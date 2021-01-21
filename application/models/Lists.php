@@ -48,6 +48,7 @@ class Lists extends CI_Model
 				$art['lpEstado'] = '';
 				$art['lpMargen'] = '';
 				$art['lpDefault'] = 0;
+				$art['lpPreventista'] = 0;
 				$data['lista'] = $art;
 			}
 			$data['lista']['action'] = $action;
@@ -76,14 +77,16 @@ class Lists extends CI_Model
             $name 	= $data['name'];
             $status = $data['status'];
             $margin = $data['margin'];
-            $defau  = $data['def'];            
+			$defau  = $data['def'];            
+			$lpv	= $data['lpv'];
 
 			$data = array(
 				   'lpDescripcion' 				=> $name,
 				   'lpEstado'					=> $status,
 				   'lpMargen'					=> $margin,
 				   'lpEstado'					=> $status,
-				   'lpDefault'					=> ($defau === 'true')
+				   'lpDefault'					=> ($defau === 'true'),
+				   'lpPreventista'				=> ($lpv === 'true'),
 				);
 
 			if(($defau === 'true')){
@@ -119,5 +122,10 @@ class Lists extends CI_Model
 			return true;
 
 		}
+	}
+
+	function getListasPV(){
+		$query= $this->db->get_where('listadeprecios',array('lpPreventista'=>1));
+		return $query->result_array();
 	}
 }

@@ -34,6 +34,15 @@
 </div><br>
 
 <div class="row">
+  <div class="col-xs-4">
+      <label style="margin-top: 7px;">Lista para Preventista: </label>
+    </div>
+  <div class="col-xs-5">
+      <input type="checkbox" id="lpPreventista" style="margin-top:10px;" <?php echo($data['lista']['lpPreventista'] == true ? 'checked': ''); ?> <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+    </div>
+</div><br>
+
+<div class="row">
     <div class="col-xs-4">
         <label style="margin-top: 7px;">Estado: </label>
     </div>
