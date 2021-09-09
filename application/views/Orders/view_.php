@@ -145,6 +145,7 @@
           <th width="1%">Cantidad</th>
           <th width="1%">P.Venta</th>
           <th class="text-center">Total</th>
+          <th width="1%">%Desc.</th>
         </tr>
       </thead>
       <tbody>
@@ -163,6 +164,8 @@
 						<td style="display: none"><?php echo $value['artPVenta']?></td>
 						<td style="display: none"><?php echo $value['artPCosto']?></td>
             <td style="display: none" class="td_pventaoriginal"><?php echo $value['artPVentaOriginal']?></td>
+            <td style="display: none" class="td_cambiaprecio"><?php echo $value['artPVentaOriginal']?></td>
+            <td width="10%"><input class="td_descuento" onkeyup="Calcular()" style="width:100%" type="number" value="<?php echo $value['artDescuento'];?>"></td>
 					</tr>
 				<?php endforeach;?>
       </tbody>
@@ -273,6 +276,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                           row += '<td style="display: none">'+result.artCoste+'</td>';
                           row += '<td style="display: none" class="td_pventaoriginal" >'+result.pVenta+'</td>';
                           row += '<td style="display: none" class="td_cambiaprecio">'+result.artModificaPrecio+'</td>';
+                          row += '<td width="10%"><input class="td_descuento" onkeyup="Calcular()" style="width:100%" type="number" value="0"></td>';
                           row += '</tr>';
                           $('#order_detail > tbody').prepend(row);
                           idSale++;

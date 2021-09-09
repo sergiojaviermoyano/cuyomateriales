@@ -283,6 +283,7 @@
           venCant:        parseFloat(this.children[3].textContent),
           artVenta:       parseFloat(this.children[7].textContent),
           artOriginal:    parseFloat(this.children[9].textContent),
+          artDescuento:   parseFloat(this.children[11].children[0].value)
         };
 
         sale.push(object);
@@ -334,17 +335,37 @@
         });
   }
 
+var tipo = 0; //0 Venta; 1 Presupuesto;
   $('#btnPre').click(function(){
-    validate(1);
-  });
-  var usuarioAutorizaDescuento = 0;
-  $('#btnSave').click(function(){
+    //validate(1);
+    tipo = 1;
     var permission=$("#permission").val();
     permission= permission.split('-');
     //Validar si los descuentos son distintos
     var desc = parseFloat($('#ocDescuento').val() == "" ? 0 : $('#ocDescuento').val());
     var descOrg = parseFloat($('#ocDescuentoOrg').val() == "" ? 0 : $('#ocDescuentoOrg').val());
-    if(desc != descOrg){
+    if(desc != descOrg || hayDescuentosIndividuales == true){
+      //Pedir autorización de descuento
+      $('#modalAutorizacion').modal('show');
+      setTimeout(function () { $('#autUsuario').focus(); }, 1000);
+    } else {
+      if(acOrder == 'Add' && permission.indexOf("Ent") > 0){
+        $('#modalEntrega').modal('show');
+      } else {
+        validate(1);
+      }
+    }
+  });
+
+  var usuarioAutorizaDescuento = 0;
+  $('#btnSave').click(function(){
+    tipo = 0;
+    var permission=$("#permission").val();
+    permission= permission.split('-');
+    //Validar si los descuentos son distintos
+    var desc = parseFloat($('#ocDescuento').val() == "" ? 0 : $('#ocDescuento').val());
+    var descOrg = parseFloat($('#ocDescuentoOrg').val() == "" ? 0 : $('#ocDescuentoOrg').val());
+    if(desc != descOrg || hayDescuentosIndividuales == true){
       //Pedir autorización de descuento
       $('#modalAutorizacion').modal('show');
       setTimeout(function () { $('#autUsuario').focus(); }, 1000);
@@ -395,10 +416,14 @@
                   $('#modalAutorizacion').modal('hide');
                   var permission=$("#permission").val();
                   permission= permission.split('-');
-                  if(acOrder == 'Add' && permission.indexOf("Ent") > 0){
-                    $('#modalEntrega').modal('show');
+                  if(tipo == 0){
+                    if(acOrder == 'Add' && permission.indexOf("Ent") > 0){
+                      $('#modalEntrega').modal('show');
+                    } else {
+                      validate(0);
+                    }
                   } else {
-                    validate(0);
+                    validate(1);
                   }
                 }
               },
@@ -421,13 +446,27 @@
     validate(0);
   });
 
+  $('.td_descuento').keyup(function(event){
+    alert('ok');
+  });
+
+  var hayDescuentosIndividuales = false;
   function Calcular(){
+    hayDescuentosIndividuales = false;
     var table = $('#order_detail > tbody> tr');
     var items = 0;
     var total = 0;
     var descuento = 0;
     table.each(function(r) {
       items += parseFloat(this.children[3].textContent);
+      if(parseFloat(this.children[11].children[0].value) > 0){
+        hayDescuentosIndividuales = true;
+        var precioUnit = parseFloat(this.children[4].textContent);
+        precioUnit -= precioUnit * (parseFloat(this.children[11].children[0].value) / 100);
+        this.children[5].textContent = (precioUnit * parseFloat(this.children[3].textContent)).toFixed(2);
+      }else {
+        this.children[5].textContent = (parseFloat(this.children[4].textContent) * parseFloat(this.children[3].textContent)).toFixed(2);
+      }
       total += parseFloat(this.children[5].textContent);
     });
 

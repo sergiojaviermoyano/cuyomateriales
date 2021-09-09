@@ -418,6 +418,43 @@ class Sales extends CI_Model
 		}
 	}
 
+	function getSales__3($data = null){
+		if($data == null)
+		{
+			return false;
+		}
+		else
+		{
+			$date = $data['day'];
+			$date = explode('-', $date);
+			$date = $date[2].'-'.$date[1].'-'.$date[0];
+
+			$query = $this->db->query("
+				select 
+				sum(od.artPVenta * od.ocdCantidad) as ventas, 
+				sum(od.artPCosto * od.ocdCantidad) as costo, 
+				sum(oc.redondeo) as redondeo, 
+				oc.ocDescuento as descuento, 
+				l.lpDescripcion,
+				u.usrNick,
+				CONCAT(cli.cliApellido, ' ', cli.cliNombre) as cliente,
+				oc.ocId
+				from ordendecompradetalle as od 
+				join ordendecompra as oc on oc.ocId = od.ocId
+				join listadeprecios as l on l.lpId = oc.lpId 
+				join sisusers as u on u.usrId = oc.usrId
+				join clientes as cli on cli.cliId = oc.cliId
+				where  
+					DATE(oc.ocFecha) = '".$date."' and 
+					oc.ocEstado in ('AC','EN') and 
+					oc.ocEsPresupuesto = 0 and 
+					oc.ocDescuento = 0 and oc.lpId != 8
+				GROUP BY oc.ocId
+				Order by oc.usrId, oc.ocFecha");
+			return $query->result_array();
+		}
+	}
+
 function printBox($data = null){
 		if($data == null)
 		{
@@ -458,6 +495,9 @@ function printBox($data = null){
 
 			#Datos de las ventas
 			$data['detail'] = $this->getSales__2(array('day' => $fechaDeReporte));
+
+			#Datos de las ventas por usuario 
+			$data['detailxuser'] = $this->getSales__3(array('day' => $fechaDeReporte));
 
 			#Reporte
 			$hoy = getdate();
@@ -506,6 +546,7 @@ function printBox($data = null){
 						<th>Orden</th>
 						<th>Cliente</th>
 						<th>Importe</th>
+						<th>Descuento</th>
 						<th>Lista de Precio</th>
 						<th>Usuario</th>
 					</tr>';
@@ -515,6 +556,7 @@ function printBox($data = null){
                 $html .=  '<td>'.$item['ocId'].'</td>';
         		$html .=  '<td>'.$item['cliente'].'</td>';
         		$html .=  '<td style="text-align: right">'.number_format($item['ventas'], 2, ',', '.').'</td>';
+				$html .=  '<td style="text-align: right">'.number_format($item['descuento'], 2, ',', '.').'</td>';
                 $html .=  '<td style="text-align: right">'.$item['lpDescripcion'].'</td>';
         		$html .=  '<td style="text-align: right">'.$item['usrNick'].'</td>';
         		$html .=  '</tr>';
@@ -547,6 +589,61 @@ function printBox($data = null){
         		}
 				$html .= '</table>';
 			}
+
+			#region ventas por usuario totalizadas
+			$html .= '<table width="100%" style="font-family:courier; font-size: 12px;">';
+			$html .= '<tr><th colspan="2"><br><br><hr></th><th colspan="2" style="text-align:center"><br><br>Ventas por Usuario</th><th colspan="2"><br><br><hr></th></tr>';
+			$html .= '<tr>
+						<th>Orden</th>
+						<th>Cliente</th>
+						<th>Importe</th>
+						<th>Lista de Precio</th>
+						<th>Usuario</th>
+					</tr>';
+			$usuario = '';
+			$total = 0;
+        	foreach ($data['detailxuser'] as $item) {
+				if($usuario == ''){
+					$html .=  '<tr>';
+					$html .=  '<td>'.$item['ocId'].'</td>';
+					$html .=  '<td>'.$item['cliente'].'</td>';
+					$html .=  '<td style="text-align: right">'.number_format($item['ventas'], 2, ',', '.').'</td>';
+					$html .=  '<td style="text-align: right">'.$item['lpDescripcion'].'</td>';
+					$html .=  '<td style="text-align: right">'.$item['usrNick'].'</td>';
+					$html .=  '</tr>';
+					$usuario = $item['usrNick'];
+					$total += $item['ventas'];
+				} else {
+					if($usuario != $item['usrNick']){
+						$html .=  '<tr>';
+						$html .=  '<td><hr></td>';
+						$html .=  '<td><hr></td>';
+						$html .=  '<td style="text-align: right"><hr></td>';
+						$html .=  '<td style="text-align: right"><b>Total: </b></td>';
+						$html .=  '<td style="text-align: right"><b>'.number_format($total, 2, ',', '.').'</b></td>';
+						$html .=  '</tr>';
+						$total = 0;
+					}
+					$html .=  '<tr>';
+					$html .=  '<td>'.$item['ocId'].'</td>';
+					$html .=  '<td>'.$item['cliente'].'</td>';
+					$html .=  '<td style="text-align: right">'.number_format($item['ventas'], 2, ',', '.').'</td>';
+					$html .=  '<td style="text-align: right">'.$item['lpDescripcion'].'</td>';
+					$html .=  '<td style="text-align: right">'.$item['usrNick'].'</td>';
+					$html .=  '</tr>';
+					$usuario = $item['usrNick'];
+					$total += $item['ventas'];
+				}
+        	}
+			$html .=  '<tr>';
+			$html .=  '<td><hr></td>';
+			$html .=  '<td><hr></td>';
+			$html .=  '<td style="text-align: right"><hr></td>';
+			$html .=  '<td style="text-align: right"><b>Total: </b></td>';
+			$html .=  '<td style="text-align: right"><b>'.number_format($total, 2, ',', '.').'</b></td>';
+			$html .=  '</tr>';
+
+			$html .= '</table>';
 
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");
