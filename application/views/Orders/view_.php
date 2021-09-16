@@ -449,6 +449,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
 		$('#lpId').on('change',function(){
         var selected = $('#lpId').find('option:selected');
         var margin = parseFloat(selected.data('porcent'));
+        var margin2;
         var td_cant=$("table").find("td.td_cant");
         var td_pventa=$("table").find("td.td_pventa");
         var td_pventao=$("table").find("td.td_pventaoriginal");
@@ -476,8 +477,8 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
             }
 
             if(margin <0){
-              margin  *= -1;
-              pVenta -= pVenta * (margin / 100);
+              margin2  = margin * -1;
+              pVenta -= pVenta * (margin2 / 100);
             }
             var sub_total=(parseFloat(pVenta) * parseFloat(cantidad)).toFixed(2);
             $(td_pventa[index]).text(pVenta.toFixed(2));
