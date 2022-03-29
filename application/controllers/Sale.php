@@ -17,26 +17,26 @@ class sale extends CI_Controller {
 		echo json_encode($this->load->view('sales/list', $data, true));
 	}
 	
-	public function getTabContent(){
-		$data['data'] = $this->Sales->getView($this->input->post());
-		switch ($this->input->post()['id']) {
-			case '1':
-				//Ordenes Activas
-				echo json_encode($this->load->view('sales/orders', $data, true));
-				break;
+	// public function getTabContent(){
+	// 	$data['data'] = $this->Sales->getView($this->input->post());
+	// 	switch ($this->input->post()['id']) {
+	// 		case '1':
+	// 			//Ordenes Activas
+	// 			echo json_encode($this->load->view('sales/orders', $data, true));
+	// 			break;
 			
-			case '2':
-				//Facturas
-				echo json_encode($this->load->view('sales/tickets', $data, true));
-				break;
+	// 		case '2':
+	// 			//Facturas
+	// 			echo json_encode($this->load->view('sales/tickets', $data, true));
+	// 			break;
 
-			case '3':
-				//Caja
-				echo json_encode($this->load->view('sales/boxs', $data, true));
-				break;
+	// 		case '3':
+	// 			//Caja
+	// 			echo json_encode($this->load->view('sales/boxs', $data, true));
+	// 			break;
 
-		}
-	}
+	// 	}
+	// }
 
 	public function listingSales(){
 		$totalVentas=$this->Sales->getTotalVentas($_REQUEST);

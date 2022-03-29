@@ -741,6 +741,8 @@ class Orders extends CI_Model
 					$lista = $query->result_array();
 					$data['lista'] = $lista[0];
 				}
+            
+			//----------------------------------------------------
 
 			$ordId = str_pad($data['id'], 10, "0", STR_PAD_LEFT);
 			$html = '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; margin-top: -250px;">';
@@ -798,6 +800,9 @@ class Orders extends CI_Model
 			$html .= '<tr><td  style="text-align: right"><br><br>Aclaración:........................................</td></tr>';
 			$html .= '</table>';
 			
+			//Pagare -------------------------------------------------------------------------------------------------------------
+			//$html .= '<div style="page-break-before: always;"></div>';
+			//$html .= '<table></tr><td><b>Hola mundo!</b></td></tr></table>';
 			
 			//Orden -------------------------------------------------------------------------------------------------------------
 			$html .= '<style> .page_break { page-break-before: always; } </style>';
@@ -928,6 +933,7 @@ class Orders extends CI_Model
 			}
 			
 			if(count($result['detalleCompra']) <= 17){
+				$total_pagare = $total - $result['order']['ocDescuento'];
 					if($result['order']['ocDescuento'] <= 0){
 						$html .= '<tr><td colspan="6" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
 					}else{
@@ -971,6 +977,7 @@ class Orders extends CI_Model
 					}
 				}
 				
+				$total_pagare = $total - $result['order']['ocDescuento'];
 				if($result['order']['ocDescuento'] <= 0){
 					$html .= '<tr><td colspan="6" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
 				}else{
@@ -980,81 +987,88 @@ class Orders extends CI_Model
 				}
 			 	$html .= '</table>';
 			 	$html .= '</p>';
+
 			}
-			//--------
-			
-			// $html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px;">';
-			// $html .= '	<tr>
-			// 							<td style="text-align: center; width: 50%; border-bottom: 2px solid #3c3c3c !important;">
-			// 							<img <img src="./assets/images/logoEmpresa.png" width="200px"><br>
-			// 								25 De Mayo 595 - Caucete - San Juan<br>
-			// 								IVA Responsable Inscripto<br>
-			// 								Tel: 0264 - 4961482
-			// 							</td>
-			// 							<td style="border-bottom: 2px solid #3c3c3c !important; border-left: 2px solid #3c3c3c !important; padding-left: 10px;">
-			// 								<center>Documento no válido como factura</center><br>
-			// 								'.($result['order']['ocEsPresupuesto'] ? '<strong>PRESUPUESTO</strong> <br>' : '') .'
-			// 								Número de Orden: <b>0000-'.$ordId.'</b><br>
-			// 								Vendedor: <b>'.$data['user']['usrName'].' '.$data['user']['usrLastName'].'</b><br>
-			// 								Fecha: <b>'.date("d-m-Y H:i", strtotime($result['order']['ocFecha'])).'</b><br><br>
-			// 								CUIT: <b>20349167736</b><br>
-			// 								Ingresos Brutos: <b>000-118245-5</b><br>
-			// 								Inicio Actividades: <b>14/06/2011</b>
-			// 							</td>
-			// 						</tr>';
-			// $html .= '	<tr><td colspan="2">
-			// 				Cliente: <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
-			// 				Domicilio: <b>'.$data['cliente']['cliDomicilio'].'</b>  tel: <b>'.($data['cliente']['cliTelefono'] == '' ? '-': $data['cliente']['cliTelefono']).'</b><br>
-			// 				Lista de Precio: <b>'.$data['lista']['lpDescripcion'].'</b>';
-			// 			if($result['order']['ocObservacion'] != ''){
-			// 				$html .= '<br><br><b style="font-size: 20px"><i>'.$result['order']['ocObservacion'].' </i></b>';
-			// 			}
-			// $html .= '		</td></tr></table>';
-			// //$html .= '<table width="100%" style="font-family:courier; font-size: 12px;">'
-			// //$html .= '	<tr><td colspan="2">';
-
-			// $html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important;">';
-			// $html .= '<tr style="background-color: #FAFAFA; border-bottom: 2px solid #3c3c3c !important;">
-			// 						<th colspan="2" style="background-color: #D1CECD;">Artículo</th>
-			// 						<th style="background-color: #D1CECD;">Precio</th>
-			// 						<th style="background-color: #D1CECD;">Cantidad</th>
-			// 						<th style="background-color: #D1CECD;">Total</th>
-			// 					</tr>';
-			// $total = 0;
-
-			// foreach ($result['detalleCompra'] as $art) {
-			// 	$html .= '<tr>';
-			// 	$html .= '<td>'.$art['artBarCode'].'</td>';
-			// 	$html .= '<td>'.$art['artDescripcion'].'</td>';
-			// 	$html .= '<td style="text-align: right">'.number_format($art['artPVenta'], 2, ',', '.').'</td>';
-			// 	$html .= '<td style="text-align: right">'.$art['ocdCantidad'].'</td>';
-			// 	$coste = $art['artPVenta'] * $art['ocdCantidad'];
-			// 	$total += $coste;
-			// 	$html .= '<td style="text-align: right">'.number_format($coste, 2, ',', '.').'</td>';
-			// 	$html .= '</tr>';
-			// 	$html .= '<tr>';
-			// 	$html .= '<td colspan="5" style="padding-top: 5px"><hr style="border: 1px solid #D8D8D8;"> </td>';
-			// 	$html .= '</tr>';
-			// }
-			// //$total += $result['order']['redondeo'];
-			// //$html .= '<tr><td><h5>Redondeo</h5></td>';
-			// //$html .= '<td colspan="3" style="text-align: right"><h5>'.($result['order']['redondeo'] >= 0 ? '+' : '').''.number_format($result['order']['redondeo'], 2, ',', '.').'</h5></td></tr>';
-			// if($result['order']['ocDescuento'] <= 0){
-			// 	$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
-			// }else{
-			// 	$html .= '<tr><td colspan="5" style="text-align: right">Sub Total  <strong style="font-size: 20px">$ '.number_format($total, 2, ',', '.').'</strong></td></tr>';
-			// 	$html .= '<tr><td colspan="5" style="text-align: right">Descuento  <strong style="font-size: 20px">$ '.number_format($result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
-			// 	$html .= '<tr><td colspan="5" style="text-align: right">Total  <strong style="font-size: 20px">$ '.number_format($total - $result['order']['ocDescuento'], 2, ',', '.').'</strong></td></tr>';
-			// }
-			// $html .= '</table>';
-			// $html .= '</div>';
-
-			//Si la lista de precios es cuenta corriente imprimir acuse de pago 
-			// $html .= '<style> .page_break { page-break-before: always; } </style>';
-			// $html .= '<div class="page_break">';
-
-			// $html .= '</div>';
+			$html .= '</div>';
 			//-------------------------------------------------------------------
+			//Pagaré----------------------------------------------
+			$this->load->model('CuentaCorrientes');
+			if($data['lista']['lpDescripcion'] == 'Cuenta Corriente'){
+				$html .= '<style> .page_break { page-break-before: always; } </style>';
+				$html .= '<div class="page_break">';
+				$fecha_actual = date("d-m-Y");
+				$vencimiento = date("d-m-Y",strtotime($fecha_actual."+ 30 days"));
+				$numero = date("m",strtotime($vencimiento));
+				switch ($numero) {
+					case '01': $mesVencimiento = 'Enero';break;
+					case '02': $mesVencimiento = 'Febrero';break;
+					case '03': $mesVencimiento = 'Marzo';break;
+					case '04': $mesVencimiento = 'Abril';break;
+					case '05': $mesVencimiento = 'Mayo';break;
+					case '06': $mesVencimiento = 'Junio';break;
+					case '07': $mesVencimiento = 'Julio';break;
+					case '08': $mesVencimiento = 'Agosto';break;
+					case '09': $mesVencimiento = 'Septiembre';break;
+					case '10': $mesVencimiento = 'Octubre';break;
+					case '11': $mesVencimiento = 'Noviembre';break;
+					case '12': $mesVencimiento = 'Diciembre';break;
+					default: $mesVencimiento = 'Non'; break;
+				}
+				$numero = date("m",strtotime($fecha_actual));
+				switch ($numero) {
+					case '01': $mesActual = 'Enero';break;
+					case '02': $mesActual = 'Febrero';break;
+					case '03': $mesActual = 'Marzo';break;
+					case '04': $mesActual = 'Abril';break;
+					case '05': $mesActual = 'Mayo';break;
+					case '06': $mesActual = 'Junio';break;
+					case '07': $mesActual = 'Julio';break;
+					case '08': $mesActual = 'Agosto';break;
+					case '09': $mesActual = 'Septiembre';break;
+					case '10': $mesActual = 'Octubre';break;
+					case '11': $mesActual = 'Noviembre';break;
+					case '12': $mesActual = 'Diciembre';break;
+					default: $mesActual = 'Non'; break;
+				}
+				
+				$html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 16px; margin-top: -200px; border: 1px solid #3c3c3c !important; padding: 10px;">';
+				$html .= '	<tr>
+								<td style="text-align: right ; width:100%;">
+									Vence el <b> '.date("d",strtotime($vencimiento)).' </b> de <b> '.$mesVencimiento.' </b> del <b> '.date("Y",strtotime($vencimiento)).' </b><br>
+									<strong style="font-size: 25px;"> Por $ '.number_format($total_pagare, 2, ',', '.').'</strong>';
+				$html .= '		</td>
+							</tr>
+							<tr>
+								<td style="text-align: right ; width:100%;">
+									<br>
+									Caucete - San Juan '.date("d",strtotime($fecha_actual)).' de '.$mesActual.' del '.date("Y",strtotime($fecha_actual)).'
+								</td>
+							</tr>
+							<tr>
+								<td style="text-align: justify ;">
+									<br>
+									Pagaré <b> Sin Protesto </b> (Art. 50 - D. Ley 5965/63)
+									A el Señor <b> Gallardo Delgado Lucas Ezequiel </b> o a su orden la cantidad 
+									de <b> $ '.number_format($total_pagare, 2, ',', '.').' (pesos '.$this->CuentaCorrientes->convertNumber($total_pagare).') </b><br>
+									Por igual valor recibido en <b> Materiales de construcción </b> a mi entera 
+									satisfacción.
+								</td>
+							</tr>
+							<tr>
+								<td style="text-align: left ;">
+									<br>
+									Pagadero en <b>Caucete - San Juan</b><br>
+									Firmante <b>'.$data['cliente']['cliApellido'].' '.$data['cliente']['cliNombre'].' ('.$data['cliente']['cliDocumento'].')</b><br>
+									Calle <b>'.$data['cliente']['cliDomicilio'].'</b>  <b>'.($data['cliente']['cliTelefono'] == '' ? ' - ': 'tel: '.$data['cliente']['cliTelefono']).'</b><br>
+									Localidad <b></b><br>
+								</td>
+							</tr>
+						</table>';	
+
+				$html .= '</div>';
+			}
+					
+			
 
 			//se incluye la libreria de dompdf
 			require_once("assets/plugin/HTMLtoPDF/dompdf/dompdf_config.inc.php");

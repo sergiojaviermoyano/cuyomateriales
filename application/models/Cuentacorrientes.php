@@ -447,7 +447,7 @@ class Cuentacorrientes extends CI_Model
 	                        && !array_search('', array_slice($groups2, $z + 1, -1))
 	                        && $groups2[11] != ''
 	                        && $groups[11]{0} == '0'
-	                            ? " and "
+	                            ? "  "
 	                            : ", "
 	                    );
 	            }
