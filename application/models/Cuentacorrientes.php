@@ -407,7 +407,12 @@ class Cuentacorrientes extends CI_Model
 
 	function convertNumber($number)
 	{
-	    list($integer, $fraction) = explode(".", (string) $number);
+	    $fraction = 0;
+	    $list = explode(".", (string) $number);
+	    if(isset($list[0]))
+		$integer=$list[0];
+	    if(isset($list[1]))
+		$fraction=$list[1];
 
 	    $output = "";
 
@@ -447,7 +452,7 @@ class Cuentacorrientes extends CI_Model
 	                        && !array_search('', array_slice($groups2, $z + 1, -1))
 	                        && $groups2[11] != ''
 	                        && $groups[11]{0} == '0'
-	                            ? "  "
+	                            ? " and "
 	                            : ", "
 	                    );
 	            }
@@ -458,13 +463,22 @@ class Cuentacorrientes extends CI_Model
 
 	    if ($fraction > 0)
 	    {
-	        $output .= " con ".$this->convertTwoDigit($fraction[0], $fraction[1])." centavos";
+		$digito1 = 0;
+		$digito2 = 0;
+		if(isset($fraction[0])){
+			$digito1 = $fraction[0];
+		}
+		if(isset($fraction[1])){
+			$digito2 = $fraction[1];
+		}
+	        $output .= " con ".$this->convertTwoDigit($digito1 , $digito2 )." centavos";
 
 	        //for ($i = 0; $i < strlen($fraction); $i++)
 	        //{
 	        //    $output .= " " . $this->convertDigit($fraction{$i});
 	        //}
 	    }
+
 
 	    return $output;
 	}
