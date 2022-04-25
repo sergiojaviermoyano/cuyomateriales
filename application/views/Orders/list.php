@@ -344,16 +344,17 @@ var tipo = 0; //0 Venta; 1 Presupuesto;
     //Validar si los descuentos son distintos
     var desc = parseFloat($('#ocDescuento').val() == "" ? 0 : $('#ocDescuento').val());
     var descOrg = parseFloat($('#ocDescuentoOrg').val() == "" ? 0 : $('#ocDescuentoOrg').val());
+    debugger;
     if(desc != descOrg || hayDescuentosIndividuales == true){
       //Pedir autorización de descuento
       $('#modalAutorizacion').modal('show');
       setTimeout(function () { $('#autUsuario').focus(); }, 1000);
     } else {
-      if(acOrder == 'Add' && permission.indexOf("Ent") > 0){
-        $('#modalEntrega').modal('show');
-      } else {
+      //if(acOrder == 'Add' && permission.indexOf("Ent") > 0){
+      //  $('#modalEntrega').modal('show');
+      //} else {
         validate(1);
-      }
+      //}
     }
   });
 
