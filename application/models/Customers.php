@@ -240,7 +240,7 @@ class Customers extends CI_Model
 
 		$clientes = array();
 
-		$this->db->select('cliId, cliNombre, cliApellido, cliDocumento, cliTelefono, cliDomicilio');
+		$this->db->select('cliId, cliNombre, cliApellido, cliDocumento, cliTelefono, cliDomicilio, cliCtaCte');
 		$this->db->from('clientes');
 		$this->db->like('cliNombre', $str, 'both');
 		$this->db->or_like('cliApellido', $str, 'both');

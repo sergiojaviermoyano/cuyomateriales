@@ -589,7 +589,7 @@ var code = e.which;
   }
 
   $('#buscador').click(function(){
-    buscadorClientes($('#lblNombre'),$('#lblDocumento'), $('#lblDomicilio'), $('#lblTelefono'), $('#cliId'));
+    buscadorClientes($('#lblNombre'),$('#lblDocumento'), $('#lblDomicilio'), $('#lblTelefono'), $('#cliId'), 1);
   });
 
 </script>

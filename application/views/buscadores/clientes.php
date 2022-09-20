@@ -40,12 +40,19 @@ var timerClientes, timeoutClientes = 1000;
 var rowClientes = 0, rowsClientes = 0;
 var moveClientes = 0;
 var minLenghtClientes = 0;
-function buscadorClientes(nombre, documento, domicilio, telefono, id){
+function buscadorClientes(nombre, documento, domicilio, telefono, id, ctacte = null){
   idClientes = id;
   lblNombre = nombre;
   lblDocumento = documento;
   lblDomicilio = domicilio;
   lblTelefono = telefono;
+  if(ctacte != null){
+    lblCta = $('#lblCtaCte');
+    ctacteHidden = $('#CtaCteHab');
+  } else {
+    lblCta = 0;
+    ctacteHidden = 0;
+  }
   $('#txtClientes').val('');
   $('#tableClientesDetail > tbody').html('');
   setTimeout(function () { $('#txtClientes').focus(); BuscarClientes();}, 1000);
@@ -67,7 +74,7 @@ function BuscarClientes(){
                             $.each(resultList, function(index, result){
                                 var row__ = '<tr>';
                                 row__ += '<td width="1%"><i style="color: #00a65a; cursor: pointer;" class="fa fa-fw fa-check-square"';
-                                row__ += 'onClick="seleccionarClientes('+result.cliId+', \''+result.cliNombre+'\', \''+result.cliApellido+'\', \''+result.cliDocumento+'\', \''+result.cliDomicilio+'\', \''+result.cliTelefono+'\')"></i></td>';
+                                row__ += 'onClick="seleccionarClientes('+result.cliId+', \''+result.cliNombre+'\', \''+result.cliApellido+'\', \''+result.cliDocumento+'\', \''+result.cliDomicilio+'\', \''+result.cliTelefono+'\', \''+result.cliCtaCte+'\')"></i></td>';
                                 row__ += '<td width="15%">'+result.cliApellido+'</td>';
                                 row__ += '<td>'+result.cliNombre+'</td>';
                                 row__ += '<td>'+result.cliDocumento+'</td>';
@@ -121,12 +128,17 @@ function BuscarClientes(){
     }
   });
 
-function seleccionarClientes(id, nombre, apellido, documento, domicilio, telefono){
+function seleccionarClientes(id, nombre, apellido, documento, domicilio, telefono, ctaCte){
     idClientes.val(id);
     lblNombre.html(apellido +' '+nombre);
     lblDocumento.html(documento);
     lblTelefono.html(telefono);
     lblDomicilio.html(domicilio);
+    debugger;
+    if(lblCta != 0){
+      lblCta.html(ctaCte == '0' ? 'NO' : 'SI');
+      ctacteHidden.val(ctaCte);
+    }
     $('#buscadorClientes').modal('hide');
     setTimeout("$('#ocObservacion').focus();",800);
 }
