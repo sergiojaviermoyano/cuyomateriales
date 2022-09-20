@@ -116,6 +116,15 @@
         <strong style="color: #dd4b39" id="lblTelefono"><?php echo $cliente['customer']['cliTelefono'];?></strong>
       </div>
     </div>
+    <div class="row">
+      <div class="col-sm-3" style="text-align: right; margin-top: 7px;">
+        <label><i>Cta Cte.</i>:  </label>
+      </div>
+      <div class="col-sm-7" style="text-align: left; margin-top: 7px;">
+        <strong style="color: #dd4b39" id="lblCtaCte"></strong>
+        <input type="hidden" id="CtaCteHab" value="">
+      </div>
+    </div>
   </div>
 </div>
 <input type="hidden" id="ocEsPresupuesto" value="<?php echo $data['order']['ocEsPresupuesto'] ?>"/>
@@ -464,7 +473,6 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
             pVenta=parseFloat(pVenta);
             if(margin > 0){
               //Si las listas no son la seleccionada
-              debugger;
               if($("#lpId option:selected" ).text().trim() != "Visa debito" && $("#lpId option:selected" ).text().trim() != "Banco nación debito"){
                 pVenta += pVenta * (margin / 100);
               } else {
@@ -556,6 +564,8 @@ var code = e.which;
                         $('#lblDocumento').html('');
                         $('#lblDomicilio').html('');
                         $('#lblTelefono').html('');
+                        $('#lblCtaCte').html('');
+                        $('#CtaCteHab').html('');
                         CargarModalNuevoCliente();
                       } else {
                         $('#cliId').val(result.cliente.cliId);
@@ -563,6 +573,8 @@ var code = e.which;
                         $('#lblDocumento').html(result.cliente.cliDocumento);
                         $('#lblDomicilio').html(result.cliente.cliDomicilio);
                         $('#lblTelefono').html(result.cliente.cliTelefono);
+                        $('#lblCtaCte').html(result.cliente.cliCtaCte == 0 ? 'NO': 'SI');
+                        $('#CtaCteHab').val(result.cliente.cliCtaCte);
                         $('#cliSearch').val('');
                         setTimeout("$('#ocObservacion').focus();",800);
                       }

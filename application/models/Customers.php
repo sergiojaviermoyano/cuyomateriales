@@ -65,6 +65,7 @@ class Customers extends CI_Model
 				$cust['cliEstado'] = '';
 				$cust['cliDefault'] = false;
 				$cust['docId'] = '';
+				$cust['cliCtaCte'] = 0;
 
 				$data['customer'] = $cust;
 			}
@@ -105,6 +106,7 @@ class Customers extends CI_Model
 			$dom = $data['dom'];
 			$tel = $data['tel'];
 			$est = $data['est'];
+			$cta = $data['cta'];
 
 			$data = array(
 				   'docId' => $doc,
@@ -114,7 +116,8 @@ class Customers extends CI_Model
 				   'cliDomicilio' => $dom,
 				   'cliTelefono' => $tel,
 				   'cliMail' => $mail,
-				   'cliEstado' => $est
+				   'cliEstado' => $est,
+				   'cliCtaCte' => $cta
 				);
 
 			switch($act){
@@ -162,6 +165,7 @@ class Customers extends CI_Model
 			$dom = $data['dom'];
 			$tel = $data['tel'];
 			$est = $data['est'];
+			$cta = $data['cta'];
 
 			$data = array(
 				   'docId' => $doc,
@@ -171,7 +175,8 @@ class Customers extends CI_Model
 				   'cliDomicilio' => $dom,
 				   'cliTelefono' => $tel,
 				   'cliMail' => $mail,
-				   'cliEstado' => $est
+				   'cliEstado' => $est,
+				   'cliCtaCte' => $cta
 				);
 
 			switch($act){
@@ -211,7 +216,7 @@ class Customers extends CI_Model
 	{
 			$dni = str_replace(' ', '', $data['dni']);
 
-			$this->db->select('clientes.cliNombre, clientes.cliApellido, clientes.cliDocumento, clientes.cliId, clientes.cliDomicilio, clientes.cliTelefono');
+			$this->db->select('clientes.cliNombre, clientes.cliApellido, clientes.cliDocumento, clientes.cliId, clientes.cliDomicilio, clientes.cliTelefono, clientes.cliCtaCte');
 			$this->db->from('clientes');
 			$this->db->where(array('clientes.cliDocumento'=>$dni));
 			$query= $this->db->get();

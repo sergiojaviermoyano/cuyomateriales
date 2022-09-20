@@ -158,7 +158,8 @@
                     mail: $('#cliMail').val(),
                     dom: $('#cliDomicilio').val(),
                     tel: $('#cliTelefono').val(),
-                    est: $('#cliEstado').val()
+                    est: $('#cliEstado').val(),
+                    cta: $('#cliCtaCte').val()
                   },
     		url: 'index.php/customer/setCustomer', 
     		success: function(result){

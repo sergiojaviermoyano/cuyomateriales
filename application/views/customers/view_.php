@@ -55,6 +55,19 @@
       </div><br>
       <div class="row">
         <div class="col-xs-4">
+          <label style="margin-top: 7px;">Habilita Cuenta Corriente: </label>
+        </div>
+        <div class="col-xs-5">
+          <select class="form-control" id="cliCtaCte"  <?php echo ($data['read'] == true ? 'disabled="disabled"' : '');?> >
+              <?php 
+                  echo '<option value="1" '.($data['customer']['cliCtaCte'] == '1' ? 'selected' : '').'>Si</option>';
+                  echo '<option value="0" '.($data['customer']['cliCtaCte'] == '0' ? 'selected' : '').'>No</option>';
+              ?>
+          </select>
+        </div>
+      </div><br/>
+      <div class="row">
+        <div class="col-xs-4">
             <label style="margin-top: 7px;">Domicilio: </label>
           </div>
         <div class="col-xs-5">

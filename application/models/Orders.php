@@ -357,13 +357,13 @@ class Orders extends CI_Model
 
 								footer {
 									position: fixed; 
-									bottom: -75px; 
+									bottom: -15px; 
 									left: 0px; 
 									right: 0px;
 									height: 90px; 
 
 									/** Extra personal styles **/
-									background-color: #db5354;
+									background-color: #FAF2F3;
 									color: black;
 									text-align: center;
 									line-height: 35px;
@@ -411,8 +411,8 @@ class Orders extends CI_Model
 					
 							<footer>
 								<i style="font-size:20px"><b>MUCHAS GRACIAS POR SU COMPRA!!!!</b>
-								Envíos al <b>2644039996</b></i><br>
-								<b style="font-size:15px">El cliente deberá retirar la mercadería en un plazo no mayor a 60 días.</b>
+								Envíos al <b>2645419445</b></i><br>
+								<b style="font-size:15px">El cliente deberá retirar la mercadería en un plazo no mayor a 10 días.</b>
 							</footer>
 					';
 			$html .= '<main>';
@@ -832,13 +832,13 @@ class Orders extends CI_Model
 
 								footer {
 									position: fixed; 
-									bottom: -75px; 
+									bottom: -15px; 
 									left: 0px; 
 									right: 0px;
 									height: 90px; 
 
 									/** Extra personal styles **/
-									background-color: #db5354;
+									background-color: #FAF2F3;
 									color: black;
 									text-align: center;
 									line-height: 35px;
@@ -886,8 +886,8 @@ class Orders extends CI_Model
 					
 							<footer>
 								<i style="font-size:20px"><b>MUCHAS GRACIAS POR SU COMPRA!!!!</b>
-								Envíos al <b>2644039996</b></i><br>
-								<b style="font-size:15px">El cliente deberá retirar la mercadería en un plazo no mayor a 60 días.</b>
+								Envíos al <b>2645419445</b></i><br>
+								<b style="font-size:15px">El cliente deberá retirar la mercadería en un plazo no mayor a 10 días.</b>
 							</footer>
 					';
 			$html .= '<main>';

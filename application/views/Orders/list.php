@@ -226,10 +226,15 @@
   }
 
   function validate(esPresupuesto){
+    var hayError = false;
+    if($('#lpId').val() == 8 && $('#CtaCteHab').val() == 0){
+      hayError = true;
+    }
+
     if(esPresupuesto == 1){
       acOrder = 'Pre';
     }
-    var hayError = false;
+    
     if(acOrder == 'View')
     {
       $('#modalOrder').modal('hide');
@@ -246,7 +251,10 @@
       hayError = true;
     }
 
-    if($('#lblNombre').html() == ' Consumidor Final' && $('#lpId option:selected').text() == 'Cuenta Corriente '){
+    if(
+      ($('#lblNombre').html() == ' Consumidor Final' && $('#lpId option:selected').text() == 'Cuenta Corriente ') ||
+      ($('#lpId').val() == 8 && $('#CtaCteHab').val() == 0)
+      ){
       hayError = true;
       $('#lllcli').css('color', 'red');
       setTimeout("$('#lllcli').css('color', 'black');",500);
@@ -344,7 +352,6 @@ var tipo = 0; //0 Venta; 1 Presupuesto;
     //Validar si los descuentos son distintos
     var desc = parseFloat($('#ocDescuento').val() == "" ? 0 : $('#ocDescuento').val());
     var descOrg = parseFloat($('#ocDescuentoOrg').val() == "" ? 0 : $('#ocDescuentoOrg').val());
-    debugger;
     if(desc != descOrg || hayDescuentosIndividuales == true){
       //Pedir autorización de descuento
       $('#modalAutorizacion').modal('show');
@@ -784,7 +791,8 @@ $('#btnSaveCustomer').click(function(){
                     mail: $('#cliMail').val(),
                     dom: $('#cliDomicilio').val(),
                     tel: $('#cliTelefono').val(),
-                    est: $('#cliEstado').val()
+                    est: $('#cliEstado').val(),
+                    cta: $('#cliCtaCte').val()
                   },
         url: 'index.php/customer/setCustomer2', 
         success: function(result){
@@ -797,6 +805,7 @@ $('#btnSaveCustomer').click(function(){
                         };
                         var newOption = new Option(data.text, data.id, false, false);
                         $('#cliId').append(newOption).trigger('change');
+                        BuscarCliente();
                       }
               },
         error: function(result){
