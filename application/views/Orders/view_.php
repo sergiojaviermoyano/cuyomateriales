@@ -269,7 +269,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                  					var pVenta = parseFloat(result.pVenta);
                  					if(margin > 0){
 														//console.debug(" =>>> %o * ( %o ) / 100: ",pVenta,margin,(pVenta * (margin / 100)));
-                 						pVenta += pVenta * (margin / 100);
+                 						//pVenta += pVenta * (margin / 100);
                  					}
                           WaitingClose();
                           var cantidad = parseFloat($('#artCant').val() == '' ? 1 : $('#artCant').val());
@@ -292,6 +292,7 @@ var idSale = $('#order_detail > tbody').find('tr').length+1;
                           $('#artCant').val('1');
                           $('#artId').val('');
                           Calcular();
+                          $("#lpId").trigger("change");
                           $('#artId').focus();
                         } else {
                           AbrirBuscador();
