@@ -376,11 +376,10 @@ class Articles extends CI_Model
 							//$html .= '------->'.count($sr['articles']).'<br>';
 						}
 
-						 $html .= '<table width="100%" style="font-family: Source Sans Pro ,sans-serif; font-size: 12px; border-top: 2px solid #3c3c3c !important;">';
 						 foreach ($sr['articles'] as $ar) {
-						 	$html .= '<tr>';
-						 	$html .= '<td>'.$ar['artBarCode'].'</td>';
-							$html .= '<td>'.$ar['artDescription'].'</td>';
+						 	//$html .= '<tr>';
+						 	//$html .= '<td>'.$ar['artBarCode'].'</td>';
+							//$html .= '<td>'.$ar['artDescription'].'</td>';
 							$pUnit = $ar['artCoste'];
 							if($ar['artIsByBox'] == 1){
 								$pUnit = $ar['artCoste'] / $ar['artCantBox'];
@@ -392,10 +391,11 @@ class Articles extends CI_Model
 								$pUnit = $pUnit + $ar['artMargin'];
 							}
 							$pUnit = $pUnit + ($pUnit * ($margin / 100));
-						 	$html .= '<td style="text-align: right">$'.number_format ( $pUnit , 2 , '.', ',' ).'</td>';				
-						 	$html .= '</tr>';
+							$html .= str_pad($ar['artDescription'], 50,'.').'    $'.number_format ( $pUnit , 2 , '.', ',' );				
+						 	//$html .= '</tr>';
+							$html .= '<br>';
 						 }
-						 $html .= '</table>';
+						 //$html .= '</table>';
 
 						$escribirSubrubro = false;
 					}
